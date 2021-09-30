@@ -2,52 +2,53 @@
 + : public
 _ : static
 
-? : dúvida
+? : doubt
 
 
 ---------
- Produto (herdar simples e derivados)?
+ Product (inherit simple and derivate)?
 ---------
-- tipo: Str ("Simples", "Derivado")
-- preco: float
+- type: Str ("Simple", "Derivative")
+- price: float
 ---------
-+ agrega(produtos: Produto[]): Produto?
-- desagrega(): Produto[]?
++ aggregate(products: Product[]): Product?
+- disaggregate(): Product[]?
 
 
 -------
- Lote
+ Batch
 -------
-- parceiro: Parceiro
-- unidadesDisponiveis: int
+- partner: Partner
+- unitsAvailable: int
 
 
------------
- Transacao (herdar compras e vendas?; desagregações?)
------------
-- _numeroTransacoes: int
+-------------
+ Transaction (inherit purchases and sales?; disaggregations?)
+-------------
+- _numberTransactions: int
 - id: int
-- data: (tipo?)
+- date: (type?)
 
 
-----------
- Parceiro
-----------
-- nome: Str
-- morada: Str
-- estatuto: Str?
-- transacoes: Transacao[]
-- notificacoes: Notificacao[]?
+---------
+ Partner
+---------
+- name: Str
+- address: Str
+- status: Str?
+- transactions: Transaction[]
+- notifications: Notification[]?
 
 
+--------------
+ Notification
+--------------
+- active: boolean
+- deliveryMean: Str
 -------------
- Notificacao
--------------
-- ativa: boolean (notificacoes ativas ou n)
-- meioEntrega: Str
--------------
-+ desativar(): void
-+ ativar(): void
-+ notificarExistencia(produto: Produto): Str?
-+ notificarPreco(produto: Produto): Str?
++ turnOff(): void
++ turnOn(): void
++ addEntity(product: Partner?)
++ notififyExistance(product: Product): Str?
++ notififyPrice(product: Product): Str?
 
