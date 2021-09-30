@@ -1,0 +1,53 @@
+- : private
++ : public
+_ : static
+
+? : dúvida
+
+
+---------
+ Produto (herdar simples e derivados)?
+---------
+- tipo: Str ("Simples", "Derivado")
+- preco: float
+---------
++ agrega(produtos: Produto[]): Produto?
+- desagrega(): Produto[]?
+
+
+-------
+ Lote
+-------
+- parceiro: Parceiro
+- unidadesDisponiveis: int
+
+
+-----------
+ Transacao (herdar compras e vendas?; desagregações?)
+-----------
+- _numeroTransacoes: int
+- id: int
+- data: (tipo?)
+
+
+----------
+ Parceiro
+----------
+- nome: Str
+- morada: Str
+- estatuto: Str?
+- transacoes: Transacao[]
+- notificacoes: Notificacao[]?
+
+
+-------------
+ Notificacao
+-------------
+- ativa: boolean (notificacoes ativas ou n)
+- meioEntrega: Str
+-------------
++ desativar(): void
++ ativar(): void
++ notificarExistencia(produto: Produto): Str?
++ notificarPreco(produto: Produto): Str?
+
