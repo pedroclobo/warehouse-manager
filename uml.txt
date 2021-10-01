@@ -4,30 +4,22 @@ _ : static
 
 ? : doubt
 
+-----------
+ Warehouse ?
+-----------
+- lots: Lot[]
+-----------
++ aggregate() ?
++ disaggregate() ?
+
 
 ---------
  Product (inherit simple and derivate)?
 ---------
-- type: Str ("Simple", "Derivative")
-- price: float
+- type: Str
 ---------
 + aggregate(products: Product[]): Product?
-- disaggregate(): Product[]?
-
-
--------
- Batch
--------
-- partner: Partner
-- unitsAvailable: int
-
-
--------------
- Transaction (inherit purchases and sales?; disaggregations?)
--------------
-- _numberTransactions: int
-- id: int
-- date: (type?)
++ disaggregate(): Product[]?
 
 
 ---------
@@ -35,9 +27,63 @@ _ : static
 ---------
 - name: Str
 - address: Str
-- status: Str?
+- status: Pontuation
 - transactions: Transaction[]
 - notifications: Notification[]?
+---------
++ Partner(name: Str, address: Str)
++ getName(): Str
++ getAddress(): Str
++ getStatus(): Pontuation
+
+
+-------------
+ Transaction (inherit purchases and sales?; disaggregations?)
+-------------
+- _numberTransactions: int
+- id: int
+- paymentDate: Time
+-------------
++ getId(): int
++ getPaymentDate() Time
+
+	-----------
+	 Purchases
+	-----------
+	buyer: Entity ?
+	seller: Entity ?
+
+	-------
+	 Sales
+	-------
+	buyer: Entity ?
+	seller: Entity ?
+
+
+------
+ Time
+------
+- date: int
+------
++ fowardTime(int increment): void
+
+
+-----
+ Lot
+-----
+- id: int? (to distinguish between lots)
+- product: Product
+- supplier: Partner
+- unitsAvailable: int
+- price: float
+-----
++ Lot(product: Product, supplier: Partner, price: float, numberUnits: int)
++ getProduct(): Product
++ setProductPrice(price: float): void
++ getProductPrice(): float?
++ getSupplier(): Partner
++ getNumberAvailableUnits(): int
++ isEmpty(): boolean
 
 
 --------------
@@ -52,3 +98,8 @@ _ : static
 + notififyExistance(product: Product): Str?
 + notififyPrice(product: Product): Str?
 
+
+-------------------
+ PontuationManager ?
+-------------------
+- points: int
