@@ -4,13 +4,16 @@ _ : static
 
 ? : doubt
 
+
 -----------
- Warehouse ?
+ Warehouse
 -----------
 - lots: Lot[]
 -----------
-+ aggregate() ?
-+ disaggregate() ?
++ aggregate(): boolean     - aggregate products
++ disaggregate(): boolean  - disaggregate products
++ addLot(): boolean        - add a new lot to the warehouse
++ removeLot(): boolean     - remove a lot from the warehouse
 
 
 ---------
@@ -35,6 +38,7 @@ _ : static
 + getName(): Str
 + getAddress(): Str
 + getStatus(): Pontuation
+// + notify
 
 
 -------------
@@ -84,6 +88,8 @@ _ : static
 + getSupplier(): Partner
 + getNumberAvailableUnits(): int
 + isEmpty(): boolean
++ addUnit(): boolean
++ removeUnit(): boolean
 
 
 --------------
