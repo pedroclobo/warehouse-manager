@@ -1,16 +1,27 @@
 # To Do
 
+## Entity
+- generic class
+- entity inherits partners
+
 ## Warehouse
 - process transactions
 
+## Partner
+- process disagreggations
+
 ## Product
-- way to aggregate and disaggregate
-- way to differentiate simple and derivate products
+- done
+
+## Lot
+- done
+
+## Time
+- done
 
 ## Transactions
 - store late payments
 - way to differentiate purchases and sales
-- how to do disaggregations?
 
-## Notifications
-- how to do notifications?
+## NotificationManager
+- turn off notifications for individual products

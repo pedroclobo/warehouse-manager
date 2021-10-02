@@ -5,24 +5,40 @@ _ : static
 ? : doubt
 
 
+--------
+ Entity
+--------
+- notifications: NotificationManager
+--------
+
+
+
+
 -----------
  Warehouse
 -----------
 - lots: Lot[]
+- transactions: Transaction[]
 -----------
 + aggregate(): boolean     - aggregate products
 + disaggregate(): boolean  - disaggregate products
 + addLot(): boolean        - add a new lot to the warehouse
 + removeLot(): boolean     - remove a lot from the warehouse
++ buy()
++ sell()
 
 
 ---------
- Product (inherit simple and derivate)?
+ Product
 ---------
 - type: Str
+- name: Str
+- components: Product[]
 ---------
-+ aggregate(products: Product[]): Product?
-+ disaggregate(): Product[]?
++ Product(type: Str, name: Str, components: Product[])
++ getType(): Str
++ getName(): Str
++ getComponents(): Products[]
 
 
 ---------
@@ -32,7 +48,7 @@ _ : static
 - address: Str
 - status: Pontuation
 - transactions: Transaction[]
-- notifications: Notification[]?
+- notifications: NotificationManager
 ---------
 + Partner(name: Str, address: Str)
 + getName(): Str
@@ -42,26 +58,36 @@ _ : static
 
 
 -------------
- Transaction (inherit purchases and sales?; disaggregations?)
+ Transaction
 -------------
 - _numberTransactions: int
 - id: int
+- type: Str
 - paymentDate: Time
+- paymentValue: float
+- product: Product
+- quantity: int
+- warehouse: Warehouse
+- partner: Partner
 -------------
-+ getId(): int
 + getPaymentDate() Time
 
-	-----------
-	 Purchases
-	-----------
-	buyer: Entity ?
-	seller: Entity ?
 
-	-------
-	 Sales
-	-------
-	buyer: Entity ?
-	seller: Entity ?
+	----------
+	 Purchase
+	----------
+	- time
+	----------
+	+ pay(): boolean
+
+
+	------
+	 Sell
+	------
+	- timeLimit: int
+	------
+	+ pay():
+
 
 
 ------
@@ -69,13 +95,15 @@ _ : static
 ------
 - date: int
 ------
++ Time(int date)
 + fowardTime(int increment): void
 
 
 -----
  Lot
 -----
-- id: int? (to distinguish between lots)
+- _numberLots: int
+- id: int
 - product: Product
 - supplier: Partner
 - unitsAvailable: int
@@ -83,24 +111,23 @@ _ : static
 -----
 + Lot(product: Product, supplier: Partner, price: float, numberUnits: int)
 + getProduct(): Product
-+ setProductPrice(price: float): void
-+ getProductPrice(): float?
++ getPrice(): float?
 + getSupplier(): Partner
 + getNumberAvailableUnits(): int
 + isEmpty(): boolean
-+ addUnit(): boolean
-+ removeUnit(): boolean
++ addUnit(quantity: int): boolean
++ removeUnit(quantity: int): boolean
 
 
---------------
- Notification
---------------
+---------------------
+ NotificationManager
+---------------------
 - active: boolean
 - deliveryMean: Str
+- optIn: Product[]
 -------------
-+ turnOff(): void
-+ turnOn(): void
-+ addEntity(product: Partner?)
++ turnOff(product Product): boolean
++ turnOn(product Product): boolean
 + notififyExistance(product: Product): Str?
 + notififyPrice(product: Product): Str?
 
