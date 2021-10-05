@@ -1,27 +1,26 @@
 # To Do
 
 ## Entity
-- generic class
-- entity inherits partners
+- what more to they need?
 
 ## Warehouse
-- process transactions
+- done
 
 ## Partner
-- process disagreggations
+- done
 
 ## Product
 - done
 
-## Lot
-- done
+## Batch
+- is it possible to create lots?
+- build simpler products, when there is no stock
 
 ## Time
 - done
 
 ## Transactions
-- store late payments
-- way to differentiate purchases and sales
+- done
 
 ## NotificationManager
-- turn off notifications for individual products
+- done
