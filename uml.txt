@@ -9,12 +9,13 @@ _ : static
  Warehouse
 -----------
 - batches: Batch[] (linked list)
-- sender: NotificationSender
-//- transactions: TransactionManager
+- notifications: NotificationSender
+- transactions: TransactionManager
 -----------
 + Warehouse()
 + addBatch(Product, Partner, quantity: int, price: float): void
 + hasStock(Product): boolean
++ getMaxPrice(Product): float
 
 
 ---------
@@ -58,31 +59,26 @@ _ : static
 	 Partner
 	---------
 	- address: Str
+	- transactions: TransactionHolder
 	- status: PontuationManager
-	- transactions: Transaction[]
 	---------
 	+ Partner(name: Str, address: Str)
 	+ getAddress(): Str
 	+ getStatus(): Pontuation
 
 
-
---------------------
- TransactionManager
---------------------
-- _numberTransactions: int
-
 -------------
- < abstract >
  Transaction
 -------------
 - id: int
 - type: Str
-- paymentDate: Time
 - partner: Partner
 - product: Product
 - quantity: int
+- paymentDate: Time
 -------------
++ Transaction(int, Str, Partner, Product, int, Time)
++ getPartnerId(): int
 + getProductId(): Str
 + getQuantity(): int
 + getPaymentDate(): Time
@@ -93,9 +89,8 @@ _ : static
 	----------
 	- price: float
 	----------
+	+ Purchase(int, Str, Partner, Product, int, Time, price)
 	+ getPrice(): float
-	+ Purchase((Warehouse), Time, Partner, Product, quanitity: int, price: float)
-	// + display(): void
 
 
 	------
@@ -103,12 +98,18 @@ _ : static
 	------
 	- basePrice: float
 	- realPrice: float
+	- limitPaymentDate: Time
 	- efectivePaymentDate: Time
 	------
+	+ Sell(int, Str, Partner, Product, int, Time, float, Time)
+	+ getBasePrice(): float
+	+ getRealPrice(): float
+	+ getEffectivePaymentDate(): Time
+	+ getLimitPaymentDate(): Time
 	+ recalculateRealPrice(): void
 	+ hasBeenPaid(): boolean
 	+ setEffectivePaymentDate(): void
-	// + display(): void
+	+ applyFine...(): void
 
 
 	----------------
@@ -116,14 +117,28 @@ _ : static
 	----------------
 	- purchase: Purchase[]
 	- sell: Sell
-	// + display(): void
+	----------------
 
 
 --------------------
  TransactionManager
 --------------------
 - _numberTransactions: int
+- _transactions: TransactionHolder[]
+--------------------
++ getNumberTransactions(): int
++ increaseNumberTransactions(): void
+
+
+-------------------
+ TransactionHolder
+-------------------
 - transactions: Transaction[]
+-------------------
++ TransactionHolder()
++ addTransaction(Transaction)
+
+
 
 ------
  Time
@@ -134,16 +149,16 @@ _ : static
 + fowardTime(int increment): void
 
 
------
+-------
  Batch
------
+-------
 - _numberBatchs: int
 - id: int
 - product: Product
 - supplier: Partner
 - unitsAvailable: int
 - price: float
------
+-------
 + Batch(product: Product, supplier: Partner, price: float, numberUnits: int)
 + getProduct(): Product
 + getPrice(): float?
@@ -167,7 +182,6 @@ _ : static
 
 
 ---------------------
-    < abstract >
  NotificationManager
 ---------------------
 - _allNotifications: Notification[]
@@ -199,6 +213,10 @@ _ : static
 
 
 -------------------
- PontuationManager ?
+ PontuationManager
 -------------------
 - points: int
+-------------------
++ getClassification(): Str
++ addPoints(int): void
++ removePoints(int): void
