@@ -1,28 +1,11 @@
 # To Do
 
-## Entity
-- what more to they need?
+## Pontuation / Partner
+- define interaction functions
 
-## Warehouse
-- done
-
-## Partner
-- done
-
-## Product
-- done
-
-## Batch
-- is it possible to create lots?
-- build simpler products, when there is no stock
-
-## Time
-- done
+## Products
+- derivative products have to hold the quantity of the subcomponents (use hashmap?)
 
 ## Transactions
-- done
-
-## NotificationManager
-- done
-
-## ABCD
+- do disaggregations transactions have an id?
+	- if so, disaggregation is a subclass of transactions

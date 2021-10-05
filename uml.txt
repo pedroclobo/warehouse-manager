@@ -2,84 +2,123 @@
 + : public
 _ : static
 
-? : doubt
-
 
 -----------
  Warehouse
 -----------
-- batches: Batch[] (linked list)
-- notifications: NotificationSender
+- batches: Batch[]
+- notifications: NotificationManager
 - transactions: TransactionManager
 -----------
 + Warehouse()
-+ addBatch(Product, Partner, quantity: int, price: float): void
-+ hasStock(Product): boolean
-+ getMaxPrice(Product): float
++ addBatch(product: Product, supplier: Partner, price: float, quantity: int): void
++ removeBatch(batch: Batch): void
++ getBatchByProduct(product: Product): Batch
++ hasStock(product: Product): boolean
++ getLowestPrice(product: Product): float
++ getMaxPrice(product: Product): float
++ aggregate(product: Derivative): boolean
++ disagreggate(product: Derivate): void
++ getProductByName(name: Str): Product ?
++ getPartnerByName(name: Str): Partner ?
+
+
+-------
+ Batch
+-------
+- _numberBatchs: int
+- product: Product
+- supplier: Partner
+- quantity: int
+- price: float
+-------
++ Batch(product: Product, supplier: Partner, price: float, quantity: int)
++ getProduct(): Product
++ getSupplier(): Partner
++ getQuantity(): int
++ getPrice(): float
++ isEmpty(): boolean
++ addUnit(numberToAdd: int): boolean
++ removeUnit(numberToRemove: int): boolean
 
 
 ---------
  Product
 ---------
-- type: Str
-- name: Str
+- type: String
+- name: String
 ---------
-+ Product(type: Str, name: Str)
-+ getType(): Str
-+ getName(): Str
-
++ Product(type: String, name: String)
++ getType(): String
++ getName(): String
++ isEqual(product: Product): boolean
 
 	--------
 	 Simple
 	--------
 	--------
 
-
 	------------
 	 Derivative
 	------------
 	- components: Product[]
 	------------
-	+ Derivative(name: Str, components: Product[])
-	+ getComponents(): Product[]
-
+	+ Derivative(name: String, components: Product[])
+	+ getComponents(): Product[] ?
+	// + getComponents(): HashMap<Product, Integer>
 
 
 --------
  Entity
 --------
-- name: Str
-- notifications: NotificationReceiver
+- name: String
+- notifications: NotificationHolder
 --------
-+ Entity(name: Str)
-+ getName(): Str
-
++ Entity(name: String)
++ getName(): String
++ getNotifications(): Notification[]
 
 	---------
 	 Partner
 	---------
-	- address: Str
+	- address: String
 	- transactions: TransactionHolder
 	- status: PontuationManager
 	---------
-	+ Partner(name: Str, address: Str)
-	+ getAddress(): Str
-	+ getStatus(): Pontuation
+	+ Partner(name: String, address: String)
+	+ getAddress(): String
+	+ getTransactionHistory(): Transaction[]
+	+ getStatus(): String
+	+ getPontuation(): int
+	+ buy() ?
+	+ sell() ?
+
+
+-------------------
+ PontuationManager
+-------------------
+- points: int
+-------------------
++ PontuationManager()
++ getStatus(): String
++ getPontuation(): int
++ addPoints(points: int): void
++ removePoints(points: int): void
 
 
 -------------
  Transaction
 -------------
+- type: String
 - id: int
-- type: Str
 - partner: Partner
 - product: Product
 - quantity: int
 - paymentDate: Time
 -------------
-+ Transaction(int, Str, Partner, Product, int, Time)
++ Transaction(int, String, Partner, Product, int, Time)
 + getPartnerId(): int
-+ getProductId(): Str
++ getProductId(): String
 + getQuantity(): int
 + getPaymentDate(): Time
 
@@ -89,7 +128,7 @@ _ : static
 	----------
 	- price: float
 	----------
-	+ Purchase(int, Str, Partner, Product, int, Time, price)
+	+ Purchase(int, String, Partner, Product, int, Time, price)
 	+ getPrice(): float
 
 
@@ -97,36 +136,40 @@ _ : static
 	 Sell
 	------
 	- basePrice: float
-	- realPrice: float
+	- effectivePrice: float
 	- limitPaymentDate: Time
 	- efectivePaymentDate: Time
 	------
-	+ Sell(int, Str, Partner, Product, int, Time, float, Time)
+	+ Sell(int, String, Partner, Product, int, Time, float, Time)
 	+ getBasePrice(): float
-	+ getRealPrice(): float
+	+ getEffectivePrice(): float
 	+ getEffectivePaymentDate(): Time
 	+ getLimitPaymentDate(): Time
-	+ recalculateRealPrice(): void
+	+ recalculateEffectivePrice(): void
 	+ hasBeenPaid(): boolean
 	+ setEffectivePaymentDate(): void
-	+ applyFine...(): void
+	+ applyExtras(): void
 
 
-	----------------
-	 Disaggregation
-	----------------
-	- purchase: Purchase[]
-	- sell: Sell
-	----------------
+----------------
+ Disaggregation
+----------------
+- purchase: Purchase[]
+- sell: Sell
+----------------
++ getPurchases(): Purchase[]
++ getSell(): Sell
 
 
 --------------------
  TransactionManager
 --------------------
 - _numberTransactions: int
-- _transactions: TransactionHolder[]
+- transactions: TransactionHolder[]
 --------------------
++ TransactionManager()
 + getNumberTransactions(): int
++ addTransaction()
 + increaseNumberTransactions(): void
 
 
@@ -146,38 +189,20 @@ _ : static
 - date: int
 ------
 + Time(int date)
++ getTime(): int
 + fowardTime(int increment): void
 
-
--------
- Batch
--------
-- _numberBatchs: int
-- id: int
-- product: Product
-- supplier: Partner
-- unitsAvailable: int
-- price: float
--------
-+ Batch(product: Product, supplier: Partner, price: float, numberUnits: int)
-+ getProduct(): Product
-+ getPrice(): float?
-+ getSupplier(): Partner
-+ getNumberAvailableUnits(): int
-+ isEmpty(): boolean
-+ addUnit(quantity: int): boolean
-+ removeUnit(quantity: int): boolean
 
 
 --------------
  Notification
 --------------
-- type: Str
+- type: String
 - product: Product
 - price: float
 --------------
-+ getType(): Str
-+ getProductId(): Str
++ getType(): String
++ getProductId(): String
 + getProductPrice(): float
 
 
@@ -185,38 +210,20 @@ _ : static
  NotificationManager
 ---------------------
 - _allNotifications: Notification[]
-- _receiver: NotificationReceiver[]
+- _clients: NotificationHolder[]
 ---------------------
++ sendNew(Product, deliveryMean: String): void
++ sendBargain(Product, deliveryMean: String): void
 
-
-	--------------------
-	 NotificationSender
-	--------------------
-	--------------------
-	+ sendNew(Product, deliveryMean: Str): void
-	+ sendBargain(Product, deliveryMean: Str): void
-
-
-	----------------------
-	 NotificationReceiver
-	----------------------
-	- notifications: Notification[]
-	- deliveryMethods: Str[]
-	- optIn: Product[]
-	----------------------
-	+ turnOn(Product): boolean
-	+ turnOff(Product): boolean
-	+ isActive(Product): boolean
-	+ addDeliveryMethod(Str): void
-	+ clearNotifications(): void
-
-
-
--------------------
- PontuationManager
--------------------
-- points: int
--------------------
-+ getClassification(): Str
-+ addPoints(int): void
-+ removePoints(int): void
+--------------------
+ NotificationHolder
+--------------------
+- notifications: Notification[]
+- deliveryMethods: String[]
+- optIn: Product[]
+--------------------
++ turnOn(Product): boolean
++ turnOff(Product): boolean
++ isActive(Product): boolean
++ addDeliveryMethod(String): void
++ clearNotifications(): void
