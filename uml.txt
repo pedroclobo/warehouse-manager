@@ -6,14 +6,35 @@ _ : static
 ------------------
  WarehouseManager
 ------------------
-- partners: Partner[]
-??- transactions: Transaction[]
-- accountingBalance: float
-- availableBalance: float
+- warehouse: Warehouse
+- time: Time
 ------------------
-+ addPartner(partner: Partner): void
-??+ addTransaction(transaction: Transaction): void
-+ notifyEntities(): void
++ restoreFromFile(): void
++ saveToFile(): void
++ showCurrentDate(): void
++ fowardTime(): void
++ openProductManagerMenu(): void
++ openPartnerManagerMenu(): void
++ openTransactionManagerMenu(): void
++ openSearchMenu(): void
++ showGlobalBalance(): void
++ showAllProducts(): void
++ showAllBatches(): void
++ showBatchesSuppliedByPartner(): void
++ showBatchesOfProduct(): void
++ showPartner(): void
++ showAllPartners(): void
++ registerPartner(): void
++ toggleNotifications(): void
++ showPartnerPurchases(): void
++ showPartnerSales(): void
++ showTransaction(): void
++ registerDisaggregation(): void
++ registerSale(): void
++ registerPurchase(): void
++ registerSalePayment(): void
++ showBatchesWithLowerPrice(): void
++ showPartnerPaidTransactions(): void
 
 
 -----------
@@ -22,16 +43,19 @@ _ : static
 - batches: Batch[]
 - products: Product[]
 - transactions: Transaction[]
+- partners: Partner[]
+- accountingBalance: float
+- availableBalance: float
 -----------
 + addBatch(product: Product, supplier: Partner, price: float, quantity: int): void
 + removeBatch(batch: Batch): void
-+ addProduct(product: Product): void
-+ removeProduct(product: Product): void
 + hasStock(product: Product): boolean
 + aggregate(product: Derivative): boolean
 + disagreggate(partner: Partner, product: Derivate, quantity: int): void
 + buy(partner: Partner, product: Product, price: float, quantity: int): void
 + sell(partner: Partner, date: Time, product: Product, quantity: int): boolean
++ addPartner(partner: Partner): void
++ sendNotification(): void
 
 
 -------
@@ -55,12 +79,10 @@ _ : static
 
 
 ---------
- <<abstract>>
  Product
 ---------
 - name: String
 ---------
-+ isEqual(product: Product): boolean
 
 	--------
 	 Simple
@@ -80,12 +102,14 @@ _ : static
 - name: String
 - address: String
 - transactions: Transaction[]
+- notifications: Notification[]
 - status: Pontuation
 ---------
-+ turnOnNotifications(Product): boolean
-+ turnOffNotifications(Product): boolean
++ turnOnNotifications(product: Product): void
++ turnOffNotifications(product: Product): void
 + clearNotifications(): void
 + updateStatus(): void
++ paySale(sale: Sale): void
 
 
 ------------
@@ -98,10 +122,10 @@ _ : static
 
 
 -------------
- <<abstract>>
  Transaction
 -------------
 - id: int
+- type: String
 - partner: Partner
 - product: Product
 - quantity: int
@@ -115,7 +139,7 @@ _ : static
 	----------
 
 	------
-	 Sell
+	 Sale
 	------
 	- basePrice: float
 	- effectivePrice: float
@@ -129,10 +153,10 @@ _ : static
 	----------------
 	 Disaggregation
 	----------------
-	- prices: float[]
 	- basePrice: float
 	- effectivePrice: float
-	- products: Product[]
+	- resultingProducts: Product[]
+	- resultingProductPrices: float[]
 
 
 ------
