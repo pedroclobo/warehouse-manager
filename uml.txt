@@ -49,13 +49,16 @@ _ : static
 -----------
 + addBatch(product: Product, supplier: Partner, price: float, quantity: int): void
 + removeBatch(batch: Batch): void
++ addProduct(product: Product): void
++ removeProduct(product: Product): void
++ addTransaction(transaction: Transaction): void
++ addPartner(partner: Partner): void
 + hasStock(product: Product): boolean
 + aggregate(product: Derivative): boolean
 + disagreggate(partner: Partner, product: Derivate, quantity: int): void
 + buy(partner: Partner, product: Product, price: float, quantity: int): void
 + sell(partner: Partner, date: Time, product: Product, quantity: int): boolean
-+ addPartner(partner: Partner): void
-+ sendNotification(): void
++ sendNotification(notification: Notification): void
 
 
 -------
@@ -105,11 +108,12 @@ _ : static
 - notifications: Notification[]
 - status: Pontuation
 ---------
++ paySale(sale: Sale): void
 + turnOnNotifications(product: Product): void
 + turnOffNotifications(product: Product): void
 + clearNotifications(): void
++ addNotification(notification: Notification): void
 + updateStatus(): void
-+ paySale(sale: Sale): void
 
 
 ------------
