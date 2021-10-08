@@ -7,7 +7,6 @@ _ : static
  WarehouseManager
 ------------------
 - warehouse: Warehouse
-- time: Time
 ------------------
 + restoreFromFile(): void
 + saveToFile(): void
@@ -44,6 +43,7 @@ _ : static
 - products: Product[]
 - transactions: Transaction[]
 - partners: Partner[]
+- time: Time
 - accountingBalance: float
 - availableBalance: float
 -----------
@@ -59,6 +59,7 @@ _ : static
 + buy(partner: Partner, product: Product, price: float, quantity: int): void
 + sell(partner: Partner, date: Time, product: Product, quantity: int): boolean
 + sendNotification(notification: Notification): void
++ fowardTime(increment: int): void
 
 
 -------
