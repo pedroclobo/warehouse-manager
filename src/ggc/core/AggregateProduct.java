@@ -8,4 +8,8 @@ public class AggregateProduct extends Product {
 	public AggregateProduct copy() {
 		return new AggregateProduct(this.getId());
 	}
+
+	public boolean aggregate() {
+
+	}
 }

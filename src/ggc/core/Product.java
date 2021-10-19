@@ -17,6 +17,10 @@ public abstract class Product {
 		return _id;
 	}
 
+	public boolean hasStock() {
+		return getStock() > 0;
+	}
+
 	public int getStock() {
 		int stock = 0;
 
@@ -30,6 +34,8 @@ public abstract class Product {
 	public boolean equals(Product p) {
 		return _id == p._id;
 	}
+
+	public double getLowestPrice() {}
 
 	public String toString() {
 		return "" + _id + "|" + _maxPrice + "|" + getStock();

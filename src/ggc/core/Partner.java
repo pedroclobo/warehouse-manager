@@ -1,13 +1,21 @@
 package ggc.core;
 
+import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+
 public class Partner {
 	private String _name;
 	private String _address;
-	//private Notification[] _notifications;
+	private List<Notification> _notifications;
+	private Set<Transaction> _transactions;
 
 	public Partner(String name, String address) {
 		_name = name;
 		_address = address;
+		_notifications = new ArrayList<>();
+		_transactions = new HashSet<>();
 	}
 
 	public String getName() {
@@ -22,11 +30,16 @@ public class Partner {
 		return new Partner(_name, _address);
 	}
 
-	public void turnOnNotifications(Product product) {}
+	public void paySale(Sale sale) {}
 
-	public void turnOffNotifications(Product product) {}
+	public void addNotification(Notification notification) {
+		if (!_notifications.contains(notification))
+			_notifications.add(notification);
+	}
 
-	public void clearNotifications() {}
+	public void clearNotifications() {
+		_notifications.clear();
+	}
 
 	public void updateStatus() {}
 }
