@@ -1,15 +1,20 @@
 package ggc.core;
 
+import java.util.List;
+
 public class AggregateProduct extends Product {
-	public AggregateProduct(String id) {
+	private Recipe _recipe;
+
+	public AggregateProduct(String id, Recipe recipe) {
 		super(id);
+		_recipe = recipe;
 	}
 
-	public AggregateProduct copy() {
-		return new AggregateProduct(this.getId());
+	public double getAlpha() {
+		return _recipe.getAlpha();
 	}
 
-	public boolean aggregate() {
-
+	public List getComponents() {
+		return _recipe.getComponents();
 	}
 }

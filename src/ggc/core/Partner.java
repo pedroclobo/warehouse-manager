@@ -8,14 +8,14 @@ import java.util.ArrayList;
 public class Partner {
 	private String _name;
 	private String _address;
-	private List<Notification> _notifications;
-	private Set<Transaction> _transactions;
+	private Set<Purchase> _purchases;
+	private Set<Sale> _sales;
 
 	public Partner(String name, String address) {
 		_name = name;
 		_address = address;
-		_notifications = new ArrayList<>();
-		_transactions = new HashSet<>();
+		_purchases = new HashSet<>();
+		_sales = new HashSet<>();
 	}
 
 	public String getName() {
@@ -26,21 +26,11 @@ public class Partner {
 		return _address;
 	}
 
-	public Partner copy() {
-		return new Partner(_name, _address);
+	public boolean equals(Partner other) {
+		return _name.equals(other._name);
 	}
 
-	public void paySale(Sale sale) {}
-
-	public void addNotification(Notification notification) {
-		if (!_notifications.contains(notification))
-			_notifications.add(notification);
+	public void addPurchase(Purchase p) {
+		_purchases.add(p);
 	}
-
-	public void clearNotifications() {
-		_notifications.clear();
-	}
-
-	public void updateStatus() {}
 }
-

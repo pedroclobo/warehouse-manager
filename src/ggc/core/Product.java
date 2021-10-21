@@ -1,16 +1,17 @@
 package ggc.core;
 
-import java.util.LinkedList;
+import java.util.List;
+import java.util.ArrayList;
 
 public abstract class Product {
 	private String _id;
 	private double _maxPrice;
-	private LinkedList<Batch> _batches;
+	private List<Batch> _batches;
 
 	public Product(String id) {
 		_id = id;
 		_maxPrice = 0;
-		_batches = new LinkedList<>();
+		_batches = new ArrayList<>();
 	}
 
 	public final String getId() {
@@ -35,29 +36,39 @@ public abstract class Product {
 		return _id == p._id;
 	}
 
-	public double getLowestPrice() {}
+	public double getLowestPrice() {
+		if (_batches.size() > 0) {
+			double lowest = _batches.get(0).getPrice();
+			for (Batch b: _batches)
+				if (b.getPrice() < lowest)
+					lowest = b.getPrice();
+			return lowest;
+		}
+		return 0;
+	}
 
 	public String toString() {
 		return "" + _id + "|" + _maxPrice + "|" + getStock();
 	}
 
-	public void addUnit(int numberUnits, Partner supplier, double price) {
+	public Batch getBatchByPartnerAndPrice(Partner partner, double price) {
+		for (Batch b: _batches)
+			if (b.getPartner().equals(partner) && b.getPrice() == price)
+				return b;
 
-		// Update maxPrice
+		return null;
+	}
+
+	public void addUnit(int numberUnits, Partner partner, double price) {
 		if (price > _maxPrice)
 			_maxPrice = price;
 
 		// Add to existing batch
-		for (Batch b: _batches) {
-			if (b.getSupplier().equals(supplier) && b.getPrice() == price) {
-				b.addUnit(numberUnits);
-				return;
-			}
-		}
+		Batch b = getBatchByPartnerAndPrice(partner, price);
+		if (b != null)
+			b.addUnit(numberUnits);
 
 		// Add to new batch
-		_batches.add(new Batch(this, supplier, price));
+		_batches.add(new Batch(this, partner, price));
 	}
-
-	public abstract Product copy();
 }

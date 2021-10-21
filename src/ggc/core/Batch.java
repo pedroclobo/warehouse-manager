@@ -2,26 +2,23 @@ package ggc.core;
 
 public class Batch {
 	private Product _product;
-	private Partner _supplier;
+	private Partner _partner;
 	private int _stock;
 	private double _price;
 
-	// Quantity starts at 0?
-	public Batch(Product product, Partner supplier, double price) {
+	public Batch(Product product, Partner partner, double price) {
 		_product = product;
-		_supplier = supplier;
+		_partner = partner;
 		_stock = 0;
 		_price = price;
 	}
 
-	// To avoid privacy leaks
 	public Product getProduct() {
-		return _product.copy();
+		return _product;
 	}
 
-	// To avoid privacy leaks
-	public Partner getSupplier() {
-		return _supplier.copy();
+	public Partner getPartner() {
+		return _partner;
 	}
 
 	public int getStock() {

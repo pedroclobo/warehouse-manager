@@ -4,6 +4,7 @@ package ggc.core;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 import java.io.Serializable;
 import java.io.IOException;
@@ -17,6 +18,7 @@ public class Warehouse implements Serializable {
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202109192006L;
 
+	private int _numberTransactions;
 	private double _accountingBalance;
 	private double _availableBalance;
 	private Date _date;
@@ -25,12 +27,29 @@ public class Warehouse implements Serializable {
 	private Set<Partner> _partners;
 
 	public Warehouse() {
+		_numberTransactions = 0;
 		_accountingBalance = 0;
 		_availableBalance = 0;
 		_date = new Date();
 		_products = new HashSet<>();
 		_transactions = new HashSet<>();
 		_partners = new HashSet<>();
+	}
+
+	public void registerPurchase(Partner partner, Product product, int quantity, double price) {
+		Purchase p = new Purchase(_numberTransactions++, partner, product, quantity, _date.now(), price);
+		_transactions.add(p);
+		partner.addPurchase(p);
+
+		product.addUnit(quantity, partner, price);
+	}
+
+	//public Collection getPartners() {}
+
+	// public Partner getPartner(String id) {}
+
+	public Set getProducts() {
+		return new TreeSet<Product>(_products);
 	}
 
 	public void addProduct(Product product) {
@@ -53,7 +72,32 @@ public class Warehouse implements Serializable {
 		return product.hasStock();
 	}
 
-	public boolean aggregate(AggregateProduct product) {}
+//	/**
+//	 * @param finalProduct product to be aggregated.
+//	 * @param finalQuantity quantity of finalProduct to be produced.
+//	 */
+//	public boolean aggregate(AggregateProduct finalProduct, int finalQuantity) {
+//		ArrayList<Component> components = product.getComponents();
+//
+//		/* Check if there's enough product stock */
+//		for (Component c: components) {
+//			Product product = c.getProduct();
+//			int quantity = finalQuantity * c.getQuantity();
+//			if (product.getStock() < quantity)
+//				return false;
+//		}
+//
+//		for (Component c: components) {
+//			Product product = c.getProduct();
+//			int quantity = finalQuantity * c.getQuantity();
+//			product.removeUnit(quantity);
+//		}
+//
+//		/* TODO Price */
+//		finalProduct.addUnit(finalQuantity);
+//
+//		return true;
+//	}
 
 	public void fowardTime(int increment) {
 		_date.add(increment);

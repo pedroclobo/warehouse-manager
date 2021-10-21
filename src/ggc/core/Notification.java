@@ -13,7 +13,7 @@ public class Notification {
 	}
 
 	public Product getProduct() {
-		return _product.copy();
+		return _product;
 	}
 
 	public String toString() {

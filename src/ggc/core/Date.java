@@ -18,4 +18,8 @@ public class Date {
 	public int difference(Date other) {
 		return _date - other._date;
 	}
+
+	public Date now() {
+		return new Date(_date);
+	}
 }
