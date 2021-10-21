@@ -41,12 +41,9 @@ public class Warehouse implements Serializable {
 		_transactions.add(p);
 		partner.addPurchase(p);
 
+		addProduct(product);
 		product.addUnit(quantity, partner, price);
 	}
-
-	//public Collection getPartners() {}
-
-	// public Partner getPartner(String id) {}
 
 	public Set getProducts() {
 		return new TreeSet<Product>(_products);
