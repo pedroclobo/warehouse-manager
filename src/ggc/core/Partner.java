@@ -1,21 +1,25 @@
 package ggc.core;
 
-import java.util.Set;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 
 public class Partner {
+	private String _id;
 	private String _name;
 	private String _address;
-	private Set<Purchase> _purchases;
-	private Set<Sale> _sales;
+	private List<Purchase> _purchases;
+	private List<Sale> _sales;
 
-	public Partner(String name, String address) {
+	public Partner(String id, String name, String address) {
+		_id = id;
 		_name = name;
 		_address = address;
-		_purchases = new HashSet<>();
-		_sales = new HashSet<>();
+		_purchases = new ArrayList<>();
+		_sales = new ArrayList<>();
+	}
+
+	public String getId() {
+		return _id;
 	}
 
 	public String getName() {
@@ -26,11 +30,11 @@ public class Partner {
 		return _address;
 	}
 
-	public boolean equals(Partner other) {
-		return _name.equals(other._name);
-	}
-
 	public void addPurchase(Purchase p) {
 		_purchases.add(p);
+	}
+
+	public void addSale(Sale s) {
+		_sales.add(s);
 	}
 }
