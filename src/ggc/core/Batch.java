@@ -33,13 +33,17 @@ public class Batch {
 		return _stock == 0;
 	}
 
-	public void addUnit(int numberUnits) {
-		_stock += numberUnits;
+	public String toString() {
+		return _product.getId() + "|" + _partner.getId() + "|" + _price + "|" + _stock;
 	}
 
-	public boolean removeUnit(int numberUnits) {
-		if (_stock >= numberUnits) {
-			_stock -= numberUnits;
+	public void add(int units) {
+		_stock += units;
+	}
+
+	public boolean remove(int units) {
+		if (_stock >= units) {
+			_stock -= units;
 			return true;
 		}
 

@@ -1,17 +1,16 @@
 package ggc.core;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.TreeSet;
 
 public abstract class Product {
 	private String _id;
 	private double _maxPrice;
-	private List<Batch> _batches;
+	private TreeSet<Batch> _batches;
 
 	public Product(String id) {
 		_id = id;
 		_maxPrice = 0;
-		_batches = new ArrayList<>();
+		_batches = new TreeSet<>(new BatchPriceSorter());
 	}
 
 	public final String getId() {
@@ -33,18 +32,11 @@ public abstract class Product {
 	}
 
 	public boolean equals(Product p) {
-		return _id == p._id;
+		return _id == p.getId();
 	}
 
 	public double getLowestPrice() {
-		if (_batches.size() > 0) {
-			double lowest = _batches.get(0).getPrice();
-			for (Batch b: _batches)
-				if (b.getPrice() < lowest)
-					lowest = b.getPrice();
-			return lowest;
-		}
-		return 0;
+		return _batches.first().getPrice();
 	}
 
 	public String toString() {
@@ -59,16 +51,39 @@ public abstract class Product {
 		return null;
 	}
 
-	public void addUnit(int numberUnits, Partner partner, double price) {
+	public void removeBatch(Batch b) {
+		_batches.remove(b);
+	}
+
+	public void add(int units, Partner partner, double price) {
 		if (price > _maxPrice)
 			_maxPrice = price;
 
 		// Add to existing batch
 		Batch b = getBatchByPartnerAndPrice(partner, price);
 		if (b != null)
-			b.addUnit(numberUnits);
+			b.add(units);
 
 		// Add to new batch
 		_batches.add(new Batch(this, partner, price));
+	}
+
+	public boolean remove(int units) {
+		Batch b = _batches.first();
+		int removed = 0;
+
+		/* Impossible operation */
+		if (units > getStock())
+			return false;
+
+		/* Remove unit 1 by 1 */
+		while (removed < units) {
+			while (b.remove(1))
+				;
+			removeBatch(b);
+			b = _batches.first();
+		}
+
+		return true;
 	}
 }

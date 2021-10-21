@@ -7,7 +7,7 @@ public class Recipe {
 	private double _alpha;
 	private List<Component> _components;
 
-	public Recipe(double alpha, List components) {
+	public Recipe(double alpha, List<Component> components) {
 		_alpha = alpha;
 		_components = new ArrayList<>(components);
 	}

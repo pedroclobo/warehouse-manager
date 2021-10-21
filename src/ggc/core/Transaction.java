@@ -1,14 +1,15 @@
 package ggc.core;
 
 public abstract class Transaction {
+	private static int _numberTransactions = 0;
 	private int _id;
 	private Partner _partner;
 	private Product _product;
 	private int _quantity;
 	private Date _paymentDate;
 
-	public Transaction(int id, Partner partner, Product product, int quantity, Date paymentDate) {
-		_id = id;
+	public Transaction(Partner partner, Product product, int quantity, Date paymentDate) {
+		_id = _numberTransactions++;
 		_partner = partner;
 		_product = product;
 		_quantity = quantity;
@@ -34,5 +35,4 @@ public abstract class Transaction {
 	public Date getPaymentDate() {
 		return _paymentDate;
 	}
-
 }

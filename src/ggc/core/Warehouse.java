@@ -2,9 +2,8 @@ package ggc.core;
 
 // FIXME import classes (cannot import from pt.tecnico or ggc.app)
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.io.Serializable;
 import java.io.IOException;
@@ -18,51 +17,51 @@ public class Warehouse implements Serializable {
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202109192006L;
 
-	private int _numberTransactions;
 	private double _accountingBalance;
 	private double _availableBalance;
 	private Date _date;
-	private Set<Product> _products;
-	private Set<Transaction> _transactions;
-	private Set<Partner> _partners;
+	private Map<String, Product> _products;
+	private Map<Integer, Transaction> _transactions;
+	private Map<String, Partner> _partners;
 
 	public Warehouse() {
-		_numberTransactions = 0;
 		_accountingBalance = 0;
 		_availableBalance = 0;
 		_date = new Date();
-		_products = new HashSet<>();
-		_transactions = new HashSet<>();
-		_partners = new HashSet<>();
+		_products = new HashMap<>();
+		_transactions = new HashMap<>();
+		_partners = new HashMap<>();
 	}
 
 	public void registerPurchase(Partner partner, Product product, int quantity, double price) {
-		Purchase p = new Purchase(_numberTransactions++, partner, product, quantity, _date.now(), price);
-		_transactions.add(p);
+		Purchase p = new Purchase(partner, product, quantity, _date.now(), price);
+		addTransaction(p);
 		partner.addPurchase(p);
 
 		addProduct(product);
-		product.addUnit(quantity, partner, price);
+		product.add(quantity, partner, price);
 	}
 
+	/*
 	public Set getProducts() {
 		return new TreeSet<Product>(_products);
 	}
+	*/
 
 	public void addProduct(Product product) {
-		_products.add(product);
+		_products.put(product.getId(), product);
 	}
 
 	public void removeProduct(Product product) {
-		_products.remove(product);
+		_products.remove(product.getId());
 	}
 
 	public void addPartner(Partner partner) {
-		_partners.add(partner);
+		_partners.put(partner.getId(), partner);
 	}
 
 	public void addTransaction(Transaction transaction) {
-		_transactions.add(transaction);
+		_transactions.put(transaction.getId(), transaction);
 	}
 
 	public boolean hasStock(Product product) {
@@ -91,7 +90,7 @@ public class Warehouse implements Serializable {
 //		}
 //
 //		/* TODO Price */
-//		finalProduct.addUnit(finalQuantity);
+//		finalProduct.add(finalQuantity);
 //
 //		return true;
 //	}
