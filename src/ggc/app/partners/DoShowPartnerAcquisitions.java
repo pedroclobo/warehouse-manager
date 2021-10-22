@@ -10,14 +10,14 @@ import ggc.core.WarehouseManager;
  */
 class DoShowPartnerAcquisitions extends Command<WarehouseManager> {
 
-  DoShowPartnerAcquisitions(WarehouseManager receiver) {
-    super(Label.SHOW_PARTNER_ACQUISITIONS, receiver);
-    //FIXME add command fields
-  }
+	DoShowPartnerAcquisitions(WarehouseManager receiver) {
+		super(Label.SHOW_PARTNER_ACQUISITIONS, receiver);
+		//FIXME add command fields
+	}
 
-  @Override
-  public void execute() throws CommandException {
-    //FIXME implement command 
-  }
+	@Override
+	public void execute() throws CommandException {
+		//FIXME implement command 
+	}
 
 }

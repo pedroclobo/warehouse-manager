@@ -10,14 +10,14 @@ import ggc.core.WarehouseManager;
  */
 class DoToggleProductNotifications extends Command<WarehouseManager> {
 
-  DoToggleProductNotifications(WarehouseManager receiver) {
-    super(Label.TOGGLE_PRODUCT_NOTIFICATIONS, receiver);
-    //FIXME add command fields
-  }
+	DoToggleProductNotifications(WarehouseManager receiver) {
+		super(Label.TOGGLE_PRODUCT_NOTIFICATIONS, receiver);
+		//FIXME add command fields
+	}
 
-  @Override
-  public void execute() throws CommandException {
-    //FIXME implement command
-  }
+	@Override
+	public void execute() throws CommandException {
+		//FIXME implement command
+	}
 
 }

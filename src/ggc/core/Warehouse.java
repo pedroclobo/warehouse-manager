@@ -33,6 +33,14 @@ public class Warehouse implements Serializable {
 		_partners = new HashMap<>();
 	}
 
+	public int getDate() {
+		return _date.toInt();
+	}
+
+	public void fowardDate(int increment) {
+		_date.add(increment);
+	}
+
 	public void registerPurchase(Partner partner, Product product, int quantity, double price) {
 		Purchase p = new Purchase(partner, product, quantity, _date.now(), price);
 		addTransaction(p);

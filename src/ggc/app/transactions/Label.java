@@ -5,22 +5,22 @@ package ggc.app.transactions;
  */
 interface Label {
 
-  /** Menu title. */
-  String TITLE = "Gestão de Transacções";
+	/** Menu title. */
+	String TITLE = "Gestão de Transacções";
 
-  /** Show. */
-  String SHOW_TRANSACTION = "Visualizar";
+	/** Show. */
+	String SHOW_TRANSACTION = "Visualizar";
 
-  /** Register breakdown transaction. */
-  String REGISTER_BREAKDOWN_TRANSACTION = "Registar desagregação";
+	/** Register breakdown transaction. */
+	String REGISTER_BREAKDOWN_TRANSACTION = "Registar desagregação";
 
-  /** Register sale. */
-  String REGISTER_SALE_TRANSACTION = "Registar venda";
+	/** Register sale. */
+	String REGISTER_SALE_TRANSACTION = "Registar venda";
 
-  /** Register acquisition. */
-  String REGISTER_ACQUISITION_TRANSACTION = "Registar compra";
+	/** Register acquisition. */
+	String REGISTER_ACQUISITION_TRANSACTION = "Registar compra";
 
-  /** receive payment. */
-  String RECEIVE_PAYMENT = "Receber pagamento de venda";
+	/** receive payment. */
+	String RECEIVE_PAYMENT = "Receber pagamento de venda";
 
 }

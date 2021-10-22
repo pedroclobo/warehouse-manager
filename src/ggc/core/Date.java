@@ -22,4 +22,8 @@ public class Date {
 	public Date now() {
 		return new Date(_date);
 	}
+
+	public int toInt() {
+		return _date;
+	}
 }

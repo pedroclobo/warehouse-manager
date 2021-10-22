@@ -10,14 +10,14 @@ import ggc.core.WarehouseManager;
  */
 class DoSaveFile extends Command<WarehouseManager> {
 
-  /** @param receiver */
-  DoSaveFile(WarehouseManager receiver) {
-    super(Label.SAVE, receiver);
-  }
+	/** @param receiver */
+	DoSaveFile(WarehouseManager receiver) {
+		super(Label.SAVE, receiver);
+	}
 
-  @Override
-  public final void execute() throws CommandException {
-    //FIXME implement command and create a local Form
-  }
+	@Override
+	public final void execute() throws CommandException {
+		//FIXME implement command and create a local Form
+	}
 
 }

@@ -10,14 +10,14 @@ import ggc.core.WarehouseManager;
  */
 public class DoReceivePayment extends Command<WarehouseManager> {
 
-  public DoReceivePayment(WarehouseManager receiver) {
-    super(Label.RECEIVE_PAYMENT, receiver);
-    //FIXME add command fields
-  }
+	public DoReceivePayment(WarehouseManager receiver) {
+		super(Label.RECEIVE_PAYMENT, receiver);
+		//FIXME add command fields
+	}
 
-  @Override
-  public final void execute() throws CommandException {
-    //FIXME implement command
-  }
+	@Override
+	public final void execute() throws CommandException {
+		//FIXME implement command
+	}
 
 }

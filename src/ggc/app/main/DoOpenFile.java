@@ -10,23 +10,23 @@ import ggc.core.WarehouseManager;
  */
 class DoOpenFile extends Command<WarehouseManager> {
 
-  /** @param receiver */
-  DoOpenFile(WarehouseManager receiver) {
-    super(Label.OPEN, receiver);
-    //FIXME maybe add command fields
-  }
+	/** @param receiver */
+	DoOpenFile(WarehouseManager receiver) {
+		super(Label.OPEN, receiver);
+		//FIXME maybe add command fields
+	}
 
-  @Override
-  public final void execute() throws CommandException {
-    /*
-    try {
-      //FIXME implement command
-    } catch (UnavailableFileException ufe) {
-      throw new FileOpenFailedException(ufe.getFilename());
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    }
-    */
-  }
+	@Override
+	public final void execute() throws CommandException {
+		/*
+		try {
+			//FIXME implement command
+		} catch (UnavailableFileException ufe) {
+			throw new FileOpenFailedException(ufe.getFilename());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		*/
+	}
 
 }

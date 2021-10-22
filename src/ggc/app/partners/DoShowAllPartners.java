@@ -10,13 +10,13 @@ import ggc.core.WarehouseManager;
  */
 class DoShowAllPartners extends Command<WarehouseManager> {
 
-  DoShowAllPartners(WarehouseManager receiver) {
-    super(Label.SHOW_ALL_PARTNERS, receiver);
-  }
+	DoShowAllPartners(WarehouseManager receiver) {
+		super(Label.SHOW_ALL_PARTNERS, receiver);
+	}
 
-  @Override
-  public void execute() throws CommandException {
-    //FIXME implement command
-  }
+	@Override
+	public void execute() throws CommandException {
+		//FIXME implement command
+	}
 
 }

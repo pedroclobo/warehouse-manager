@@ -10,13 +10,13 @@ import ggc.core.WarehouseManager;
  */
 class DoShowAvailableBatches extends Command<WarehouseManager> {
 
-  DoShowAvailableBatches(WarehouseManager receiver) {
-    super(Label.SHOW_AVAILABLE_BATCHES, receiver);
-  }
+	DoShowAvailableBatches(WarehouseManager receiver) {
+		super(Label.SHOW_AVAILABLE_BATCHES, receiver);
+	}
 
-  @Override
-  public final void execute() throws CommandException {
-    //FIXME implement command
-  }
+	@Override
+	public final void execute() throws CommandException {
+		//FIXME implement command
+	}
 
 }

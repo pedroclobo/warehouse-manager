@@ -10,14 +10,14 @@ import ggc.core.WarehouseManager;
  */
 public class DoLookupProductBatchesUnderGivenPrice extends Command<WarehouseManager> {
 
-  public DoLookupProductBatchesUnderGivenPrice(WarehouseManager receiver) {
-    super(Label.PRODUCTS_UNDER_PRICE, receiver);
-    //FIXME add command fields
-  }
+	public DoLookupProductBatchesUnderGivenPrice(WarehouseManager receiver) {
+		super(Label.PRODUCTS_UNDER_PRICE, receiver);
+		//FIXME add command fields
+	}
 
-  @Override
-  public void execute() throws CommandException {
-    //FIXME implement command
-  }
+	@Override
+	public void execute() throws CommandException {
+		//FIXME implement command
+	}
 
 }

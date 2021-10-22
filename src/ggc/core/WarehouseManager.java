@@ -20,6 +20,14 @@ public class WarehouseManager {
 	/** The warehouse itself. */
 	private Warehouse _warehouse = new Warehouse();
 
+	public int getDate() {
+		return _warehouse.getDate();
+	}
+
+	public void fowardDate(int increment) {
+		_warehouse.fowardDate(increment);
+	}
+
 	/*
 	public WarehouseManager(String filename) {
 		_filename = filename;

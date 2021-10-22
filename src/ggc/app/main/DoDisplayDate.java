@@ -9,13 +9,12 @@ import ggc.core.WarehouseManager;
  */
 class DoDisplayDate extends Command<WarehouseManager> {
 
-  DoDisplayDate(WarehouseManager receiver) {
-    super(Label.SHOW_DATE, receiver);
-  }
+	DoDisplayDate(WarehouseManager receiver) {
+		super(Label.SHOW_DATE, receiver);
+	}
 
-  @Override
-  public final void execute() throws CommandException {
-    //FIXME implement command
-  }
-
+	@Override
+	public final void execute() throws CommandException {
+		_display.popup(Message.currentDate(_receiver.getDate()));
+	}
 }

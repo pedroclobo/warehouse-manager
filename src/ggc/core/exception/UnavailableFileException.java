@@ -15,7 +15,7 @@ public class UnavailableFileException extends Exception {
 	 * @param filename 
 	 */
 	public UnavailableFileException(String filename) {
-	  _filename = filename;
+		_filename = filename;
 	}
 
 	/**

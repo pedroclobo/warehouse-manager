@@ -1,0 +1,87 @@
+*** tests/A-07-02-M-ok.out	2021-10-22 10:19:18.899175945 +0100
+--- tests/A-07-02-M-ok.outhyp	2021-10-22 10:58:28.539021791 +0100
+***************
+*** 34,41 ****
+  5 - Mostrar compras com parceiro
+  6 - Mostrar vendas (e desagregações) com parceiro
+  0 - Sair
+! Escolha uma opção: Identificador do parceiro: MmMmAa1|Rohit Figueiredo|New Delhi, India|NORMAL|0|0|0|0
+! Gestão de Parceiros
+  1 - Mostrar parceiro
+  2 - Mostrar parceiros
+  3 - Registar parceiro
+--- 34,40 ----
+  5 - Mostrar compras com parceiro
+  6 - Mostrar vendas (e desagregações) com parceiro
+  0 - Sair
+! Escolha uma opção: Gestão de Parceiros
+  1 - Mostrar parceiro
+  2 - Mostrar parceiros
+  3 - Registar parceiro
+***************
+*** 43,50 ****
+  5 - Mostrar compras com parceiro
+  6 - Mostrar vendas (e desagregações) com parceiro
+  0 - Sair
+! Escolha uma opção: Identificador do parceiro: MmMmAa1|Rohit Figueiredo|New Delhi, India|NORMAL|0|0|0|0
+! Gestão de Parceiros
+  1 - Mostrar parceiro
+  2 - Mostrar parceiros
+  3 - Registar parceiro
+--- 42,49 ----
+  5 - Mostrar compras com parceiro
+  6 - Mostrar vendas (e desagregações) com parceiro
+  0 - Sair
+! Escolha uma opção: Número inválido!
+! Escolha uma opção: Gestão de Parceiros
+  1 - Mostrar parceiro
+  2 - Mostrar parceiros
+  3 - Registar parceiro
+***************
+*** 52,59 ****
+  5 - Mostrar compras com parceiro
+  6 - Mostrar vendas (e desagregações) com parceiro
+  0 - Sair
+! Escolha uma opção: Identificador do parceiro: MmMmAa1|Rohit Figueiredo|New Delhi, India|NORMAL|0|0|0|0
+! Gestão de Parceiros
+  1 - Mostrar parceiro
+  2 - Mostrar parceiros
+  3 - Registar parceiro
+--- 51,58 ----
+  5 - Mostrar compras com parceiro
+  6 - Mostrar vendas (e desagregações) com parceiro
+  0 - Sair
+! Escolha uma opção: Número inválido!
+! Escolha uma opção: Gestão de Parceiros
+  1 - Mostrar parceiro
+  2 - Mostrar parceiros
+  3 - Registar parceiro
+***************
+*** 61,68 ****
+  5 - Mostrar compras com parceiro
+  6 - Mostrar vendas (e desagregações) com parceiro
+  0 - Sair
+! Escolha uma opção: Identificador do parceiro: MmMmAa1|Rohit Figueiredo|New Delhi, India|NORMAL|0|0|0|0
+! Gestão de Parceiros
+  1 - Mostrar parceiro
+  2 - Mostrar parceiros
+  3 - Registar parceiro
+--- 60,67 ----
+  5 - Mostrar compras com parceiro
+  6 - Mostrar vendas (e desagregações) com parceiro
+  0 - Sair
+! Escolha uma opção: Número inválido!
+! Escolha uma opção: Gestão de Parceiros
+  1 - Mostrar parceiro
+  2 - Mostrar parceiros
+  3 - Registar parceiro
+***************
+*** 70,75 ****
+--- 69,75 ----
+  5 - Mostrar compras com parceiro
+  6 - Mostrar vendas (e desagregações) com parceiro
+  0 - Sair
++ Escolha uma opção: Número inválido!
+  Escolha uma opção: Menu Principal
+  1 - Abrir
+  2 - Guardar
