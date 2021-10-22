@@ -1,5 +1,6 @@
 package ggc.core;
 
+import java.util.Map;
 //FIXME import classes (cannot import from pt.tecnico or ggc.app)
 
 import java.io.Serializable;
@@ -20,12 +21,20 @@ public class WarehouseManager {
 	/** The warehouse itself. */
 	private Warehouse _warehouse = new Warehouse();
 
+	public void parseFile(String filename) throws IOException, BadEntryException {
+		_warehouse.parseFile(filename);
+	}
+
 	public int getDate() {
 		return _warehouse.getDate();
 	}
 
 	public void fowardDate(int increment) {
 		_warehouse.fowardDate(increment);
+	}
+
+	public Map getProducts() {
+		return _warehouse.getProducts();
 	}
 
 	/*

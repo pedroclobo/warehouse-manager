@@ -4,19 +4,23 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Recipe {
-	private double _alpha;
-	private List<Component> _components;
+	private double _aggravation;
+	private List<Product> _products;
+	private List<Integer> _quantities;
 
-	public Recipe(double alpha, List<Component> components) {
-		_alpha = alpha;
-		_components = new ArrayList<>(components);
+	public Recipe(double aggravation, List<Product> products, List<Integer> quantities) {
+		_aggravation = aggravation;
+		_products = new ArrayList<>(products);
+		_quantities = new ArrayList<>(quantities);
 	}
 
-	public double getAlpha() {
-		return _alpha;
+	public double getAggravation() {
+		return _aggravation;
 	}
 
+	/*
 	public List getComponents() {
 		return _components;
 	}
+	*/
 }

@@ -5,16 +5,18 @@ import java.util.List;
 public class AggregateProduct extends Product {
 	private Recipe _recipe;
 
-	public AggregateProduct(String id, Recipe recipe) {
+	public AggregateProduct(String id, double aggravation, List<Product> products, List<Integer> quantities) {
 		super(id);
-		_recipe = recipe;
+		_recipe = new Recipe(aggravation, products, quantities);
 	}
 
-	public double getAlpha() {
-		return _recipe.getAlpha();
+	public double getAggravation() {
+		return _recipe.getAggravation();
 	}
 
+	/*
 	public List getComponents() {
 		return _recipe.getComponents();
 	}
+	*/
 }

@@ -2,6 +2,7 @@ package ggc.core;
 
 // FIXME import classes (cannot import from pt.tecnico or ggc.app)
 
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -20,9 +21,9 @@ public class Warehouse implements Serializable {
 	private double _accountingBalance;
 	private double _availableBalance;
 	private Date _date;
-	private Map<String, Product> _products;
-	private Map<Integer, Transaction> _transactions;
-	private Map<String, Partner> _partners;
+	private HashMap<String, Product> _products;
+	private HashMap<Integer, Transaction> _transactions;
+	private HashMap<String, Partner> _partners;
 
 	public Warehouse() {
 		_accountingBalance = 0;
@@ -33,6 +34,11 @@ public class Warehouse implements Serializable {
 		_partners = new HashMap<>();
 	}
 
+	public void parseFile(String filename) throws IOException, BadEntryException {
+		Parser parser = new Parser(this);
+		parser.parseFile(filename);
+	}
+
 	public int getDate() {
 		return _date.toInt();
 	}
@@ -41,6 +47,11 @@ public class Warehouse implements Serializable {
 		_date.add(increment);
 	}
 
+	public Map getProducts() {
+		return _products;
+	}
+
+	/*
 	public void registerPurchase(Partner partner, Product product, int quantity, double price) {
 		Purchase p = new Purchase(partner, product, quantity, _date.now(), price);
 		addTransaction(p);
@@ -49,6 +60,7 @@ public class Warehouse implements Serializable {
 		addProduct(product);
 		product.add(quantity, partner, price);
 	}
+	*/
 
 	/*
 	public Set getProducts() {
@@ -56,16 +68,31 @@ public class Warehouse implements Serializable {
 	}
 	*/
 
-	public void addProduct(Product product) {
-		_products.put(product.getId(), product);
+	/* Return true if product is registered */
+	public boolean isRegisteredProduct(String id) {
+		return _products.containsKey(id);
 	}
 
-	public void removeProduct(Product product) {
-		_products.remove(product.getId());
+	public void registerSimpleProduct(String id) {
+		SimpleProduct product = new SimpleProduct(id);
+		_products.put(id, product);
 	}
 
-	public void addPartner(Partner partner) {
-		_partners.put(partner.getId(), partner);
+	public void registerAggregateProduct(String id, double aggravation, List<Product> products, List<Integer> quantities) {
+
+	}
+
+	public Product getProduct(String id) {
+		return _products.get(id);
+	}
+
+	public void registerPartner(String id, String name, String address) {
+		Partner partner = new Partner(id, name, address);
+		_partners.put(id, partner);
+	}
+
+	public Partner getPartner(String id) {
+		return _partners.get(id);
 	}
 
 	public void addTransaction(Transaction transaction) {
