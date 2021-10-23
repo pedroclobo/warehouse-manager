@@ -2,19 +2,21 @@ package ggc.core;
 
 import java.util.TreeSet;
 
-public abstract class Product {
+public abstract class Product implements Comparable {
 	private String _id;
-	private double _maxPrice;
 	private TreeSet<Batch> _batches;
 
 	public Product(String id) {
 		_id = id;
-		_maxPrice = 0;
 		_batches = new TreeSet<>(new BatchPriceSorter());
 	}
 
 	public final String getId() {
 		return _id;
+	}
+
+	public double getMaxPrice() {
+		return _batches.last().getPrice();
 	}
 
 	public boolean hasStock() {
@@ -40,7 +42,16 @@ public abstract class Product {
 	}
 
 	public String toString() {
-		return "" + _id + "|" + _maxPrice + "|" + getStock();
+		return "" + _id + "|" + getMaxPrice() + "|" + getStock();
+	}
+
+	public int compareTo(Object o) {
+		Product other = (Product) o;
+		return _id.compareTo(other.getId());
+	}
+
+	public void removeBatch(Batch b) {
+		_batches.remove(b);
 	}
 
 	public Batch getBatchByPartnerAndPrice(Partner partner, double price) {
@@ -51,21 +62,16 @@ public abstract class Product {
 		return null;
 	}
 
-	public void removeBatch(Batch b) {
-		_batches.remove(b);
-	}
-
 	public void add(int units, Partner partner, double price) {
-		if (price > _maxPrice)
-			_maxPrice = price;
-
 		// Add to existing batch
 		Batch b = getBatchByPartnerAndPrice(partner, price);
 		if (b != null)
 			b.add(units);
 
 		// Add to new batch
-		_batches.add(new Batch(this, partner, price));
+		Batch batch = new Batch(this, partner, price);
+		_batches.add(batch);
+		partner.addBatch(batch);
 	}
 
 	public boolean remove(int units) {

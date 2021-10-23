@@ -20,6 +20,7 @@ class DoOpenFile extends Command<WarehouseManager> {
 
 	@Override
 	public final void execute() throws CommandException {
+		/*
 		try {
 			String filename = stringField("file");
 			_receiver.parseFile(filename);
@@ -28,5 +29,7 @@ class DoOpenFile extends Command<WarehouseManager> {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+	*/
 	}
+
 }

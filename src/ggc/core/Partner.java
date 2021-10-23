@@ -1,21 +1,23 @@
 package ggc.core;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeSet;
 
 public class Partner {
 	private String _id;
 	private String _name;
 	private String _address;
-	private List<Purchase> _purchases;
-	private List<Sale> _sales;
+	private HashMap<Integer,Purchase> _purchases;
+	private HashMap<Integer,Sale> _sales;
+	private TreeSet<Batch> _batches;
 
 	public Partner(String id, String name, String address) {
 		_id = id;
 		_name = name;
 		_address = address;
-		_purchases = new ArrayList<>();
-		_sales = new ArrayList<>();
+		_purchases = new HashMap<>();
+		_sales = new HashMap<>();
+		_batches = new TreeSet<>();
 	}
 
 	public String getId() {
@@ -31,10 +33,18 @@ public class Partner {
 	}
 
 	public void addPurchase(Purchase p) {
-		_purchases.add(p);
+		_purchases.put(p.getId(), p);
 	}
 
 	public void addSale(Sale s) {
-		_sales.add(s);
+		_sales.put(s.getId(), s);
+	}
+
+	public void addBatch(Batch b) {
+		_batches.add(b);
+	}
+
+	public void removeBatch(Batch b) {
+		_batches.remove(b);
 	}
 }

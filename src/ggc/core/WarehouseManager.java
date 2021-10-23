@@ -21,6 +21,12 @@ public class WarehouseManager {
 	/** The warehouse itself. */
 	private Warehouse _warehouse = new Warehouse();
 
+	/*
+	public WarehouseManager(String filename) {
+		_filename = filename;
+	}
+	*/
+
 	public void parseFile(String filename) throws IOException, BadEntryException {
 		_warehouse.parseFile(filename);
 	}
@@ -33,25 +39,17 @@ public class WarehouseManager {
 		_warehouse.fowardDate(increment);
 	}
 
+	public double getAvailableBalance() {
+		return _warehouse.getAvailableBalance();
+	}
+
+	public double getAccountingBalance() {
+		return _warehouse.getAccountingBalance();
+	}
+
 	public Map getProducts() {
 		return _warehouse.getProducts();
 	}
-
-	/*
-	public WarehouseManager(String filename) {
-		_filename = filename;
-	}
-	*/
-
-	/*
-	public Partner getPartner(String id) {
-		return _warehouse.getPartner(id);
-	}
-
-	public Collection getPartners() {
-		return _warehouse.getPartners();
-	}
-	*/
 
 	/**
 	 * @@throws IOException

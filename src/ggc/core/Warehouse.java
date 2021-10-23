@@ -5,6 +5,7 @@ package ggc.core;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import java.io.Serializable;
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class Warehouse implements Serializable {
 	private double _accountingBalance;
 	private double _availableBalance;
 	private Date _date;
-	private HashMap<String, Product> _products;
+	private TreeMap<String, Product> _products;
 	private HashMap<Integer, Transaction> _transactions;
 	private HashMap<String, Partner> _partners;
 
@@ -29,7 +30,7 @@ public class Warehouse implements Serializable {
 		_accountingBalance = 0;
 		_availableBalance = 0;
 		_date = new Date();
-		_products = new HashMap<>();
+		_products = new TreeMap<>();
 		_transactions = new HashMap<>();
 		_partners = new HashMap<>();
 	}
@@ -45,6 +46,14 @@ public class Warehouse implements Serializable {
 
 	public void fowardDate(int increment) {
 		_date.add(increment);
+	}
+
+	public double getAvailableBalance() {
+		return _availableBalance;
+	}
+
+	public double getAccountingBalance() {
+		return _accountingBalance;
 	}
 
 	public Map getProducts() {
@@ -79,7 +88,8 @@ public class Warehouse implements Serializable {
 	}
 
 	public void registerAggregateProduct(String id, double aggravation, List<Product> products, List<Integer> quantities) {
-
+		AggregateProduct product = new AggregateProduct(id, aggravation, products, quantities);
+		_products.put(id, product);
 	}
 
 	public Product getProduct(String id) {
