@@ -2,7 +2,10 @@ package ggc.core;
 
 // FIXME import classes (cannot import from pt.tecnico or ggc.app)
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -35,11 +38,6 @@ public class Warehouse implements Serializable {
 		_partners = new HashMap<>();
 	}
 
-	public void parseFile(String filename) throws IOException, BadEntryException {
-		Parser parser = new Parser(this);
-		parser.parseFile(filename);
-	}
-
 	public int getDate() {
 		return _date.toInt();
 	}
@@ -56,8 +54,19 @@ public class Warehouse implements Serializable {
 		return _accountingBalance;
 	}
 
-	public Map getProducts() {
-		return _products;
+	public Collection getProducts() {
+		return _products.values();
+	}
+
+	public Collection getBatches() {
+		List<Batch> batches = new ArrayList<>();
+
+		for (Product p: _products.values())
+			batches.addAll(p.getBatches());
+
+		Collections.sort(batches);
+
+		return batches;
 	}
 
 	/*
@@ -68,12 +77,6 @@ public class Warehouse implements Serializable {
 
 		addProduct(product);
 		product.add(quantity, partner, price);
-	}
-	*/
-
-	/*
-	public Set getProducts() {
-		return new TreeSet<Product>(_products);
 	}
 	*/
 
@@ -140,17 +143,19 @@ public class Warehouse implements Serializable {
 //		return true;
 //	}
 
-	public void fowardTime(int increment) {
-		_date.add(increment);
-	}
-
-
 	/**
 	 * @param txtfile filename to be loaded.
 	 * @throws IOException
 	 * @throws BadEntryException
 	 */
 	void importFile(String txtfile) throws IOException, BadEntryException /* FIXME maybe other exceptions */ {
-		//FIXME implement method
+		Parser p = new Parser(this);
+		try {
+			p.parseFile(txtfile);
+		} catch (IOException e1) {
+			throw e1;
+		} catch (BadEntryException e2) {
+			throw e2;
+		}
 	}
 }

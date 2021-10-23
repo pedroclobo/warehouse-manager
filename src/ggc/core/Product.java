@@ -1,5 +1,6 @@
 package ggc.core;
 
+import java.util.Collection;
 import java.util.TreeSet;
 
 public abstract class Product implements Comparable {
@@ -42,7 +43,11 @@ public abstract class Product implements Comparable {
 	}
 
 	public String toString() {
-		return "" + _id + "|" + getMaxPrice() + "|" + getStock();
+		return "" + _id + "|" + (int)getMaxPrice() + "|" + getStock();
+	}
+
+	public Collection getBatches() {
+		return _batches;
 	}
 
 	public int compareTo(Object o) {
@@ -63,13 +68,16 @@ public abstract class Product implements Comparable {
 	}
 
 	public void add(int units, Partner partner, double price) {
+		/*
 		// Add to existing batch
 		Batch b = getBatchByPartnerAndPrice(partner, price);
 		if (b != null)
 			b.add(units);
+		*/
 
 		// Add to new batch
 		Batch batch = new Batch(this, partner, price);
+		batch.add(units);
 		_batches.add(batch);
 		partner.addBatch(batch);
 	}

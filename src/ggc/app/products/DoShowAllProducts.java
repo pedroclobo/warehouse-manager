@@ -4,9 +4,6 @@ import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 import ggc.core.WarehouseManager;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 /**
  * Show all products.
  */

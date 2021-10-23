@@ -1,6 +1,6 @@
 package ggc.core;
 
-public class Batch {
+public class Batch implements Comparable {
 	private Product _product;
 	private Partner _partner;
 	private int _stock;
@@ -34,7 +34,7 @@ public class Batch {
 	}
 
 	public String toString() {
-		return _product.getId() + "|" + _partner.getId() + "|" + _price + "|" + _stock;
+		return _product.getId() + "|" + _partner.getId() + "|" + (int)_price + "|" + _stock;
 	}
 
 	public void add(int units) {
@@ -48,5 +48,21 @@ public class Batch {
 		}
 
 		return false;
+	}
+
+	public int compareTo(Object o) {
+		Batch other = (Batch) o;
+
+		if (_product.compareTo(other.getProduct()) == 0) {
+			if (_partner.compareTo(other.getPartner()) == 0) {
+				if (_price - other.getPrice() == 0) {
+					return _stock - other.getStock();
+				}
+				return (int) (_price - other.getPrice());
+			}
+			return _partner.compareTo(other.getPartner());
+
+		}
+		return _product.compareTo(other.getProduct());
 	}
 }

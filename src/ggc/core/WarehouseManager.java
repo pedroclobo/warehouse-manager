@@ -1,7 +1,7 @@
 package ggc.core;
 
+import java.util.Collection;
 import java.util.Map;
-//FIXME import classes (cannot import from pt.tecnico or ggc.app)
 
 import java.io.Serializable;
 import java.io.IOException;
@@ -27,10 +27,6 @@ public class WarehouseManager {
 	}
 	*/
 
-	public void parseFile(String filename) throws IOException, BadEntryException {
-		_warehouse.parseFile(filename);
-	}
-
 	public int getDate() {
 		return _warehouse.getDate();
 	}
@@ -47,8 +43,12 @@ public class WarehouseManager {
 		return _warehouse.getAccountingBalance();
 	}
 
-	public Map getProducts() {
+	public Collection getProducts() {
 		return _warehouse.getProducts();
+	}
+
+	public Collection getBatches() {
+		return _warehouse.getBatches();
 	}
 
 	/**

@@ -20,9 +20,9 @@ class DoOpenFile extends Command<WarehouseManager> {
 
 	@Override
 	public final void execute() throws CommandException {
+		String filename = stringField("file");
 		/*
 		try {
-			String filename = stringField("file");
 			_receiver.parseFile(filename);
 		} catch (UnavailableFileException ufe) {
 			throw new FileOpenFailedException(ufe.getFilename());

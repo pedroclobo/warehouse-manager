@@ -3,7 +3,7 @@ package ggc.core;
 import java.util.HashMap;
 import java.util.TreeSet;
 
-public class Partner {
+public class Partner implements Comparable {
 	private String _id;
 	private String _name;
 	private String _address;
@@ -46,5 +46,10 @@ public class Partner {
 
 	public void removeBatch(Batch b) {
 		_batches.remove(b);
+	}
+
+	public int compareTo(Object o) {
+		Partner other = (Partner) o;
+		return _id.compareTo(other.getId());
 	}
 }

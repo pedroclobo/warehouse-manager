@@ -3,7 +3,6 @@ package ggc.app.products;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 import ggc.core.WarehouseManager;
-//FIXME import classes
 
 /**
  * Show available batches.
@@ -16,7 +15,7 @@ class DoShowAvailableBatches extends Command<WarehouseManager> {
 
 	@Override
 	public final void execute() throws CommandException {
-		//FIXME implement command
+		_display.popup(_receiver.getBatches());
 	}
 
 }
