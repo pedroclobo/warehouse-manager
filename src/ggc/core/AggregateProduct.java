@@ -19,4 +19,8 @@ public class AggregateProduct extends Product {
 		return _recipe.getComponents();
 	}
 	*/
+
+	public String toString() {
+		return super.toString() + "|" + _recipe;
+	}
 }

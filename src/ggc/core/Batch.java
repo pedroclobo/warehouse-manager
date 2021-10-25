@@ -1,6 +1,9 @@
 package ggc.core;
 
-public class Batch implements Comparable {
+import java.io.Serializable;
+
+public class Batch implements Comparable, Serializable {
+	private static final long serialVersionUID = 202109192006L;
 	private Product _product;
 	private Partner _partner;
 	private int _stock;
@@ -31,6 +34,13 @@ public class Batch implements Comparable {
 
 	public boolean isEmpty() {
 		return _stock == 0;
+	}
+
+	public boolean equals(Batch other) {
+		return _product.equals(other.getProduct()) &&
+			   _partner.equals(other.getPartner()) &&
+			   _stock == other.getStock() &&
+			   _price == other.getPrice();
 	}
 
 	public String toString() {

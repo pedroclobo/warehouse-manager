@@ -3,8 +3,8 @@ package ggc.app.main;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 import ggc.core.WarehouseManager;
+import ggc.core.exception.InvalidDateIncrementException;
 import ggc.app.exception.InvalidDateException;
-//FIXME import classes
 
 /**
  * Advance current date.
@@ -18,12 +18,11 @@ class DoAdvanceDate extends Command<WarehouseManager> {
 
 	@Override
 	public final void execute() throws CommandException {
-		int increment = integerField("increment");
-
-		if (increment < 0)
-			throw new InvalidDateException(increment);
-
-		_receiver.fowardDate(increment);
+		try {
+			_receiver.fowardDate(integerField("increment"));
+		} catch (InvalidDateIncrementException e) {
+			throw new InvalidDateException(integerField("increment"));
+		}
 	}
 
 }

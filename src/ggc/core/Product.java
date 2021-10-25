@@ -2,8 +2,10 @@ package ggc.core;
 
 import java.util.Collection;
 import java.util.TreeSet;
+import java.io.Serializable;
 
-public abstract class Product implements Comparable {
+public abstract class Product implements Comparable, Serializable {
+	private static final long serialVersionUID = 202109192006L;
 	private String _id;
 	private TreeSet<Batch> _batches;
 
@@ -35,7 +37,7 @@ public abstract class Product implements Comparable {
 	}
 
 	public boolean equals(Product p) {
-		return _id == p.getId();
+		return _id.equalsIgnoreCase(p.getId());
 	}
 
 	public double getLowestPrice() {
@@ -46,8 +48,8 @@ public abstract class Product implements Comparable {
 		return "" + _id + "|" + (int)getMaxPrice() + "|" + getStock();
 	}
 
-	public Collection getBatches() {
-		return _batches;
+	public TreeSet<Batch> getBatches() {
+		return new TreeSet<Batch>(_batches);
 	}
 
 	public int compareTo(Object o) {

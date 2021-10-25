@@ -4,6 +4,10 @@ import java.util.Collection;
 import java.util.Map;
 
 import java.io.Serializable;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
@@ -11,6 +15,10 @@ import ggc.core.exception.BadEntryException;
 import ggc.core.exception.ImportFileException;
 import ggc.core.exception.UnavailableFileException;
 import ggc.core.exception.MissingFileAssociationException;
+import ggc.core.exception.InvalidDateIncrementException;
+import ggc.core.exception.UnknownPartnerException;
+import ggc.core.exception.DuplicatePartnerException;
+import ggc.core.exception.UnknownProductException;
 
 /** Façade for access. */
 public class WarehouseManager {
@@ -21,17 +29,19 @@ public class WarehouseManager {
 	/** The warehouse itself. */
 	private Warehouse _warehouse = new Warehouse();
 
-	/*
-	public WarehouseManager(String filename) {
+	public String getFilename() {
+		return _filename;
+	}
+
+	public void setFilename(String filename) {
 		_filename = filename;
 	}
-	*/
 
 	public int getDate() {
 		return _warehouse.getDate();
 	}
 
-	public void fowardDate(int increment) {
+	public void fowardDate(int increment) throws InvalidDateIncrementException {
 		_warehouse.fowardDate(increment);
 	}
 
@@ -51,13 +61,36 @@ public class WarehouseManager {
 		return _warehouse.getBatches();
 	}
 
+	public Collection getBatchesByProduct(String id) throws UnknownProductException {
+		return _warehouse.getBatchesByProduct(id);
+	}
+
+	public Partner getPartner(String id) throws UnknownPartnerException {
+		return _warehouse.getPartner(id);
+	}
+
+	public Collection getPartners() {
+		return _warehouse.getPartners();
+	}
+
+	public void registerPartner(String id, String name, String address) throws DuplicatePartnerException {
+		_warehouse.registerPartner(id, name, address);
+	}
+
 	/**
 	 * @@throws IOException
 	 * @@throws FileNotFoundException
 	 * @@throws MissingFileAssociationException
 	 */
 	public void save() throws IOException, FileNotFoundException, MissingFileAssociationException {
-		//FIXME implement serialization method
+		if (_filename == null) {
+			throw new MissingFileAssociationException();
+		}
+
+		try (ObjectOutputStream objOut = new ObjectOutputStream(new FileOutputStream(_filename))) {
+			objOut.writeObject(_filename);
+			objOut.writeObject(_warehouse);
+		}
 	}
 
 	/**
@@ -75,8 +108,14 @@ public class WarehouseManager {
 	 * @@param filename
 	 * @@throws UnavailableFileException
 	 */
-	public void load(String filename) throws UnavailableFileException, ClassNotFoundException	{
-		//FIXME implement serialization method
+	public void load(String filename) throws UnavailableFileException, ClassNotFoundException {
+		try (ObjectInputStream objIn = new ObjectInputStream(new FileInputStream(filename))) {
+			_filename = (String) objIn.readObject();
+			_warehouse = (Warehouse) objIn.readObject();
+
+		} catch (IOException e) {
+			throw new UnavailableFileException(filename);
+		}
 	}
 
 	/**
@@ -86,7 +125,7 @@ public class WarehouseManager {
 	public void importFile(String textfile) throws ImportFileException {
 		try {
 			_warehouse.importFile(textfile);
-		} catch (IOException | BadEntryException /* FIXME maybe other exceptions */ e) {
+		} catch (IOException | BadEntryException | UnknownPartnerException | DuplicatePartnerException | UnknownProductException e) {
 			throw new ImportFileException(textfile, e);
 		}
 	}

@@ -1,7 +1,5 @@
 package ggc.core;
 
-// FIXME import classes (cannot import from pt.tecnico or ggc.app)
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -9,10 +7,16 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import java.io.Serializable;
 import java.io.IOException;
 import ggc.core.exception.BadEntryException;
+
+import ggc.core.exception.InvalidDateIncrementException;
+import ggc.core.exception.UnknownPartnerException;
+import ggc.core.exception.DuplicatePartnerException;
+import ggc.core.exception.UnknownProductException;
 
 /**
  * Class Warehouse implements a warehouse.
@@ -27,22 +31,22 @@ public class Warehouse implements Serializable {
 	private Date _date;
 	private TreeMap<String, Product> _products;
 	private HashMap<Integer, Transaction> _transactions;
-	private HashMap<String, Partner> _partners;
+	private TreeMap<String, Partner> _partners;
 
 	public Warehouse() {
 		_accountingBalance = 0;
 		_availableBalance = 0;
 		_date = new Date();
-		_products = new TreeMap<>();
+		_products = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		_transactions = new HashMap<>();
-		_partners = new HashMap<>();
+		_partners = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 	}
 
 	public int getDate() {
 		return _date.toInt();
 	}
 
-	public void fowardDate(int increment) {
+	public void fowardDate(int increment) throws InvalidDateIncrementException {
 		_date.add(increment);
 	}
 
@@ -58,13 +62,11 @@ public class Warehouse implements Serializable {
 		return _products.values();
 	}
 
-	public Collection getBatches() {
-		List<Batch> batches = new ArrayList<>();
+	public Collection<Batch> getBatches() {
+		TreeSet<Batch> batches = new TreeSet<>();
 
 		for (Product p: _products.values())
 			batches.addAll(p.getBatches());
-
-		Collections.sort(batches);
 
 		return batches;
 	}
@@ -86,26 +88,42 @@ public class Warehouse implements Serializable {
 	}
 
 	public void registerSimpleProduct(String id) {
-		SimpleProduct product = new SimpleProduct(id);
-		_products.put(id, product);
+		_products.put(id, new SimpleProduct(id));
 	}
 
 	public void registerAggregateProduct(String id, double aggravation, List<Product> products, List<Integer> quantities) {
-		AggregateProduct product = new AggregateProduct(id, aggravation, products, quantities);
-		_products.put(id, product);
+		_products.put(id, new AggregateProduct(id, aggravation, products, quantities));
 	}
 
-	public Product getProduct(String id) {
+	public Product getProduct(String id) throws UnknownProductException {
+		if (!_products.containsKey(id))
+			throw new UnknownProductException(id);
+
 		return _products.get(id);
 	}
 
-	public void registerPartner(String id, String name, String address) {
+	public Collection getBatchesByProduct(String id) throws UnknownProductException {
+		return getProduct(id).getBatches();
+	}
+
+	public void registerPartner(String id, String name, String address) throws DuplicatePartnerException {
 		Partner partner = new Partner(id, name, address);
+
+		if (_partners.containsKey(id))
+			throw new DuplicatePartnerException(id);
+
 		_partners.put(id, partner);
 	}
 
-	public Partner getPartner(String id) {
+	public Partner getPartner(String id) throws UnknownPartnerException {
+		if (!_partners.containsKey(id))
+			throw new UnknownPartnerException(id);
+
 		return _partners.get(id);
+	}
+
+	public Collection getPartners() {
+		return _partners.values();
 	}
 
 	public void addTransaction(Transaction transaction) {
@@ -148,7 +166,7 @@ public class Warehouse implements Serializable {
 	 * @throws IOException
 	 * @throws BadEntryException
 	 */
-	void importFile(String txtfile) throws IOException, BadEntryException /* FIXME maybe other exceptions */ {
+	void importFile(String txtfile) throws IOException, BadEntryException, UnknownPartnerException, DuplicatePartnerException, UnknownProductException /* FIXME maybe other exceptions */ {
 		Parser p = new Parser(this);
 		try {
 			p.parseFile(txtfile);

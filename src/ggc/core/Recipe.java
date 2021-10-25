@@ -29,4 +29,19 @@ public class Recipe {
 	public List getComponents() {
 		return _components;
 	}
+
+	public String toString() {
+		String s = "";
+		Iterator<Component> iter = _components.iterator();
+
+		while(iter.hasNext()) {
+			Component c = iter.next();
+			if (iter.hasNext())
+				s += c.toString() + "|";
+			else
+				s += c.toString();
+		}
+
+		return s;
+	}
 }

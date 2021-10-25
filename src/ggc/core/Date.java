@@ -1,6 +1,10 @@
 package ggc.core;
 
-public class Date {
+import java.io.Serializable;
+import ggc.core.exception.InvalidDateIncrementException;
+
+public class Date implements Serializable {
+	private static final long serialVersionUID = 202109192006L;
 	private int _date;
 
 	public Date() {
@@ -11,7 +15,10 @@ public class Date {
 		_date = date;
 	}
 
-	public void add(int increment) {
+	public void add(int increment) throws InvalidDateIncrementException {
+		if (increment <= 0)
+			throw new InvalidDateIncrementException(increment);
+
 		_date += increment;
 	}
 

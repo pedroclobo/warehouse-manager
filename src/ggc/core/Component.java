@@ -16,4 +16,8 @@ public class Component {
 	public int getQuantity() {
 		return _quantity;
 	}
+
+	public String toString() {
+		return _product.getId() + ":" + _quantity;
+	}
 }
