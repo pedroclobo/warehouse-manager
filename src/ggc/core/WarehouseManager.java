@@ -29,58 +29,108 @@ public class WarehouseManager {
 	/** The warehouse itself. */
 	private Warehouse _warehouse = new Warehouse();
 
+	/**
+	 * @return the associated file name.
+	 */
 	public String getFilename() {
 		return _filename;
 	}
 
+	/**
+	 * @param filename name of file to store current warehouse in.
+	 */
 	public void setFilename(String filename) {
 		_filename = filename;
 	}
 
+	/**
+	 * @return the current date value.
+	 */
 	public int getDate() {
 		return _warehouse.getDate();
 	}
 
+	/**
+	 * Fowards time.
+	 *
+	 * @param increment amount to forward time by.
+	 * @throws InvalidDateIncrementException if the amount is not positive.
+	 */
 	public void fowardDate(int increment) throws InvalidDateIncrementException {
 		_warehouse.fowardDate(increment);
 	}
 
+	/**
+	 * @return the current warehouse's available balance.
+	 */
 	public double getAvailableBalance() {
 		return _warehouse.getAvailableBalance();
 	}
 
+	/**
+	 * @return the current warehouse's accounting balance.
+	 */
 	public double getAccountingBalance() {
 		return _warehouse.getAccountingBalance();
 	}
 
-	public Collection getProducts() {
+	/**
+	 * @return a collection with all registered products.
+	 */
+	public Collection<Product> getProducts() {
 		return _warehouse.getProducts();
 	}
 
-	public Collection getBatches() {
+	/**
+	 * @return a collection with all batches.
+	 */
+	public Collection<Batch> getBatches() {
 		return _warehouse.getBatches();
 	}
 
-	public Collection getBatchesByProduct(String id) throws UnknownProductException {
+	/**
+	 * @param id the product id.
+	 * @return a collection with all batches that hold a product.
+	 * @throws UnknownProductException if there's no product with the given id.
+	 */
+	public Collection<Batch> getBatchesByProduct(String id) throws UnknownProductException {
 		return _warehouse.getBatchesByProduct(id);
 	}
 
+	/**
+	 * @param id the partner id.
+	 * @return the partner with the given id.
+	 * @throws UnknownPartnerException if there's no partner with the given id.
+	 */
 	public Partner getPartner(String id) throws UnknownPartnerException {
 		return _warehouse.getPartner(id);
 	}
 
-	public Collection getPartners() {
+	/**
+	 * @return a collection with all partners
+	 */
+	public Collection<Partner> getPartners() {
 		return _warehouse.getPartners();
 	}
 
+	/**
+	 * Registers a partner.
+	 *
+	 * @param id      the partner id.
+	 * @param name    the partner name.
+	 * @param address the partner address.
+	 * @throws DuplicatePartnerException if there's already a partner with the given id.
+	 */
 	public void registerPartner(String id, String name, String address) throws DuplicatePartnerException {
 		_warehouse.registerPartner(id, name, address);
 	}
 
 	/**
+	 * Saves the current state of the warehouse to the associated filename.
+	 *
 	 * @@throws IOException
 	 * @@throws FileNotFoundException
-	 * @@throws MissingFileAssociationException
+	 * @@throws MissingFileAssociationException if there's no file association.
 	 */
 	public void save() throws IOException, FileNotFoundException, MissingFileAssociationException {
 		if (_filename == null) {
@@ -94,7 +144,9 @@ public class WarehouseManager {
 	}
 
 	/**
-	 * @@param filename
+	 * Saves the current state of the warehouse to the new file.
+	 *
+	 * @@param filename the new file name to associate.
 	 * @@throws MissingFileAssociationException
 	 * @@throws IOException
 	 * @@throws FileNotFoundException
@@ -105,8 +157,10 @@ public class WarehouseManager {
 	}
 
 	/**
-	 * @@param filename
-	 * @@throws UnavailableFileException
+	 * Loads a previously saved binary file.
+	 *
+	 * @@param filename the filename to load from.
+	 * @@throws UnavailableFileException if the file is not available.
 	 */
 	public void load(String filename) throws UnavailableFileException, ClassNotFoundException {
 		try (ObjectInputStream objIn = new ObjectInputStream(new FileInputStream(filename))) {
@@ -119,8 +173,10 @@ public class WarehouseManager {
 	}
 
 	/**
-	 * @param textfile
-	 * @throws ImportFileException
+	 * Imports entities from a text file.
+	 *
+	 * @param textfile name of file to import from.
+	 * @throws ImportFileException if there's an error while importing.
 	 */
 	public void importFile(String textfile) throws ImportFileException {
 		try {

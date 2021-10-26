@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.Set;
 import java.util.TreeSet;
 
 import java.io.Serializable;
@@ -26,13 +27,27 @@ public class Warehouse implements Serializable {
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202109192006L;
 
+	/** Balance accounting with not yet paid transactions */
 	private double _accountingBalance;
+
+	/** Available balance */
 	private double _availableBalance;
+
+	/** Date to keep track of time */
 	private Date _date;
+
+	/** Collection of all registered products */
 	private TreeMap<String, Product> _products;
+
+	/** Collection of all transactions */
 	private HashMap<Integer, Transaction> _transactions;
+
+	/** Collection of all registered partners */
 	private TreeMap<String, Partner> _partners;
 
+	/**
+	 * Create a new warehouse.
+	 */
 	public Warehouse() {
 		_accountingBalance = 0;
 		_availableBalance = 0;
@@ -42,30 +57,51 @@ public class Warehouse implements Serializable {
 		_partners = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 	}
 
+	/**
+	 * @return the current date value.
+	 */
 	public int getDate() {
 		return _date.toInt();
 	}
 
+	/**
+	 * Fowards time.
+	 *
+	 * @param increment amount to foward time by.
+	 * @throws InvalidDateIncrementException if the amount is not positive.
+	 */
 	public void fowardDate(int increment) throws InvalidDateIncrementException {
 		_date.add(increment);
 	}
 
+	/**
+	 * @return the current warehouse's available balance.
+	 */
 	public double getAvailableBalance() {
 		return _availableBalance;
 	}
 
+	/**
+	 * @return the current warehouse's accounting balance.
+	 */
 	public double getAccountingBalance() {
 		return _accountingBalance;
 	}
 
-	public Collection getProducts() {
+	/**
+	 * @return a collection with registered all products.
+	 */
+	public Collection<Product> getProducts() {
 		return _products.values();
 	}
 
+	/**
+	 * @return a collection with all batches.
+	 */
 	public Collection<Batch> getBatches() {
-		TreeSet<Batch> batches = new TreeSet<>();
+		Set<Batch> batches = new TreeSet<>();
 
-		for (Product p: _products.values())
+		for (Product p: getProducts())
 			batches.addAll(p.getBatches());
 
 		return batches;
@@ -82,19 +118,40 @@ public class Warehouse implements Serializable {
 	}
 	*/
 
-	/* Return true if product is registered */
+	/**
+	 * @param id the product id.
+	 * @return true if the product with the given id is registered.
+	 */
 	public boolean isRegisteredProduct(String id) {
 		return _products.containsKey(id);
 	}
 
+	/**
+	 * Registers a new simple product.
+	 *
+	 * @param id the product id.
+	 */
 	public void registerSimpleProduct(String id) {
 		_products.put(id, new SimpleProduct(id));
 	}
 
+	/**
+	 * Registers a new aggregate product.
+	 *
+	 * @param id the product id.
+	 * @param aggravation the product aggravation factor.
+	 * @param products a list of products that compose the aggregate product.
+	 * @param quantities a list of the quantities of the products that compose the aggregate product.
+	 */
 	public void registerAggregateProduct(String id, double aggravation, List<Product> products, List<Integer> quantities) {
 		_products.put(id, new AggregateProduct(id, aggravation, products, quantities));
 	}
 
+	/**
+	 * @param id the product id.
+	 * @return the product with the given id.
+	 * @throws UnknownProductException if there's no product with the given id.
+	 */
 	public Product getProduct(String id) throws UnknownProductException {
 		if (!_products.containsKey(id))
 			throw new UnknownProductException(id);
@@ -102,10 +159,23 @@ public class Warehouse implements Serializable {
 		return _products.get(id);
 	}
 
-	public Collection getBatchesByProduct(String id) throws UnknownProductException {
+	/**
+	 * @param id the product id.
+	 * @return a collection with all batches that hold a product.
+	 * @throws UnknownProductException if there's no product with the given id.
+	 */
+	public Collection<Batch> getBatchesByProduct(String id) throws UnknownProductException {
 		return getProduct(id).getBatches();
 	}
 
+	/**
+	 * Registers a partner.
+	 *
+	 * @param id      the partner id.
+	 * @param name    the partner name.
+	 * @param address the partner address.
+	 * @throws DuplicatePartnerException if there's already a partner with the given id.
+	 */
 	public void registerPartner(String id, String name, String address) throws DuplicatePartnerException {
 		Partner partner = new Partner(id, name, address);
 
@@ -115,6 +185,11 @@ public class Warehouse implements Serializable {
 		_partners.put(id, partner);
 	}
 
+	/**
+	 * @param id the partner id.
+	 * @return the partner with the given id.
+	 * @throws UnknownPartnerException if there's no partner with the given id.
+	 */
 	public Partner getPartner(String id) throws UnknownPartnerException {
 		if (!_partners.containsKey(id))
 			throw new UnknownPartnerException(id);
@@ -122,58 +197,31 @@ public class Warehouse implements Serializable {
 		return _partners.get(id);
 	}
 
-	public Collection getPartners() {
+	/**
+	 * @return a collection with all partners
+	 */
+	public Collection<Partner> getPartners() {
 		return _partners.values();
 	}
 
-	public void addTransaction(Transaction transaction) {
-		_transactions.put(transaction.getId(), transaction);
-	}
-
-	public boolean hasStock(Product product) {
-		return product.hasStock();
-	}
-
-//	/**
-//	 * @param finalProduct product to be aggregated.
-//	 * @param finalQuantity quantity of finalProduct to be produced.
-//	 */
-//	public boolean aggregate(AggregateProduct finalProduct, int finalQuantity) {
-//		ArrayList<Component> components = product.getComponents();
-//
-//		/* Check if there's enough product stock */
-//		for (Component c: components) {
-//			Product product = c.getProduct();
-//			int quantity = finalQuantity * c.getQuantity();
-//			if (product.getStock() < quantity)
-//				return false;
-//		}
-//
-//		for (Component c: components) {
-//			Product product = c.getProduct();
-//			int quantity = finalQuantity * c.getQuantity();
-//			product.removeUnit(quantity);
-//		}
-//
-//		/* TODO Price */
-//		finalProduct.add(finalQuantity);
-//
-//		return true;
-//	}
-
 	/**
+	 * Imports entities from a text file.
+	 *
 	 * @param txtfile filename to be loaded.
 	 * @throws IOException
 	 * @throws BadEntryException
+	 * @throws UnknownPartnerException
+	 * @throws DuplicatePartnerException
+	 * @throws UnknownProductException
 	 */
-	void importFile(String txtfile) throws IOException, BadEntryException, UnknownPartnerException, DuplicatePartnerException, UnknownProductException /* FIXME maybe other exceptions */ {
-		Parser p = new Parser(this);
+	void importFile(String txtfile) throws IOException, BadEntryException, UnknownPartnerException, DuplicatePartnerException, UnknownProductException {
 		try {
-			p.parseFile(txtfile);
+			new Parser(this).parseFile(txtfile);
 		} catch (IOException e1) {
 			throw e1;
 		} catch (BadEntryException e2) {
 			throw e2;
 		}
 	}
+
 }

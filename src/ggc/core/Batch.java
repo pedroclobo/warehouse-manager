@@ -2,13 +2,33 @@ package ggc.core;
 
 import java.io.Serializable;
 
-public class Batch implements Comparable, Serializable {
+/**
+ * Class Batch implements a batch.
+ * A batch is an entity responsible for holding products.
+ * Each batch has a partner, who supplies product units at a certain price.
+ */
+public class Batch implements Comparable<Batch>, Serializable {
+
+	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202109192006L;
+
+	/** Product to hold. */
 	private Product _product;
+
+	/** Partner who supplies the product. */
 	private Partner _partner;
+
+	/** Current product stock. */
 	private int _stock;
+
+	/** Product unit price. */
 	private double _price;
 
+	/**
+	 * @param product the product to hold.
+	 * @param partner the supplier.
+	 * @param price   the unit price.
+	 */
 	public Batch(Product product, Partner partner, double price) {
 		_product = product;
 		_partner = partner;
@@ -16,41 +36,74 @@ public class Batch implements Comparable, Serializable {
 		_price = price;
 	}
 
+	/**
+	 * @return the product held.
+	 */
 	public Product getProduct() {
 		return _product;
 	}
 
+	/**
+	 * @return the partner who supplies the products.
+	 */
 	public Partner getPartner() {
 		return _partner;
 	}
 
+	/**
+	 * @return the product stock.
+	 */
 	public int getStock() {
 		return _stock;
 	}
 
+	/**
+	 * @return the product price.
+	 */
 	public double getPrice() {
 		return _price;
 	}
 
+	/**
+	 * Determines if the batch is empty.
+	 *
+	 * @return true if the batch is empty.
+	 */
 	public boolean isEmpty() {
 		return _stock == 0;
 	}
 
-	public boolean equals(Batch other) {
-		return _product.equals(other.getProduct()) &&
-			   _partner.equals(other.getPartner()) &&
-			   _stock == other.getStock() &&
-			   _price == other.getPrice();
+  	/** @see java.lang.Object#equals(java.lang.Object) */
+	@Override
+	public boolean equals(Object other) {
+		return other instanceof Batch &&
+			   _product.equals(((Batch) other).getProduct()) &&
+			   _partner.equals(((Batch) other).getPartner()) &&
+			   _stock == ((Batch) other).getStock() &&
+			   _price == ((Batch) other).getPrice();
 	}
 
+  	/** @see java.lang.Object#toString() */
+	@Override
 	public String toString() {
-		return _product.getId() + "|" + _partner.getId() + "|" + (int)_price + "|" + _stock;
+		return _product.getId() + "|" + _partner.getId() + "|" + (int) _price + "|" + _stock;
 	}
 
+	/**
+	 * Add product units to current stock.
+	 *
+	 * @param units number of units to add.
+	 */
 	public void add(int units) {
 		_stock += units;
 	}
 
+	/**
+	 * Remove product units from the current stock.
+	 *
+	 * @param units number of units to remove.
+	 * @return true, if the operation was successful; false otherwise.
+	 */
 	public boolean remove(int units) {
 		if (_stock >= units) {
 			_stock -= units;
@@ -60,19 +113,25 @@ public class Batch implements Comparable, Serializable {
 		return false;
 	}
 
-	public int compareTo(Object o) {
-		Batch other = (Batch) o;
+	/**
+	 * Compares batches.
+	 */
+	@Override
+	public int compareTo(Batch other) {
+		int i = _product.compareTo(other.getProduct());
+		if (i != 0)
+			return i;
 
-		if (_product.compareTo(other.getProduct()) == 0) {
-			if (_partner.compareTo(other.getPartner()) == 0) {
-				if (_price - other.getPrice() == 0) {
-					return _stock - other.getStock();
-				}
-				return (int) (_price - other.getPrice());
-			}
-			return _partner.compareTo(other.getPartner());
+		i = _partner.compareTo(other.getPartner());
+		if (i != 0)
+			return i;
 
-		}
-		return _product.compareTo(other.getProduct());
+		i = (int) (_price - other.getPrice());
+		if (i != 0)
+			return i;
+
+		i = _stock - other.getStock();
+		return i;
 	}
+
 }
