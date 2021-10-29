@@ -1,17 +1,19 @@
 package ggc.core;
 
+import java.util.Map;
 import java.util.HashMap;
 import java.util.TreeSet;
 import java.io.Serializable;
 
 public class Partner implements Comparable, Serializable {
+
 	private static final long serialVersionUID = 202109192006L;
 	private String _id;
 	private String _name;
 	private String _address;
 	private Status _status;
-	private HashMap<Integer, Purchase> _purchases;
-	private HashMap<Integer, Sale> _sales;
+	private Map<Integer, Purchase> _purchases;
+	private Map<Integer, Sale> _sales;
 	private TreeSet<Batch> _batches;
 
 	public Partner(String id, String name, String address) {
@@ -92,4 +94,5 @@ public class Partner implements Comparable, Serializable {
 	public String toString() {
 		return _id + "|" + _name + "|" + _address + "|" + _status + "|" + (int)getPurchasesValue() + "|" + (int)getAllSalesValue() + "|" + (int)getPaidSalesValue();
 	}
+
 }
