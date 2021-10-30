@@ -107,6 +107,13 @@ public class Warehouse implements Serializable {
 		return batches;
 	}
 
+	/**
+	 * @return a collection with all the batches of the given partner.
+	 */
+	public Collection<Batch> getBatchesByPartner(String id) throws UnknownPartnerException {
+		return getPartner(id).getBatches();
+	}
+
 	/*
 	public void registerPurchase(Partner partner, Product product, int quantity, double price) {
 		Purchase p = new Purchase(partner, product, quantity, _date.now(), price);

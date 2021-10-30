@@ -89,6 +89,15 @@ public class WarehouseManager {
 	}
 
 	/**
+	 * @param id the partner id.
+	 * @return a collection with all batches supplied by the given partner.
+	 * @throws UnknownPartnerException if there's no product with the given id.
+	 */
+	public Collection<Batch> getBatchesByPartner(String id) throws UnknownPartnerException {
+		return _warehouse.getBatchesByPartner(id);
+	}
+
+	/**
 	 * @param id the product id.
 	 * @return a collection with all batches that hold a product.
 	 * @throws UnknownProductException if there's no product with the given id.

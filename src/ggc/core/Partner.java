@@ -1,9 +1,10 @@
 package ggc.core;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.TreeSet;
-import java.io.Serializable;
 
 public class Partner implements Comparable, Serializable {
 
@@ -36,6 +37,10 @@ public class Partner implements Comparable, Serializable {
 
 	public String getAddress() {
 		return _address;
+	}
+
+	public Collection<Batch> getBatches() {
+		return _batches;
 	}
 
 	public void addPurchase(Purchase p) {
