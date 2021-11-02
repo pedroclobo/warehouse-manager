@@ -1,5 +1,7 @@
 package ggc.core;
 
+import ggc.core.products.Product;
+
 public class Notification {
 	private String _type;
 	private Product _product;

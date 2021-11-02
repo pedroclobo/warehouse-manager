@@ -1,8 +1,10 @@
-package ggc.core;
+package ggc.core.products;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.TreeSet;
+
+import ggc.core.partners.Partner;
 
 /**
  * This is an abstract class that represents a product.

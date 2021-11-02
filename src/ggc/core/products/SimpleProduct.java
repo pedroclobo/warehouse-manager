@@ -1,4 +1,4 @@
-package ggc.core;
+package ggc.core.products;
 
 /**
  * This class represents a simple product.

@@ -1,6 +1,8 @@
-package ggc.core;
+package ggc.core.products;
 
 import java.io.Serializable;
+
+import ggc.core.partners.Partner;
 
 /**
  * Class Batch implements a batch.

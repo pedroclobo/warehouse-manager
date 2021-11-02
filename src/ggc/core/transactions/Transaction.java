@@ -1,4 +1,8 @@
-package ggc.core;
+package ggc.core.transactions;
+
+import ggc.core.products.Product;
+import ggc.core.partners.Partner;
+import ggc.core.Date;
 
 public abstract class Transaction {
 	private static int _numberTransactions = 0;

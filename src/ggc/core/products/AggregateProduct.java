@@ -1,4 +1,4 @@
-package ggc.core;
+package ggc.core.products;
 
 import java.util.List;
 

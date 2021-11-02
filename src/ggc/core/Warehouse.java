@@ -12,8 +12,16 @@ import java.util.TreeSet;
 
 import java.io.Serializable;
 import java.io.IOException;
-import ggc.core.exception.BadEntryException;
 
+import ggc.core.products.Product;
+import ggc.core.products.AggregateProduct;
+import ggc.core.products.SimpleProduct;
+import ggc.core.products.Batch;
+import ggc.core.partners.Partner;
+import ggc.core.transactions.Transaction;
+import ggc.core.transactions.Purchase;
+import ggc.core.transactions.Sale;
+import ggc.core.exception.BadEntryException;
 import ggc.core.exception.InvalidDateIncrementException;
 import ggc.core.exception.UnknownPartnerException;
 import ggc.core.exception.DuplicatePartnerException;

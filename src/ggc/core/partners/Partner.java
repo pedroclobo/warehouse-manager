@@ -1,4 +1,4 @@
-package ggc.core;
+package ggc.core.partners;
 
 import java.io.Serializable;
 
@@ -6,7 +6,12 @@ import java.util.Collections;
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.TreeSet;
+
+import ggc.core.products.Batch;
+import ggc.core.transactions.Purchase;
+import ggc.core.transactions.Sale;
 
 public class Partner implements Comparable, Serializable {
 
@@ -17,7 +22,7 @@ public class Partner implements Comparable, Serializable {
 	private Status _status;
 	private List<Purchase> _purchases;
 	private List<Sale> _sales;
-	private TreeSet<Batch> _batches;
+	private Set<Batch> _batches;
 
 	public Partner(String id, String name, String address) {
 		_id = id;

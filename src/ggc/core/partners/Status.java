@@ -1,4 +1,4 @@
-package ggc.core;
+package ggc.core.partners;
 
 import java.io.Serializable;
 
