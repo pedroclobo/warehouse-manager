@@ -4,7 +4,7 @@ UILIB = po-uilib.jar
 all::
 	javac -cp $(UILIB):. `find $(PROJ) -name "*.java"`
 clean::
-	rm -f $(shell find . | egrep "*.class|*.diff|*.outhyp|*.dat")
+	rm -f $(shell find . | egrep "*.class|*.diff|*.outhyp|*.dat") && rm -f proj.jar
 run:
 	java -cp $(UILIB):. $(PROJ).app.App
 compile:

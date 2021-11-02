@@ -205,10 +205,32 @@ public class Warehouse implements Serializable {
 	}
 
 	/**
-	 * @return a collection with all partners
+	 * @return a collection with all partners.
 	 */
 	public Collection<Partner> getPartners() {
 		return _partners.values();
+	}
+
+	/**
+	 * Gets a collection of all partner's purchases.
+	 *
+	 * @param id the partner id.
+	 * @return a collection of purchases.
+	 * @throws UnknownPartnerException if there's no partner with the given id.
+	 */
+	public Collection<Purchase> getPurchasesByPartner(String id) throws UnknownPartnerException {
+		return getPartner(id).getPurchases();
+	}
+
+	/**
+	 * Gets a collection of all partner's sales.
+	 *
+	 * @param id the partner id.
+	 * @return a collection of sales.
+	 * @throws UnknownPartnerException if there's no partner with the given id.
+	 */
+	public Collection<Sale> getSalesByPartner(String id) throws UnknownPartnerException {
+		return getPartner(id).getSales();
 	}
 
 	/**

@@ -1,9 +1,11 @@
 package ggc.core;
 
 import java.io.Serializable;
+
+import java.util.Collections;
 import java.util.Collection;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 public class Partner implements Comparable, Serializable {
@@ -13,8 +15,8 @@ public class Partner implements Comparable, Serializable {
 	private String _name;
 	private String _address;
 	private Status _status;
-	private Map<Integer, Purchase> _purchases;
-	private Map<Integer, Sale> _sales;
+	private List<Purchase> _purchases;
+	private List<Sale> _sales;
 	private TreeSet<Batch> _batches;
 
 	public Partner(String id, String name, String address) {
@@ -22,9 +24,9 @@ public class Partner implements Comparable, Serializable {
 		_name = name;
 		_address = address;
 		_status = new Status();
-		_purchases = new HashMap<>();
-		_sales = new HashMap<>();
 		_batches = new TreeSet<>();
+		_purchases = new ArrayList<>();
+		_sales = new ArrayList<>();
 	}
 
 	public String getId() {
@@ -40,21 +42,29 @@ public class Partner implements Comparable, Serializable {
 	}
 
 	public Collection<Batch> getBatches() {
-		return _batches;
+		return Collections.unmodifiableSet(_batches);
+	}
+
+	public Collection<Purchase> getPurchases() {
+		return Collections.unmodifiableList(_purchases);
+	}
+
+	public Collection<Sale> getSales() {
+		return Collections.unmodifiableList(_sales);
 	}
 
 	public void addPurchase(Purchase p) {
-		_purchases.put(p.getId(), p);
+		_purchases.add(p);
 	}
 
 	public void addSale(Sale s) {
-		_sales.put(s.getId(), s);
+		_sales.add(s);
 	}
 
 	public double getPurchasesValue() {
 		double value = 0;
 
-		for (Purchase p: _purchases.values())
+		for (Purchase p: _purchases)
 			value += p.getPrice();
 
 		return value;
@@ -63,7 +73,7 @@ public class Partner implements Comparable, Serializable {
 	public double getPaidSalesValue() {
 		double value = 0;
 
-		for (Sale s: _sales.values())
+		for (Sale s: _sales)
 			if (s.isPaid())
 				value += s.getBasePrice();
 
@@ -73,7 +83,7 @@ public class Partner implements Comparable, Serializable {
 	public double getAllSalesValue() {
 		double value = 0;
 
-		for (Sale s: _sales.values())
+		for (Sale s: _sales)
 			value += s.getBasePrice();
 
 		return value;
