@@ -16,7 +16,7 @@ import ggc.core.products.AggregateProduct;
 import ggc.core.products.SimpleProduct;
 import ggc.core.products.Batch;
 import ggc.core.partners.Partner;
-import ggc.core.transactions.Purchase;
+import ggc.core.transactions.Acquisition;
 import ggc.core.transactions.Sale;
 import ggc.core.exception.BadEntryException;
 import ggc.core.exception.ImportFileException;
@@ -146,14 +146,14 @@ public class WarehouseManager {
 	}
 
 	/**
-	 * Gets a collection of all partner's purchases.
+	 * Gets a collection of all partner's acquisitions.
 	 *
 	 * @param id the partner id.
-	 * @return a collection of purchases.
+	 * @return a collection of acquisitions.
 	 * @throws UnknownPartnerException if there's no partner with the given id.
 	 */
-	public Collection<Purchase> getPurchasesByPartner(String id) throws UnknownPartnerException {
-		return _warehouse.getPurchasesByPartner(id);
+	public Collection<Acquisition> getAcquisitionsByPartner(String id) throws UnknownPartnerException {
+		return _warehouse.getAcquisitionsByPartner(id);
 	}
 
 	/**

@@ -19,7 +19,7 @@ import ggc.core.products.SimpleProduct;
 import ggc.core.products.Batch;
 import ggc.core.partners.Partner;
 import ggc.core.transactions.Transaction;
-import ggc.core.transactions.Purchase;
+import ggc.core.transactions.Acquisition;
 import ggc.core.transactions.Sale;
 import ggc.core.exception.BadEntryException;
 import ggc.core.exception.InvalidDateIncrementException;
@@ -132,10 +132,10 @@ public class Warehouse implements Serializable {
 	}
 
 	/*
-	public void registerPurchase(Partner partner, Product product, int quantity, double price) {
-		Purchase p = new Purchase(partner, product, quantity, _date.now(), price);
+	public void registerAcquisition(Partner partner, Product product, int quantity, double price) {
+		Acquisition p = new Acquisition(partner, product, quantity, _date.now(), price);
 		addTransaction(p);
-		partner.addPurchase(p);
+		partner.addAcquisition(p);
 
 		addProduct(product);
 		product.add(quantity, partner, price);
@@ -229,14 +229,14 @@ public class Warehouse implements Serializable {
 	}
 
 	/**
-	 * Gets a collection of all partner's purchases.
+	 * Gets a collection of all partner's acquisitions.
 	 *
 	 * @param id the partner id.
-	 * @return a collection of purchases.
+	 * @return a collection of acquisitions.
 	 * @throws UnknownPartnerException if there's no partner with the given id.
 	 */
-	public Collection<Purchase> getPurchasesByPartner(String id) throws UnknownPartnerException {
-		return getPartner(id).getPurchases();
+	public Collection<Acquisition> getAcquisitionsByPartner(String id) throws UnknownPartnerException {
+		return getPartner(id).getAcquisitions();
 	}
 
 	/**

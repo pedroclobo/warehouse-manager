@@ -39,4 +39,8 @@ public abstract class Transaction {
 	public Date getPaymentDate() {
 		return _paymentDate;
 	}
+
+	public void setPaymentDate(Date date) {
+		_paymentDate = date;
+	}
 }

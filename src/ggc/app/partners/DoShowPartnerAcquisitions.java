@@ -19,7 +19,7 @@ class DoShowPartnerAcquisitions extends Command<WarehouseManager> {
 	@Override
 	public void execute() throws CommandException {
 		try {
-			_display.popup(_receiver.getPurchasesByPartner(stringField("id")));
+			_display.popup(_receiver.getAcquisitionsByPartner(stringField("id")));
 		} catch (UnknownPartnerException e) {
 			throw new UnknownPartnerKeyException(stringField("id"));
 		}

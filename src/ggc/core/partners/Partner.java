@@ -10,8 +10,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import ggc.core.products.Batch;
-import ggc.core.transactions.Purchase;
+import ggc.core.transactions.Acquisition;
 import ggc.core.transactions.Sale;
+import ggc.core.transactions.CreditSale;
+import ggc.core.transactions.BreakdownSale;
 
 public class Partner implements Comparable, Serializable {
 
@@ -20,8 +22,9 @@ public class Partner implements Comparable, Serializable {
 	private String _name;
 	private String _address;
 	private Status _status;
-	private List<Purchase> _purchases;
+	private List<Acquisition> _acquisitions;
 	private List<Sale> _sales;
+	private List<CreditSale> _creditSales;
 	private Set<Batch> _batches;
 
 	public Partner(String id, String name, String address) {
@@ -29,9 +32,10 @@ public class Partner implements Comparable, Serializable {
 		_name = name;
 		_address = address;
 		_status = new Status();
-		_batches = new TreeSet<>();
-		_purchases = new ArrayList<>();
+		_acquisitions = new ArrayList<>();
 		_sales = new ArrayList<>();
+		_creditSales = new ArrayList<>();
+		_batches = new TreeSet<>();
 	}
 
 	public String getId() {
@@ -50,26 +54,26 @@ public class Partner implements Comparable, Serializable {
 		return Collections.unmodifiableSet(_batches);
 	}
 
-	public Collection<Purchase> getPurchases() {
-		return Collections.unmodifiableList(_purchases);
+	public Collection<Acquisition> getAcquisitions() {
+		return Collections.unmodifiableList(_acquisitions);
 	}
 
 	public Collection<Sale> getSales() {
 		return Collections.unmodifiableList(_sales);
 	}
 
-	public void addPurchase(Purchase p) {
-		_purchases.add(p);
+	public void addAcquisition(Acquisition p) {
+		_acquisitions.add(p);
 	}
 
 	public void addSale(Sale s) {
 		_sales.add(s);
 	}
 
-	public double getPurchasesValue() {
+	public double getAcquisitionsValue() {
 		double value = 0;
 
-		for (Purchase p: _purchases)
+		for (Acquisition p: _acquisitions)
 			value += p.getPrice();
 
 		return value;
@@ -78,7 +82,7 @@ public class Partner implements Comparable, Serializable {
 	public double getPaidSalesValue() {
 		double value = 0;
 
-		for (Sale s: _sales)
+		for (CreditSale s: _creditSales)
 			if (s.isPaid())
 				value += s.getBasePrice();
 
@@ -88,7 +92,7 @@ public class Partner implements Comparable, Serializable {
 	public double getAllSalesValue() {
 		double value = 0;
 
-		for (Sale s: _sales)
+		for (CreditSale s: _creditSales)
 			value += s.getBasePrice();
 
 		return value;
@@ -112,7 +116,7 @@ public class Partner implements Comparable, Serializable {
 	}
 
 	public String toString() {
-		return _id + "|" + _name + "|" + _address + "|" + _status + "|" + (int)getPurchasesValue() + "|" + (int)getAllSalesValue() + "|" + (int)getPaidSalesValue();
+		return _id + "|" + _name + "|" + _address + "|" + _status + "|" + (int)getAcquisitionsValue() + "|" + (int)getAllSalesValue() + "|" + (int)getPaidSalesValue();
 	}
 
 }
