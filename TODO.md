@@ -1,2 +1,4 @@
 # To Do
-- Order of transactions?
+- Fazer comandos da secção 3.4.
+- Notificações (_observer_).
+- Agregação.
