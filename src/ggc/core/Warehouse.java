@@ -115,6 +115,15 @@ public class Warehouse implements Serializable {
 		return batches;
 	}
 
+	public Collection<Batch> getBatchesWithLowerPrice(double price) {
+		Set<Batch> batches = new TreeSet<>();
+
+		for (Product p: getProducts())
+			batches.addAll(p.getBatchesWithLowerPrice(price));
+
+		return batches;
+	}
+
 	/**
 	 * @return a collection with all the batches of the given partner.
 	 */

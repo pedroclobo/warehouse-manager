@@ -95,6 +95,10 @@ public class WarehouseManager {
 		return _warehouse.getBatches();
 	}
 
+	public Collection<Batch> getBatchesWithLowerPrice(double price) {
+		return _warehouse.getBatchesWithLowerPrice(price);
+	}
+
 	/**
 	 * @param id the partner id.
 	 * @return a collection with all batches supplied by the given partner.

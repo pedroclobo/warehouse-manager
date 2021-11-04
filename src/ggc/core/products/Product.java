@@ -94,8 +94,20 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	/**
 	 * @return a collection of batches sorted by their natural order.
 	 */
-	public TreeSet<Batch> getBatches() {
+	public Collection<Batch> getBatches() {
 		return new TreeSet<Batch>(_batches);
+	}
+
+	public Collection<Batch> getBatchesWithLowerPrice(double price) {
+		Collection<Batch> batches = new TreeSet<>();
+
+		for (Batch b: _batches) {
+			if (b.getPrice() >= price)
+				break;
+			batches.add(b);
+		}
+
+		return batches;
 	}
 
 	/**
