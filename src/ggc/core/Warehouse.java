@@ -166,6 +166,23 @@ public class Warehouse implements Serializable {
 	}
 
 	/**
+	 * Registers a new aggregate product.
+	 *
+	 * @param id the product id.
+	 * @param aggravation the product aggravation factor.
+	 * @param products a list of products ids that compose the aggregate product.
+	 * @param quantities a list of the quantities of the products that compose the aggregate product.
+	 */
+	public void registerAggregateProduct(String id, double aggravation, Collection<String> productIds, List<Integer> quantities)throws UnknownProductException {
+		List<Product> products = new ArrayList<>();
+
+		for (String productId: productIds)
+			products.add(getProduct(productId));
+
+		registerAggregateProduct(id, aggravation, products, quantities);
+	}
+
+	/**
 	 * @param id the product id.
 	 * @return the product with the given id.
 	 * @throws UnknownProductException if there's no product with the given id.
@@ -175,16 +192,6 @@ public class Warehouse implements Serializable {
 			throw new UnknownProductException(id);
 
 		return _products.get(id);
-	}
-
-	public List<Product> getListOfProducts(List<String> productIds) throws UnknownProductException {
-		List<Product> products = new ArrayList<>();
-
-		for (String id: productIds) {
-			products.add(getProduct(id));
-		}
-
-		return products;
 	}
 
 	/**

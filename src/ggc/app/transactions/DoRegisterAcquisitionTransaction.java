@@ -63,7 +63,7 @@ public class DoRegisterAcquisitionTransaction extends Command<WarehouseManager> 
 					_receiver.registerAggregateProduct(
 							stringField("productId"),
 							alpha,
-							_receiver.getListOfProducts(products),
+							products,
 							quantities
 							);
 

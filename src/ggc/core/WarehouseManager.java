@@ -97,8 +97,28 @@ public class WarehouseManager {
 		_warehouse.registerSimpleProduct(id);
 	}
 
+	/**
+	 * Registers a new aggregate product.
+	 *
+	 * @param id the product id.
+	 * @param aggravation the product aggravation factor.
+	 * @param products a list of products that compose the aggregate product.
+	 * @param quantities a list of the quantities of the products that compose the aggregate product.
+	 */
 	public void registerAggregateProduct(String id, double aggravation, List<Product> products, List<Integer> quantities) {
 		_warehouse.registerAggregateProduct(id, aggravation, products, quantities);
+	}
+
+	/**
+	 * Registers a new aggregate product.
+	 *
+	 * @param id the product id.
+	 * @param aggravation the product aggravation factor.
+	 * @param products a list of products ids that compose the aggregate product.
+	 * @param quantities a list of the quantities of the products that compose the aggregate product.
+	 */
+	public void registerAggregateProduct(String id, double aggravation, Collection<String> productIds, List<Integer> quantities)throws UnknownProductException {
+		_warehouse.registerAggregateProduct(id, aggravation, productIds, quantities);
 	}
 
 	/**
@@ -106,10 +126,6 @@ public class WarehouseManager {
 	 */
 	public Collection<Product> getProducts() {
 		return _warehouse.getProducts();
-	}
-
-	public List<Product> getListOfProducts(List<String> productIds) throws UnknownProductException {
-		return _warehouse.getListOfProducts(productIds);
 	}
 
 	/**
