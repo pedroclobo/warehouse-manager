@@ -254,7 +254,17 @@ public class Partner implements Comparable<Partner>, Serializable {
 			_status + "|" +
 			(int) getAcquisitionsValue() + "|" +
 			(int) getAllSalesValue() + "|" +
-			(int)getPaidSalesValue();
+			(int) getPaidSalesValue();
+	}
+
+	/**
+	 * Creates a copy of a partner.
+	 *
+	 * @param partner the partner to copy.
+	 * @return a copy of the partner.
+	 */
+	public Partner copy() {
+		return (Partner) this.clone();
 	}
 
 }
