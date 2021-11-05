@@ -2,7 +2,6 @@ package ggc.core.transactions;
 
 import ggc.core.products.Product;
 import ggc.core.partners.Partner;
-import ggc.core.Date;
 
 public abstract class Transaction {
 	private static int _numberTransactions = 0;
@@ -10,9 +9,9 @@ public abstract class Transaction {
 	private Partner _partner;
 	private Product _product;
 	private int _quantity;
-	private Date _paymentDate;
+	private int _paymentDate;
 
-	public Transaction(Partner partner, Product product, int quantity, Date paymentDate) {
+	public Transaction(Partner partner, Product product, int quantity, int paymentDate) {
 		_id = _numberTransactions++;
 		_partner = partner;
 		_product = product;
@@ -36,11 +35,12 @@ public abstract class Transaction {
 		return _product;
 	}
 
-	public Date getPaymentDate() {
+	public int getPaymentDate() {
 		return _paymentDate;
 	}
 
-	public void setPaymentDate(Date date) {
+	public void setPaymentDate(int date) {
 		_paymentDate = date;
 	}
+
 }

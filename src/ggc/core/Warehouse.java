@@ -43,7 +43,7 @@ public class Warehouse implements Serializable {
 	private double _availableBalance;
 
 	/** Date to keep track of time */
-	private Date _date;
+	private int _date;
 
 	/** Collection of all registered products */
 	private TreeMap<String, Product> _products;
@@ -60,7 +60,7 @@ public class Warehouse implements Serializable {
 	public Warehouse() {
 		_accountingBalance = 0;
 		_availableBalance = 0;
-		_date = new Date();
+		_date = 0;
 		_products = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		_transactions = new HashMap<>();
 		_partners = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -70,7 +70,7 @@ public class Warehouse implements Serializable {
 	 * @return the current date value.
 	 */
 	public int getDate() {
-		return _date.toInt();
+		return _date;
 	}
 
 	/**
@@ -80,7 +80,10 @@ public class Warehouse implements Serializable {
 	 * @throws InvalidDateIncrementException if the amount is not positive.
 	 */
 	public void fowardDate(int increment) throws InvalidDateIncrementException {
-		_date.add(increment);
+		if (increment <= 0)
+			throw new InvalidDateIncrementException(increment);
+
+		_date += increment;
 	}
 
 	/**
@@ -269,7 +272,7 @@ public class Warehouse implements Serializable {
 	}
 
 	public void registerAcquisition(Partner partner, Product product, int quantity, double price) {
-		Acquisition a = new Acquisition(partner, product, quantity, _date.now(), price);
+		Acquisition a = new Acquisition(partner, product, quantity, _date, price);
 		_transactions.put(a.getId(), a);
 		partner.addAcquisition(a);
 		product.add(quantity, partner, price);
