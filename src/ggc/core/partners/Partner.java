@@ -64,7 +64,7 @@ public class Partner implements Comparable<Partner>, Serializable {
 		private int _points;
 
 		/** Levels of status classification. */
-		enum classification {
+		private enum classification {
 			NORMAL, SELECTION, ELITE;
 		}
 
@@ -75,12 +75,16 @@ public class Partner implements Comparable<Partner>, Serializable {
 		 * Registers new default status.
 		 * Every client starts with 0 points and a "NORMAL" classification.
 		 */
-		public Status() {
+		private Status() {
 			_points = 0;
 			_classification = classification.NORMAL;
 		}
 
-		/** @see java.lang.Object#toString() */
+		/**
+		 * String representation of status.
+		 *
+		 * @see java.lang.Object#toString()
+		 */
 		public String toString() {
 			return _classification + "|" + _points;
 		}
@@ -224,7 +228,7 @@ public class Partner implements Comparable<Partner>, Serializable {
 	}
 
 	/**
-	 * Compares partners by ids.
+	 * Compares partners by id.
 	 */
 	@Override
 	public int compareTo(Partner other) {
@@ -233,6 +237,8 @@ public class Partner implements Comparable<Partner>, Serializable {
 
 	/**
 	 * Two partners are equal if they have the same id.
+	 *
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object other) {
@@ -255,16 +261,6 @@ public class Partner implements Comparable<Partner>, Serializable {
 			(int) getAcquisitionsValue() + "|" +
 			(int) getAllSalesValue() + "|" +
 			(int) getPaidSalesValue();
-	}
-
-	/**
-	 * Creates a copy of a partner.
-	 *
-	 * @param partner the partner to copy.
-	 * @return a copy of the partner.
-	 */
-	public Partner copy() {
-		return (Partner) this.clone();
 	}
 
 }
