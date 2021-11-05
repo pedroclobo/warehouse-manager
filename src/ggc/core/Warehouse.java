@@ -26,6 +26,7 @@ import ggc.core.exception.InvalidDateIncrementException;
 import ggc.core.exception.UnknownPartnerException;
 import ggc.core.exception.DuplicatePartnerException;
 import ggc.core.exception.UnknownProductException;
+import ggc.core.exception.UnknownTransactionException;
 
 /**
  * Class Warehouse implements a warehouse.
@@ -183,6 +184,16 @@ public class Warehouse implements Serializable {
 		return _products.get(id);
 	}
 
+	public List<Product> getListOfProducts(List<String> productIds) throws UnknownProductException {
+		List<Product> products = new ArrayList<>();
+
+		for (String id: productIds) {
+			products.add(getProduct(id));
+		}
+
+		return products;
+	}
+
 	/**
 	 * @param id the product id.
 	 * @return a collection with all batches that hold a product.
@@ -248,6 +259,20 @@ public class Warehouse implements Serializable {
 	 */
 	public Collection<Sale> getSalesByPartner(String id) throws UnknownPartnerException {
 		return getPartner(id).getSales();
+	}
+
+	public Transaction getTransaction(int id) throws UnknownTransactionException {
+		if (!_transactions.containsKey(id))
+			throw new UnknownTransactionException(id);
+
+		return _transactions.get(id);
+	}
+
+	public void registerAcquisition(Partner partner, Product product, int quantity, double price) {
+		Acquisition a = new Acquisition(partner, product, quantity, _date.now(), price);
+		_transactions.put(a.getId(), a);
+		partner.addAcquisition(a);
+		product.add(quantity, partner, price);
 	}
 
 	/**

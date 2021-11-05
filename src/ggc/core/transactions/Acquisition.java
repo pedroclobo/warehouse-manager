@@ -17,7 +17,7 @@ public class Acquisition extends Transaction {
 	}
 
 	public String toString() {
-		return "COMPRA|" + getId() + "|" + getProduct().getId() + "|" + getQuantity() + "|" +
+		return "COMPRA|" + getId() + "|" + getPartner().getId() + "|" + getProduct().getId() + "|" + getQuantity() + "|" +
 			getPrice() + "|" + getPaymentDate();
 	}
 }

@@ -1,6 +1,7 @@
 package ggc.core;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import ggc.core.products.AggregateProduct;
 import ggc.core.products.SimpleProduct;
 import ggc.core.products.Batch;
 import ggc.core.partners.Partner;
+import ggc.core.transactions.Transaction;
 import ggc.core.transactions.Acquisition;
 import ggc.core.transactions.Sale;
 import ggc.core.exception.BadEntryException;
@@ -26,6 +28,7 @@ import ggc.core.exception.InvalidDateIncrementException;
 import ggc.core.exception.UnknownPartnerException;
 import ggc.core.exception.DuplicatePartnerException;
 import ggc.core.exception.UnknownProductException;
+import ggc.core.exception.UnknownTransactionException;
 
 /** Façade for access. */
 public class WarehouseManager {
@@ -81,11 +84,32 @@ public class WarehouseManager {
 		return _warehouse.getAccountingBalance();
 	}
 
+	public Product getProduct(String id) throws UnknownProductException {
+		return _warehouse.getProduct(id);
+	}
+
+	/**
+	 * Registers a new simple product.
+	 *
+	 * @param id the product id.
+	 */
+	public void registerSimpleProduct(String id) {
+		_warehouse.registerSimpleProduct(id);
+	}
+
+	public void registerAggregateProduct(String id, double aggravation, List<Product> products, List<Integer> quantities) {
+		_warehouse.registerAggregateProduct(id, aggravation, products, quantities);
+	}
+
 	/**
 	 * @return a collection with all registered products.
 	 */
 	public Collection<Product> getProducts() {
 		return _warehouse.getProducts();
+	}
+
+	public List<Product> getListOfProducts(List<String> productIds) throws UnknownProductException {
+		return _warehouse.getListOfProducts(productIds);
 	}
 
 	/**
@@ -165,6 +189,14 @@ public class WarehouseManager {
 	 */
 	public Collection<Sale> getSalesByPartner(String id) throws UnknownPartnerException {
 		return _warehouse.getSalesByPartner(id);
+	}
+
+	public Transaction getTransaction(int id) throws UnknownTransactionException {
+		return _warehouse.getTransaction(id);
+	}
+
+	public void registerAcquisition(Partner partner, Product product, int quantity, double price) {
+		_warehouse.registerAcquisition(partner, product, quantity, price);
 	}
 
 	/**
