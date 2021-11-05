@@ -27,6 +27,7 @@ import ggc.core.exception.UnknownPartnerException;
 import ggc.core.exception.DuplicatePartnerException;
 import ggc.core.exception.UnknownProductException;
 import ggc.core.exception.UnknownTransactionException;
+import ggc.core.exception.NoProductStockException;
 
 /**
  * Class Warehouse implements a warehouse.
@@ -134,17 +135,6 @@ public class Warehouse implements Serializable {
 	public Collection<Batch> getBatchesByPartner(String id) throws UnknownPartnerException {
 		return getPartner(id).getBatches();
 	}
-
-	/*
-	public void registerAcquisition(Partner partner, Product product, int quantity, double price) {
-		Acquisition p = new Acquisition(partner, product, quantity, _date.now(), price);
-		addTransaction(p);
-		partner.addAcquisition(p);
-
-		addProduct(product);
-		product.add(quantity, partner, price);
-	}
-	*/
 
 	/**
 	 * @param id the product id.

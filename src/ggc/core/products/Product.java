@@ -32,7 +32,7 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	public Product(String id) {
 		_id = id;
 		_maxPrice = 0;
-		_batches = new TreeSet<>(new BatchPriceSorter());
+		_batches = new TreeSet<>(Batch.getComparatorByPrice());
 	}
 
 	/**

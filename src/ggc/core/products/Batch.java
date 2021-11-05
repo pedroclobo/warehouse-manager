@@ -1,6 +1,7 @@
 package ggc.core.products;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import ggc.core.partners.Partner;
 
@@ -136,4 +137,29 @@ public class Batch implements Comparable<Batch>, Serializable {
 		return i;
 	}
 
+	public static final Comparator<Batch> getComparatorByPrice() {
+		class BatchPriceComparator implements Comparator<Batch>, Serializable {
+			/** Serial number for serialization. */
+			private static final long serialVersionUID = 202109192006L;
+
+			@Override
+			public int compare(Batch b1, Batch b2) {
+				int i = (int) (b1.getPrice() - b2.getPrice());
+				if (i != 0)
+					return i;
+
+				i = b1.getProduct().compareTo(b2.getProduct());
+				if (i != 0)
+					return i;
+
+				i = b1.getPartner().compareTo(b2.getPartner());
+				if (i != 0)
+					return i;
+
+				i = b1.getStock() - b2.getStock();
+				return i;
+			}
+		}
+		return new BatchPriceComparator();
+	}
 }
