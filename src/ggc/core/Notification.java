@@ -1,8 +1,13 @@
 package ggc.core;
 
+import java.io.Serializable;
 import ggc.core.products.Product;
 
-public class Notification {
+public class Notification implements Serializable {
+
+	/** Serial number for serialization. */
+	private static final long serialVersionUID = 202109192006L;
+
 	private String _type;
 	private Product _product;
 

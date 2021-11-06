@@ -29,6 +29,7 @@ import ggc.core.exception.UnknownPartnerException;
 import ggc.core.exception.DuplicatePartnerException;
 import ggc.core.exception.UnknownProductException;
 import ggc.core.exception.UnknownTransactionException;
+import ggc.core.exception.NoProductStockException;
 
 /** Façade for access. */
 public class WarehouseManager {
@@ -86,6 +87,10 @@ public class WarehouseManager {
 
 	public Product getProduct(String id) throws UnknownProductException {
 		return _warehouse.getProduct(id);
+	}
+
+	public int getProductStock(String id) throws UnknownProductException {
+		return _warehouse.getProductStock(id);
 	}
 
 	/**
@@ -213,6 +218,10 @@ public class WarehouseManager {
 
 	public void registerAcquisition(Partner partner, Product product, int quantity, double price) {
 		_warehouse.registerAcquisition(partner, product, quantity, price);
+	}
+
+	public void registerBreakdownSale(Partner partner, Product product, int quantity) throws NoProductStockException {
+		_warehouse.registerBreakdownSale(partner, product, quantity);
 	}
 
 	/**

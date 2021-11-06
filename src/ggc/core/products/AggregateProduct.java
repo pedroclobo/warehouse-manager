@@ -1,9 +1,9 @@
 package ggc.core.products;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * This class represents products made from other products.
@@ -13,6 +13,44 @@ import java.util.Iterator;
  * of the product.
  */
 public class AggregateProduct extends Product {
+
+	/** The product recipe. */
+	private Recipe _recipe;
+
+	/**
+	 * Creates a new aggregate product.
+	 *
+	 * @param id          the product id.
+	 * @param aggravation the aggravation factor.
+	 * @param products    the products that make up the aggregate product.
+	 * @param quantities  the quantities of product that make up the aggregate product.
+	 */
+	public AggregateProduct(String id, double aggravation, List<Product> products, List<Integer> quantities) {
+		super(id);
+		_recipe = new Recipe(aggravation, products, quantities);
+	}
+
+	/**
+	 * @return the aggravation factor.
+	 */
+	public double getAggravation() {
+		return _recipe.getAggravation();
+	}
+
+	public Iterator<Product> getProductIterator() {
+		return _recipe.getProductIterator();
+	}
+
+	public Iterator<Integer> getQuantityIterator() {
+		return _recipe.getQuantityIterator();
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return super.toString() + "|" + _recipe;
+	}
 
 	/**
 	 * This class represents a component.
@@ -115,6 +153,38 @@ public class AggregateProduct extends Product {
 		}
 
 		/**
+		 * TODO
+		 */
+		private Iterator<Product> getProductIterator() {
+			Iterator<Component> iter = _components.iterator();
+			return new Iterator<Product>() {
+				public boolean hasNext() {
+					return iter.hasNext();
+				}
+
+				public Product next() {
+					return iter.next()._product;
+				}
+			};
+		}
+
+		/**
+		 * TODO
+		 */
+		private Iterator<Integer> getQuantityIterator() {
+			Iterator<Component> iter = _components.iterator();
+			return new Iterator<Integer>() {
+				public boolean hasNext() {
+					return iter.hasNext();
+				}
+
+				public Integer next() {
+					return iter.next()._quantity;
+				}
+			};
+		}
+
+		/**
 		 * @see java.lang.Object#toString()
 		 */
 		public String toString() {
@@ -124,7 +194,7 @@ public class AggregateProduct extends Product {
 			while(iter.hasNext()) {
 				Component c = iter.next();
 				if (iter.hasNext())
-					s += c.toString() + "|";
+					s += c.toString() + "#";
 				else
 					s += c.toString();
 			}
@@ -132,43 +202,6 @@ public class AggregateProduct extends Product {
 			return s;
 		}
 
-	}
-
-	/** The product recipe. */
-	private Recipe _recipe;
-
-	/**
-	 * Creates a new aggregate product.
-	 *
-	 * @param id          the product id.
-	 * @param aggravation the aggravation factor.
-	 * @param products    the products that make up the aggregate product.
-	 * @param quantities  the quantities of product that make up the aggregate product.
-	 */
-	public AggregateProduct(String id, double aggravation, List<Product> products, List<Integer> quantities) {
-		super(id);
-		_recipe = new Recipe(aggravation, products, quantities);
-	}
-
-	/**
-	 * @return the aggravation factor.
-	 */
-	public double getAggravation() {
-		return _recipe.getAggravation();
-	}
-
-	/**
-	 * @return a collection of all the components.
-	 */
-	public List getComponents() {
-		return _recipe.getComponents();
-	}
-
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
-		return super.toString() + "|" + _recipe;
 	}
 
 }

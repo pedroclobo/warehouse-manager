@@ -21,6 +21,8 @@ import ggc.core.partners.Partner;
 import ggc.core.transactions.Transaction;
 import ggc.core.transactions.Acquisition;
 import ggc.core.transactions.Sale;
+import ggc.core.transactions.CreditSale;
+import ggc.core.transactions.BreakdownSale;
 import ggc.core.exception.BadEntryException;
 import ggc.core.exception.InvalidDateIncrementException;
 import ggc.core.exception.UnknownPartnerException;
@@ -194,6 +196,10 @@ public class Warehouse implements Serializable {
 		return _products.get(id);
 	}
 
+	public int getProductStock(String id) throws UnknownProductException {
+		return getProduct(id).getStock();
+	}
+
 	/**
 	 * @param id the product id.
 	 * @return a collection with all batches that hold a product.
@@ -269,10 +275,29 @@ public class Warehouse implements Serializable {
 	}
 
 	public void registerAcquisition(Partner partner, Product product, int quantity, double price) {
-		Acquisition a = new Acquisition(partner, product, quantity, _date, price);
+		Acquisition a = new Acquisition(partner, product, quantity, _date, price * quantity);
 		_transactions.put(a.getId(), a);
 		partner.addAcquisition(a);
 		product.add(quantity, partner, price);
+		_availableBalance -= price * quantity;
+		_accountingBalance -= price * quantity;
+	}
+
+	public void registerBreakdownSale(Partner partner, Product product, int quantity) throws NoProductStockException {
+
+		// Check if there is enough product stock.
+		if (product.getStock() < quantity) {
+			throw new NoProductStockException(product.getId(), quantity, product.getStock());
+		}
+
+		// Simple Products cannot be disaggregated.
+		if (product instanceof SimpleProduct)
+			return;
+
+		BreakdownSale b = new BreakdownSale(partner, product, quantity, _date);
+
+		_transactions.put(b.getId(), b);
+		partner.addBreakdownSale(b);
 	}
 
 	/**

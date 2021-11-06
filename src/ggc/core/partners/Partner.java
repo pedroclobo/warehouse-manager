@@ -166,6 +166,13 @@ public class Partner implements Comparable<Partner>, Serializable {
 	}
 
 	/**
+	 * Adds a new breakdown sale to the partner's history.
+	 */
+	public void addBreakdownSale(BreakdownSale b) {
+		_breakdownSales.add(b);
+	}
+
+	/**
 	 * Calculates the partner's balance on acquisitions.
 	 *
 	 * @return partner's total acquisitions balance.

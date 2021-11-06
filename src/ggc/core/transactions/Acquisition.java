@@ -45,7 +45,7 @@ public class Acquisition extends Transaction {
 			getPartner().getId() + "|" +
 			getProduct().getId() + "|" +
 			getProductQuantity() + "|" +
-			getPrice() + "|" +
+			(int) getPrice() + "|" +
 			getPaymentDate();
 	}
 

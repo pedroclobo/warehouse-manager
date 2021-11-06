@@ -2,6 +2,7 @@ package ggc.core.products;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Set;
 import java.util.TreeSet;
 
 import ggc.core.partners.Partner;
@@ -95,7 +96,10 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	 * @return a collection of batches sorted by their natural order.
 	 */
 	public Collection<Batch> getBatches() {
-		return new TreeSet<Batch>(_batches);
+		Set<Batch> batches = new TreeSet<>();
+		batches.addAll(_batches);
+
+		return batches;
 	}
 
 	public Collection<Batch> getBatchesWithLowerPrice(double price) {
