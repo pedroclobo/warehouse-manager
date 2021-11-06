@@ -155,26 +155,29 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	 * Remove units from the batches.
 	 *
 	 * @param units the number of units to remove.
-	 * @return true, if the operation was successful; false, otherwise.
+	 * @return the total price of the units removed.
 	 */
-	public boolean remove(int units) {
-
-		if (units > getStock())
-			return false;
-
-		// Start from the batch with lowest price
-		Batch b = _batches.first();
+	public double remove(int units) {
+		Batch batch = null;
+		double total = 0;
 		int removed = 0;
 
-		/* Remove unit 1 by 1 */
+		if (units > getStock())
+			return total;
+
 		while (removed < units) {
-			while (b.remove(1))
-				;
-			removeBatch(b);
-			b = _batches.first();
+			batch = _batches.first();
+			while (batch.remove(1)) {
+				removed++;
+				total += batch.getPrice();
+				if (removed == units)
+					break;
+			}
+			if (batch.getStock() == 0)
+				removeBatch(batch);
 		}
 
-		return true;
+		return total;
 	}
 
 }

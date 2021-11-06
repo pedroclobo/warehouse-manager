@@ -3,21 +3,44 @@ package ggc.app.transactions;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 import ggc.core.WarehouseManager;
-//FIXME import classes
+import ggc.app.exception.UnknownPartnerKeyException;
+import ggc.app.exception.UnknownProductKeyException;
+import ggc.app.exception.UnavailableProductException;
+import ggc.core.exception.UnknownPartnerException;
+import ggc.core.exception.UnknownProductException;
+import ggc.core.exception.NoProductStockException;
 
 /**
- * 
+ *
  */
 public class DoRegisterSaleTransaction extends Command<WarehouseManager> {
 
 	public DoRegisterSaleTransaction(WarehouseManager receiver) {
 		super(Label.REGISTER_SALE_TRANSACTION, receiver);
-		//FIXME maybe add command fields 
+		addStringField("partnerKey", Message.requestPartnerKey());
+		addIntegerField("paymentDeadline", Message.requestPaymentDeadline());
+		addStringField("productKey", Message.requestProductKey());
+		addIntegerField("amount", Message.requestAmount());
 	}
 
 	@Override
 	public final void execute() throws CommandException {
-		//FIXME implement command
+		try {
+			_receiver.registerSaleTransaction(
+					_receiver.getPartner(stringField("partnerKey")),
+					integerField("paymentDeadline"),
+					_receiver.getProduct(stringField("productKey")),
+					integerField("amount")
+					);
+
+		} catch (UnknownPartnerException e) {
+			throw new UnknownPartnerKeyException(e.getKey());
+		} catch (UnknownProductException e) {
+			throw new UnknownProductKeyException(e.getKey());
+		} catch (NoProductStockException e) {
+			throw new UnavailableProductException(e.getKey(), e.getRequested(), e.getAvailable());
+		}
+
 	}
 
 }

@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.Collection;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -37,16 +35,16 @@ public class Partner implements Comparable<Partner>, Serializable {
 	private Status _status;
 
 	/** History of all acquisitions transactions. */
-	private List<Acquisition> _acquisitions;
+	private Set<Acquisition> _acquisitions;
 
 	/** History of all sale transactions. */
-	private List<Sale> _sales;
+	private Set<Sale> _sales;
 
 	/** History of all credit sale transactions. */
-	private List<CreditSale> _creditSales;
+	private Set<CreditSale> _creditSales;
 
 	/** History of all breakdown sale transactions. */
-	private List<BreakdownSale> _breakdownSales;
+	private Set<BreakdownSale> _breakdownSales;
 
 	/** Collection of all partner's supplied batches. */
 	private Set<Batch> _batches;
@@ -102,10 +100,10 @@ public class Partner implements Comparable<Partner>, Serializable {
 		_name = name;
 		_address = address;
 		_status = new Status();
-		_acquisitions = new ArrayList<>();
-		_sales = new ArrayList<>();
-		_creditSales = new ArrayList<>();
-		_breakdownSales = new ArrayList<>();
+		_acquisitions = new TreeSet<>();
+		_sales = new TreeSet<>();
+		_creditSales = new TreeSet<>();
+		_breakdownSales = new TreeSet<>();
 		_batches = new TreeSet<>();
 	}
 
@@ -140,36 +138,44 @@ public class Partner implements Comparable<Partner>, Serializable {
 	/**
 	 * @return a collection of all the partner's acquisition transactions.
 	 */
-	public Collection<Acquisition> getAcquisitions() {
-		return Collections.unmodifiableList(_acquisitions);
+	public Collection<Acquisition> getAcquisitionTransactions() {
+		return Collections.unmodifiableSet(_acquisitions);
 	}
 
 	/**
 	 * @return a collection of all the partner's sale transactions.
 	 */
-	public Collection<Sale> getSales() {
-		return Collections.unmodifiableList(_sales);
+	public Collection<Sale> getSaleTransactions() {
+		return Collections.unmodifiableSet(_sales);
+	}
+
+	public Collection<Sale> getPaidTransactions() {
+		Set<Sale> paidSales = new TreeSet<>();
+
+		for (Sale sale: _sales)
+			if (sale.isPaid())
+				paidSales.add(sale);
+
+		return paidSales;
 	}
 
 	/**
 	 * Adds a new acquisition to the partner's history.
 	 */
-	public void addAcquisition(Acquisition p) {
+	public void addAcquisitionTransaction(Acquisition p) {
 		_acquisitions.add(p);
 	}
 
 	/**
 	 * Adds a new sale to the partner's history.
 	 */
-	public void addSale(Sale s) {
+	public void addSaleTransaction(Sale s) {
 		_sales.add(s);
-	}
 
-	/**
-	 * Adds a new breakdown sale to the partner's history.
-	 */
-	public void addBreakdownSale(BreakdownSale b) {
-		_breakdownSales.add(b);
+		if (s instanceof CreditSale)
+			_creditSales.add((CreditSale) s);
+		else if (s instanceof BreakdownSale)
+			_breakdownSales.add((BreakdownSale) s);
 	}
 
 	/**

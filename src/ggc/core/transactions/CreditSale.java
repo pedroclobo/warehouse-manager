@@ -15,8 +15,8 @@ public class CreditSale extends Sale {
 	/** The credit sale's real paid price. */
 	private double _effectivePrice;
 
-	/** The credit sale's limit payment date. */
-	private int _limitPaymentDate;
+	/** The credit sale's payment deadline date. */
+	private int _paymentDeadline;
 
 	/**
 	 * Constructor.
@@ -28,11 +28,11 @@ public class CreditSale extends Sale {
 	 * @param basePrice      the credit sale's base price.
 	 * @param effectivePrice the credit sale's real paid price.
 	 */
-	public CreditSale(Partner partner, Product product, int quantity, double basePrice, double effectivePrice, int limitPaymentDate) {
-		super(partner, product, quantity, -1);
+	public CreditSale(Partner partner, int paymentDeadline, Product product, int amount, double basePrice) {
+		super(partner, product, amount, -1);
 		_basePrice = basePrice;
-		_effectivePrice = effectivePrice;
-		_limitPaymentDate = limitPaymentDate;
+		_effectivePrice = -1;
+		_paymentDeadline = paymentDeadline;
 	}
 
 	/**
@@ -50,12 +50,18 @@ public class CreditSale extends Sale {
 	}
 
 	/**
-	 * Determines if the credit sale has already been paid.
-	 *
-	 * @return true, if it has been paid; false, otherwise.
+	 * Pays the credit sale.
 	 */
-	public boolean isPaid() {
-		return getPaymentDate() != -1;
+	/*
+	public double pay(int date) {
+		int nFactor = 0;
+		getProduct() instanceof SimpleProduct ? nFactor = 5 : nFactor = 3;
+
+		if (_limitPaymentDate - date >= nFactor)
+
+		}
+
 	}
+	*/
 
 }

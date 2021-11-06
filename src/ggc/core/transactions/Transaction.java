@@ -9,7 +9,7 @@ import ggc.core.partners.Partner;
  * Represents a transaction between the Warehouse and its partners.
  * Each transaction is represented by a number (id).
  */
-public abstract class Transaction implements Serializable {
+public abstract class Transaction implements Serializable, Comparable<Transaction> {
 
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202109192006L;
@@ -91,6 +91,17 @@ public abstract class Transaction implements Serializable {
 	// TODO
 	public void setPaymentDate(int date) {
 		_paymentDate = date;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		return other instanceof Transaction &&
+			_id == ((Transaction) other).getId();
+	}
+
+	@Override
+	public int compareTo(Transaction other) {
+		return _id - other.getId();
 	}
 
 }

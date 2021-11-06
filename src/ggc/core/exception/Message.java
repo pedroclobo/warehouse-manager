@@ -4,29 +4,6 @@ package ggc.core.exception;
 interface Message {
 
 	/**
-	 * @return string with "file not found" message.
-	 */
-	static String fileNotFound() {
-		return "O ficheiro não existe.";
-	}
-
-	/**
-	 * @param filename
-	 * @return string with "file not found" message (more elaborate).
-	 */
-	static String fileNotFound(String filename) {
-		return "O ficheiro '" + filename + "' não existe.";
-	}
-
-	/**
-	 * @param filename
-	 * @return string with problem description.
-	 */
-	static String problemOpeningFile(String filename) {
-		return "Problema ao abrir '" + filename + "'.";
-	}
-
-	/**
 	 * @param key
 	 * @return string with problem description.
 	 */

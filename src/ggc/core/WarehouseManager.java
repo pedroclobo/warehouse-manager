@@ -224,6 +224,14 @@ public class WarehouseManager {
 		_warehouse.registerBreakdownSale(partner, product, quantity);
 	}
 
+	public void registerSaleTransaction(Partner partner, int paymentDeadline, Product product, int amount) throws NoProductStockException {
+		_warehouse.registerSaleTransaction(partner, paymentDeadline, product, amount);
+	}
+
+	public Collection<Sale> getPartnerPaidTransactions(String key) throws UnknownPartnerException {
+		return _warehouse.getPartnerPaidTransactions(key);
+	}
+
 	/**
 	 * Saves the current state of the warehouse to the associated filename.
 	 *

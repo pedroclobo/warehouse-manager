@@ -253,7 +253,7 @@ public class Warehouse implements Serializable {
 	 * @throws UnknownPartnerException if there's no partner with the given id.
 	 */
 	public Collection<Acquisition> getAcquisitionsByPartner(String id) throws UnknownPartnerException {
-		return getPartner(id).getAcquisitions();
+		return getPartner(id).getAcquisitionTransactions();
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class Warehouse implements Serializable {
 	 * @throws UnknownPartnerException if there's no partner with the given id.
 	 */
 	public Collection<Sale> getSalesByPartner(String id) throws UnknownPartnerException {
-		return getPartner(id).getSales();
+		return getPartner(id).getSaleTransactions();
 	}
 
 	public Transaction getTransaction(int id) throws UnknownTransactionException {
@@ -277,10 +277,26 @@ public class Warehouse implements Serializable {
 	public void registerAcquisition(Partner partner, Product product, int quantity, double price) {
 		Acquisition a = new Acquisition(partner, product, quantity, _date, price * quantity);
 		_transactions.put(a.getId(), a);
-		partner.addAcquisition(a);
+		partner.addAcquisitionTransaction(a);
 		product.add(quantity, partner, price);
 		_availableBalance -= price * quantity;
 		_accountingBalance -= price * quantity;
+	}
+
+	public void registerSaleTransaction(Partner partner, int paymentDeadline,
+			Product product, int amount) throws NoProductStockException {
+
+		// Check if there is enough product stock.
+		if (product.getStock() < amount) {
+			throw new NoProductStockException(product.getId(), amount, product.getStock());
+		}
+
+		// Remove products from batches and calculate total price.
+		double price = product.remove(amount);
+
+		CreditSale c = new CreditSale(partner, paymentDeadline, product, amount, price);
+		_transactions.put(c.getId(), c);
+		partner.addSaleTransaction(c);
 	}
 
 	public void registerBreakdownSale(Partner partner, Product product, int quantity) throws NoProductStockException {
@@ -297,7 +313,11 @@ public class Warehouse implements Serializable {
 		BreakdownSale b = new BreakdownSale(partner, product, quantity, _date);
 
 		_transactions.put(b.getId(), b);
-		partner.addBreakdownSale(b);
+		partner.addSaleTransaction(b);
+	}
+
+	public Collection<Sale> getPartnerPaidTransactions(String key) throws UnknownPartnerException {
+		return getPartner(key).getPaidTransactions();
 	}
 
 	/**
@@ -313,10 +333,10 @@ public class Warehouse implements Serializable {
 	void importFile(String txtfile) throws IOException, BadEntryException, UnknownPartnerException, DuplicatePartnerException, UnknownProductException {
 		try {
 			new Parser(this).parseFile(txtfile);
-		} catch (IOException e1) {
-			throw e1;
-		} catch (BadEntryException e2) {
-			throw e2;
+		} catch (IOException e) {
+			throw e;
+		} catch (BadEntryException e) {
+			throw e;
 		}
 	}
 

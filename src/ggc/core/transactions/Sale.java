@@ -20,4 +20,8 @@ public abstract class Sale extends Transaction {
 		super(partner, product, quantity, paymentDate);
 	}
 
+	public final boolean isPaid() {
+		return getPaymentDate() != -1;
+	}
+
 }
