@@ -62,13 +62,13 @@ public class WarehouseManager {
 	}
 
 	/**
-	 * Fowards time.
+	 * Forwards time.
 	 *
 	 * @param increment amount to forward time by.
 	 * @throws InvalidDateIncrementException if the amount is not positive.
 	 */
-	public void fowardDate(int increment) throws InvalidDateIncrementException {
-		_warehouse.fowardDate(increment);
+	public void forwardDate(int increment) throws InvalidDateIncrementException {
+		_warehouse.forwardDate(increment);
 	}
 
 	/**
@@ -89,10 +89,6 @@ public class WarehouseManager {
 		return _warehouse.getProduct(id);
 	}
 
-	public int getProductStock(String id) throws UnknownProductException {
-		return _warehouse.getProductStock(id);
-	}
-
 	/**
 	 * Registers a new simple product.
 	 *
@@ -100,18 +96,6 @@ public class WarehouseManager {
 	 */
 	public void registerSimpleProduct(String id) {
 		_warehouse.registerSimpleProduct(id);
-	}
-
-	/**
-	 * Registers a new aggregate product.
-	 *
-	 * @param id the product id.
-	 * @param aggravation the product aggravation factor.
-	 * @param products a list of products that compose the aggregate product.
-	 * @param quantities a list of the quantities of the products that compose the aggregate product.
-	 */
-	public void registerAggregateProduct(String id, double aggravation, List<Product> products, List<Integer> quantities) {
-		_warehouse.registerAggregateProduct(id, aggravation, products, quantities);
 	}
 
 	/**
@@ -140,17 +124,22 @@ public class WarehouseManager {
 		return _warehouse.getBatches();
 	}
 
-	public Collection<Batch> getBatchesWithLowerPrice(double price) {
-		return _warehouse.getBatchesWithLowerPrice(price);
+	/**
+	 * Returns a collection of all batches under the specified price.
+	 *
+	 * @param price the price to compare to.
+	 */
+	public Collection<Batch> getBatchesUnderGivenPrice(double price) {
+		return _warehouse.getBatchesUnderGivenPrice(price);
 	}
 
 	/**
-	 * @param id the partner id.
+	 * @param key the partner key.
 	 * @return a collection with all batches supplied by the given partner.
 	 * @throws UnknownPartnerException if there's no product with the given id.
 	 */
-	public Collection<Batch> getBatchesByPartner(String id) throws UnknownPartnerException {
-		return _warehouse.getBatchesByPartner(id);
+	public Collection<Batch> getBatchesByPartner(String key) throws UnknownPartnerException {
+		return _warehouse.getBatchesByPartner(key);
 	}
 
 	/**
@@ -216,16 +205,54 @@ public class WarehouseManager {
 		return _warehouse.getTransaction(id);
 	}
 
-	public void registerAcquisition(Partner partner, Product product, int quantity, double price) {
-		_warehouse.registerAcquisition(partner, product, quantity, price);
+	/**
+	 * Registers a new acquisition transaction.
+	 *
+	 * @param partnerKey the partner key.
+	 * @param productKey the product key.
+	 * @param amount     the transaction's product amount.
+	 * @param price      the transaction's product unit price.
+	 *
+	 * @throws UnknownPartnerException if there's no registered partner with the given key.
+	 * @throws UnknownProductException if there's no registered product with the given key.
+	 */
+	public void registerAcquisitionTransaction(String partnerKey, String productKey, int amount, double price) throws UnknownPartnerException, UnknownProductException {
+		_warehouse.registerAcquisition(partnerKey, productKey, amount, price);
 	}
 
-	public void registerBreakdownSale(Partner partner, Product product, int quantity) throws NoProductStockException {
-		_warehouse.registerBreakdownSale(partner, product, quantity);
+	/**
+	 * Registers a new sale transaction.
+	 *
+	 * @param partnerKey      the partner key.
+	 * @param paymentDeadline the transaction's payment deadline.
+	 * @param productKey      the product key.
+	 * @param amount          the transaction's product amount.
+	 *
+	 * @throws UnknownPartnerException if there's no registered partner with the given key.
+	 * @throws UnknownProductException if there's no registered product with the given key.
+	 * @throws NoProductStockException if there's not enough product stock.
+	 */
+	public void registerSaleTransaction(String partnerKey, int paymentDeadline, String productKey, int amount) throws UnknownPartnerException, UnknownProductException, NoProductStockException {
+		_warehouse.registerCreditSale(partnerKey, paymentDeadline, productKey, amount);
 	}
 
-	public void registerSaleTransaction(Partner partner, int paymentDeadline, Product product, int amount) throws NoProductStockException {
-		_warehouse.registerSaleTransaction(partner, paymentDeadline, product, amount);
+	/**
+	 * Registers a new breakdown transaction.
+	 *
+	 * @param partnerKey      the partner key.
+	 * @param productKey      the product key.
+	 * @param amount          the transaction's product amount.
+	 *
+	 * @throws UnknownPartnerException if there's no registered partner with the given key.
+	 * @throws UnknownProductException if there's no registered product with the given key.
+	 * @throws NoProductStockException if there's not enough product stock.
+	 */
+	public void registerBreakdownTransaction(String partnerKey, String productKey, int amount) throws UnknownPartnerException, UnknownProductException, NoProductStockException {
+		_warehouse.registerBreakdownSale(partnerKey, productKey, amount);
+	}
+
+	public void receivePayment(int transactionKey) throws UnknownTransactionException {
+		_warehouse.receiveCreditSalePayment(transactionKey);
 	}
 
 	public Collection<Sale> getPartnerPaidTransactions(String key) throws UnknownPartnerException {

@@ -1,5 +1,6 @@
 package ggc.core.transactions;
 
+import ggc.core.Date;
 import ggc.core.products.Product;
 import ggc.core.partners.Partner;
 
@@ -16,23 +17,27 @@ public class CreditSale extends Sale {
 	private double _effectivePrice;
 
 	/** The credit sale's payment deadline date. */
-	private int _paymentDeadline;
+	private Date _paymentDeadline;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param partner        the credit sale's associated partner.
-	 * @param product        the credit sale's processed product.
-	 * @param quantity       the quantity of product processed.
-	 * @param paymentDate    the credit sale's payment date.
-	 * @param basePrice      the credit sale's base price.
-	 * @param effectivePrice the credit sale's real paid price.
+	 * @param key             the credit sale's key.
+	 * @param partner         the credit sale's associated partner.
+	 * @param product         the credit sale's processed product.
+	 * @param quantity        the quantity of product processed.
+	 * @param paymentDeadline the credit sale's payment date.
 	 */
-	public CreditSale(Partner partner, int paymentDeadline, Product product, int amount, double basePrice) {
-		super(partner, product, amount, -1);
-		_basePrice = basePrice;
-		_effectivePrice = -1;
+	public CreditSale(int key, Partner partner, Product product, int amount, Date paymentDeadline) {
+		super(key, partner, product, amount, null);
+
+		// Remove products and calculate remove price.
+		_basePrice = product.remove(amount);
+
 		_paymentDeadline = paymentDeadline;
+
+		// Update price, according to partner status.
+		updatePrice();
 	}
 
 	/**
@@ -43,25 +48,59 @@ public class CreditSale extends Sale {
 	}
 
 	/**
-	 * @return the credit sale's real paid value.
+	 * @return the credit sale's price.
 	 */
-	public double getEffectivePrice() {
+	@Override
+	public double getPrice() {
+		updatePrice();
 		return _effectivePrice;
 	}
 
 	/**
-	 * Pays the credit sale.
+	 * @return the payment deadline.
 	 */
-	/*
-	public double pay(int date) {
-		int nFactor = 0;
-		getProduct() instanceof SimpleProduct ? nFactor = 5 : nFactor = 3;
-
-		if (_limitPaymentDate - date >= nFactor)
-
-		}
-
+	public Date getPaymentDeadline() {
+		return _paymentDeadline;
 	}
-	*/
+
+	/**
+	 * Pays the transaction.
+	 */
+	@Override
+	public void pay() {
+		_effectivePrice = getPrice();
+		getPartner().payTransaction(this);
+		setPaymentDate();
+	}
+
+	/**
+	 * Updates the transaction price, accouting for discounts.
+	 */
+	@Override
+	public void updatePrice() {
+		_effectivePrice = getPartner().getTransactionPrice(this);
+	}
+
+	/**
+	 * String representation of acquisition.
+	 *
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		String creditSale =
+			"VENDA|" +
+			getKey() + "|" +
+			getPartner().getKey() + "|" +
+			getProduct().getKey() + "|" +
+			getProductAmount() + "|" +
+			(int) _basePrice + "|" +
+			(int) _effectivePrice + "|" +
+			_paymentDeadline;
+
+		if (isPaid())
+			creditSale += "|" + getPaymentDate();
+
+		return creditSale;
+	}
 
 }

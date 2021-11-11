@@ -2,24 +2,26 @@ package ggc.core.products;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
 import ggc.core.partners.Partner;
+import ggc.core.exception.NoProductStockException;
 
 /**
  * This is an abstract class that represents a product.
  * Subclasses refine this class in accordance with the type of product they
- * represent. In its most abstract form, a product has an id, a collection of
- * batches storing it and the maximum price it has ever achieved.
+ * represent. In its most abstract form, a product has an identifier, a
+ * collection of batches storing it and the maximum price it has ever achieved.
  */
 public abstract class Product implements Comparable<Product>, Serializable {
 
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202109192006L;
 
-	/** Product id. */
-	private String _id;
+	/** Product identifier. */
+	private String _key;
 
 	/** Highest Price. */
 	private double _maxPrice;
@@ -28,19 +30,19 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	private TreeSet<Batch> _batches;
 
 	/**
-	 * @param id the product id.
+	 * @param key the product identifier.
 	 */
-	public Product(String id) {
-		_id = id;
+	public Product(String key) {
+		_key = key;
 		_maxPrice = 0;
 		_batches = new TreeSet<>(Batch.getComparatorByPrice());
 	}
 
 	/**
-	 * @return the product id;
+	 * @return the product key;
 	 */
-	public final String getId() {
-		return _id;
+	public final String getKey() {
+		return _key;
 	}
 
 	/**
@@ -48,6 +50,13 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	 */
 	public final double getMaxPrice() {
 		return _maxPrice;
+	}
+
+	/**
+	 * @return the lowest price available for the product.
+	 */
+	public double getLowestPrice() {
+		return _batches.first().getPrice();
 	}
 
 	/**
@@ -62,7 +71,7 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	/**
 	 * @return the available stock product.
 	 */
-	public int getStock() {
+	public final int getStock() {
 		int stock = 0;
 
 		for (Batch b: _batches) {
@@ -72,25 +81,25 @@ public abstract class Product implements Comparable<Product>, Serializable {
 		return stock;
 	}
 
-  	/** @see java.lang.Object#equals(java.lang.Object) */
-	@Override
-	public boolean equals(Object other) {
-		return other instanceof Product &&
-			   _id.equalsIgnoreCase(((Product) other).getId());
-	}
+	public abstract void checkAggregation(int amount) throws NoProductStockException;
+
+	public abstract boolean canBeDisaggregated();
+
+	public abstract Iterator<Product> getProductIterator();
+
+	public abstract Iterator<Integer> getQuantityIterator();
+
+	public abstract int getNTimeFactor();
 
 	/**
-	 * @return the lowest price available for the product.
+	 * Aggregates the product.
 	 */
-	public double getLowestPrice() {
-		return _batches.first().getPrice();
-	}
+	public abstract void aggregate(int amount);
 
-  	/** @see java.lang.Object#toString() */
-	@Override
-	public String toString() {
-		return "" + _id + "|" + (int) _maxPrice + "|" + getStock();
-	}
+	/**
+	 * Disaggregates the product.
+	 */
+	public abstract void disaggregate(int amount, Partner partner);
 
 	/**
 	 * @return a collection of batches sorted by their natural order.
@@ -102,24 +111,21 @@ public abstract class Product implements Comparable<Product>, Serializable {
 		return batches;
 	}
 
-	public Collection<Batch> getBatchesWithLowerPrice(double price) {
+	/**
+	 * Returns a collection of all batches under the specified price.
+	 *
+	 * @param price the price to compare to.
+	 */
+	public Collection<Batch> getBatchesUnderGivenPrice(double price) {
 		Collection<Batch> batches = new TreeSet<>();
 
-		for (Batch b: _batches) {
-			if (b.getPrice() >= price)
+		for (Batch batch: _batches) {
+			if (batch.getPrice() >= price)
 				break;
-			batches.add(b);
+			batches.add(batch);
 		}
 
 		return batches;
-	}
-
-	/**
-	 * Compares products by their id.
-	 */
-	@Override
-	public int compareTo(Product other) {
-		return _id.compareTo(other.getId());
 	}
 
 	/**
@@ -178,6 +184,27 @@ public abstract class Product implements Comparable<Product>, Serializable {
 		}
 
 		return total;
+	}
+
+  	/** @see java.lang.Object#equals(java.lang.Object) */
+	@Override
+	public boolean equals(Object other) {
+		return other instanceof Product &&
+			   _key.equalsIgnoreCase(((Product) other).getKey());
+	}
+
+	/**
+	 * Compares products by their key.
+	 */
+	@Override
+	public int compareTo(Product other) {
+		return _key.compareToIgnoreCase(other.getKey());
+	}
+
+  	/** @see java.lang.Object#toString() */
+	@Override
+	public String toString() {
+		return "" + _key + "|" + (int) _maxPrice + "|" + getStock();
 	}
 
 }

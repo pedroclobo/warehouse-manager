@@ -89,7 +89,7 @@ public class Batch implements Comparable<Batch>, Serializable {
   	/** @see java.lang.Object#toString() */
 	@Override
 	public String toString() {
-		return _product.getId() + "|" + _partner.getId() + "|" + (int) _price + "|" + _stock;
+		return _product.getKey() + "|" + _partner.getKey() + "|" + (int) _price + "|" + _stock;
 	}
 
 	/**

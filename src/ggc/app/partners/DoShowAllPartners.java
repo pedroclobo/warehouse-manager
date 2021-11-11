@@ -3,7 +3,6 @@ package ggc.app.partners;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 import ggc.core.WarehouseManager;
-//FIXME import classes
 
 /**
  * Show all partners.

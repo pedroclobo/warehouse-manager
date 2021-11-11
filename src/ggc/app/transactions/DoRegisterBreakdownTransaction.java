@@ -18,34 +18,26 @@ public class DoRegisterBreakdownTransaction extends Command<WarehouseManager> {
 
 	public DoRegisterBreakdownTransaction(WarehouseManager receiver) {
 		super(Label.REGISTER_BREAKDOWN_TRANSACTION, receiver);
-		addStringField("partnerId", Message.requestPartnerKey());
-		addStringField("productId", Message.requestProductKey());
+		addStringField("partnerKey", Message.requestPartnerKey());
+		addStringField("productKey", Message.requestProductKey());
 		addIntegerField("amount", Message.requestAmount());
 	}
 
 	@Override
 	public final void execute() throws CommandException {
 		try {
-			_receiver.registerBreakdownSale(
-					_receiver.getPartner(stringField("partnerId")),
-					_receiver.getProduct(stringField("productId")),
+			_receiver.registerBreakdownTransaction(
+					stringField("partnerKey"),
+					stringField("productKey"),
 					integerField("amount")
 					);
-		} catch (NoProductStockException e1) {
-			try {
-				throw new UnavailableProductException(
-						stringField("productId"),
-						integerField("amount"),
-						_receiver.getProductStock("productId")
-						);
-			} catch (UnknownProductException e2) {
-				throw new UnknownProductKeyException(stringField("productId"));
-			}
 
-		} catch (UnknownPartnerException e3) {
-			throw new UnknownPartnerKeyException(stringField("partnerId"));
-		} catch (UnknownProductException e4) {
-			throw new UnknownProductKeyException(stringField("productId"));
+		} catch (NoProductStockException e) {
+			throw new UnavailableProductException(e.getKey(), e.getRequested(), e.getAvailable());
+		} catch (UnknownPartnerException e) {
+			throw new UnknownPartnerKeyException(e.getKey());
+		} catch (UnknownProductException e) {
+			throw new UnknownProductKeyException(e.getKey());
 		}
 	}
 

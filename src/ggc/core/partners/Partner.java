@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import ggc.core.products.Batch;
+import ggc.core.transactions.Transaction;
 import ggc.core.transactions.Acquisition;
 import ggc.core.transactions.Sale;
 import ggc.core.transactions.CreditSale;
@@ -22,8 +23,8 @@ public class Partner implements Comparable<Partner>, Serializable {
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202109192006L;
 
-	/** The partner's id. */
-	private String _id;
+	/** The partner's key. */
+	private String _key;
 
 	/** The partner's name. */
 	private String _name;
@@ -50,56 +51,17 @@ public class Partner implements Comparable<Partner>, Serializable {
 	private Set<Batch> _batches;
 
 	/**
-	 * This class is responsible for the partner's point accounting.
-	 * The partner's status depends on its delay paying its sales.
-	 */
-	private class Status implements Serializable {
-
-		/** Serial number for serialization. */
-		private static final long serialVersionUID = 202109192006L;
-
-		/** Number of points accumulated. */
-		private int _points;
-
-		/** Levels of status classification. */
-		private enum classification {
-			NORMAL, SELECTION, ELITE;
-		}
-
-		/** Classification status. */
-		private classification _classification;
-
-		/**
-		 * Registers new default status.
-		 * Every client starts with 0 points and a "NORMAL" classification.
-		 */
-		private Status() {
-			_points = 0;
-			_classification = classification.NORMAL;
-		}
-
-		/**
-		 * String representation of status.
-		 *
-		 * @see java.lang.Object#toString()
-		 */
-		public String toString() {
-			return _classification + "|" + _points;
-		}
-	}
-
-	/**
 	 * Constructor.
 	 *
-	 * @param id      the partner's id.
+	 * @param key     the partner's key.
 	 * @param name    the partner's name.
 	 * @param address the partner's address.
 	 */
-	public Partner(String id, String name, String address) {
-		_id = id;
+	public Partner(String key, String name, String address) {
+		_key = key;
 		_name = name;
 		_address = address;
-		_status = new Status();
+		_status = new NormalStatus(this, 0);
 		_acquisitions = new TreeSet<>();
 		_sales = new TreeSet<>();
 		_creditSales = new TreeSet<>();
@@ -108,10 +70,10 @@ public class Partner implements Comparable<Partner>, Serializable {
 	}
 
 	/**
-	 * @return the partner's id.
+	 * @return the partner's key.
 	 */
-	public String getId() {
-		return _id;
+	public String getKey() {
+		return _key;
 	}
 
 	/**
@@ -159,23 +121,16 @@ public class Partner implements Comparable<Partner>, Serializable {
 		return paidSales;
 	}
 
-	/**
-	 * Adds a new acquisition to the partner's history.
-	 */
-	public void addAcquisitionTransaction(Acquisition p) {
-		_acquisitions.add(p);
-	}
-
-	/**
-	 * Adds a new sale to the partner's history.
-	 */
-	public void addSaleTransaction(Sale s) {
-		_sales.add(s);
-
-		if (s instanceof CreditSale)
-			_creditSales.add((CreditSale) s);
-		else if (s instanceof BreakdownSale)
-			_breakdownSales.add((BreakdownSale) s);
+	public void addTransaction(Transaction transaction) {
+		if (transaction instanceof Acquisition) {
+			_acquisitions.add((Acquisition) transaction);
+		} else if (transaction instanceof CreditSale) {
+			_creditSales.add((CreditSale) transaction);
+			_sales.add((CreditSale) transaction);
+		} else if (transaction instanceof BreakdownSale) {
+			_breakdownSales.add((BreakdownSale) transaction);
+			_sales.add((BreakdownSale) transaction);
+		}
 	}
 
 	/**
@@ -241,11 +196,42 @@ public class Partner implements Comparable<Partner>, Serializable {
 	}
 
 	/**
+	 * Processes the payment of a acquisition transaction.
+	 *
+	 * @param transaction the acquisition transaction to pay.
+	 */
+	public void payTransaction(Acquisition transaction) {
+		_status.payTransaction(transaction);
+	}
+
+	/**
+	 * Processes the payment of a credit sale transaction.
+	 *
+	 * @param transaction the credit sale transaction to pay.
+	 */
+	public void payTransaction(CreditSale transaction) {
+		_status.payTransaction(transaction);
+	}
+
+	public double getTransactionPrice(CreditSale transaction) {
+		return _status.getTransactionPrice(transaction);
+	}
+
+	/**
+	 * Processes the payment of a breakdown sale transaction.
+	 *
+	 * @param transaction the breakdown sale transaction to pay.
+	 */
+	public void payTransaction(BreakdownSale transaction) {
+		_status.payTransaction(transaction);
+	}
+
+	/**
 	 * Compares partners by id.
 	 */
 	@Override
 	public int compareTo(Partner other) {
-		return _id.compareTo(other.getId());
+		return _key.compareTo(other.getKey());
 	}
 
 	/**
@@ -256,7 +242,7 @@ public class Partner implements Comparable<Partner>, Serializable {
 	@Override
 	public boolean equals(Object other) {
 		return (other instanceof Partner) &&
-			_id.equals(((Partner) other).getId());
+			_key.equals(((Partner) other).getKey());
 	}
 
 	/**
@@ -267,7 +253,7 @@ public class Partner implements Comparable<Partner>, Serializable {
 	 */
 	@Override
 	public String toString() {
-		return _id + "|" +
+		return _key + "|" +
 			_name + "|" +
 			_address + "|" +
 			_status + "|" +

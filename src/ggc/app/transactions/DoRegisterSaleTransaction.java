@@ -27,9 +27,9 @@ public class DoRegisterSaleTransaction extends Command<WarehouseManager> {
 	public final void execute() throws CommandException {
 		try {
 			_receiver.registerSaleTransaction(
-					_receiver.getPartner(stringField("partnerKey")),
+					stringField("partnerKey"),
 					integerField("paymentDeadline"),
-					_receiver.getProduct(stringField("productKey")),
+					stringField("productKey"),
 					integerField("amount")
 					);
 

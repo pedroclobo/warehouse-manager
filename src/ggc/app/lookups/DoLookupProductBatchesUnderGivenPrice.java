@@ -16,7 +16,7 @@ public class DoLookupProductBatchesUnderGivenPrice extends Command<WarehouseMana
 
 	@Override
 	public void execute() throws CommandException {
-		_display.popup(_receiver.getBatchesWithLowerPrice(realField("price")));
+		_display.popup(_receiver.getBatchesUnderGivenPrice(realField("price")));
 	}
 
 }

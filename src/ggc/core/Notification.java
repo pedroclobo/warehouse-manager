@@ -24,6 +24,6 @@ public class Notification implements Serializable {
 	}
 
 	public String toString() {
-		return _type + "|" + _product.getId() + "|" + _product.getLowestPrice();
+		return _type + "|" + _product.getKey() + "|" + _product.getLowestPrice();
 	}
 }

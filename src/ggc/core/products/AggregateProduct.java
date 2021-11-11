@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
+import ggc.core.partners.Partner;
+import ggc.core.exception.NoProductStockException;
+
 /**
  * This class represents products made from other products.
  * Each aggregate product has a recipe, which designates the products
@@ -37,6 +40,54 @@ public class AggregateProduct extends Product {
 		return _recipe.getAggravation();
 	}
 
+	@Override
+	public boolean canBeDisaggregated() {
+		return true;
+	}
+
+	/**
+	 * Aggregates the product.
+	 */
+	@Override
+	public void aggregate(int amount) {
+		Iterator<Product> prodIter = getProductIterator();
+		Iterator<Integer> quantIter = getQuantityIterator();
+
+		while (prodIter.hasNext() && quantIter.hasNext()) {
+			Product component = prodIter.next();
+			int componentAmount = quantIter.next();
+
+			component.aggregate(amount);
+		}
+	}
+
+	/**
+	 * Disaggregates the product.
+	 */
+	@Override
+	public void disaggregate(int amount, Partner partner) {
+		double productPrice;
+
+		Iterator<Product> prodIter = getProductIterator();
+		Iterator<Integer> quantIter = getQuantityIterator();
+
+		while (prodIter.hasNext() && quantIter.hasNext()) {
+			Product product = prodIter.next();
+			int productAmount = quantIter.next();
+
+			if (product.hasStock())
+				productPrice = product.getLowestPrice();
+			else
+				productPrice = product.getMaxPrice();
+
+			// Add components to stock.
+			product.add(productAmount * amount, partner, productPrice);
+		}
+
+		// Remove aggregate product.
+		remove(amount);
+	}
+
 	public Iterator<Product> getProductIterator() {
 		return _recipe.getProductIterator();
 	}
@@ -45,11 +96,33 @@ public class AggregateProduct extends Product {
 		return _recipe.getQuantityIterator();
 	}
 
+	public int getNTimeFactor() {
+		return 3;
+	}
+
+	@Override
+	public void checkAggregation(int amount) throws NoProductStockException {
+		// Iterate over all components, to know their insertion prices.
+		Iterator<Product> prodIter = getProductIterator();
+		Iterator<Integer> quantIter = getQuantityIterator();
+
+		while (prodIter.hasNext() && quantIter.hasNext()) {
+			Product component = prodIter.next();
+			int componentAmount = quantIter.next();
+
+			try {
+				component.checkAggregation(componentAmount);
+			} catch (NoProductStockException e) {
+				throw e;
+			}
+		}
+	}
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return super.toString() + "|" + _recipe;
+		return super.toString() + "|" + getAggravation() + "|" + _recipe;
 	}
 
 	/**
@@ -96,7 +169,7 @@ public class AggregateProduct extends Product {
 		 * @see java.lang.Object#toString()
 		 */
 		public String toString() {
-			return _product.getId() + ":" + _quantity;
+			return _product.getKey() + ":" + _quantity;
 		}
 
 	}

@@ -2,23 +2,21 @@ package ggc.core.transactions;
 
 import java.io.Serializable;
 
+import ggc.core.Date;
 import ggc.core.products.Product;
 import ggc.core.partners.Partner;
 
 /**
  * Represents a transaction between the Warehouse and its partners.
- * Each transaction is represented by a number (id).
+ * Each transaction is represented by a unique number.
  */
 public abstract class Transaction implements Serializable, Comparable<Transaction> {
 
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202109192006L;
 
-	/** Total number of transactions. */
-	private static int _numberTransactions = 0;
-
-	/** The transaction's id. */
-	private int _id;
+	/** The transaction's key. */
+	private int _key;
 
 	/** The transaction's associated partner. */
 	private Partner _partner;
@@ -26,40 +24,34 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 	/** The transaction's processed product. */
 	private Product _product;
 
-	/** The quantity of product processed. */
-	private int _quantity;
+	/** The amount of product processed. */
+	private int _amount;
 
 	/** The date in which the transaction was paid. */
-	private int _paymentDate;
+	private Date _paymentDate;
 
 	/**
 	 * Constructor.
 	 *
+	 * @param key         the transaction's key.
 	 * @param partner     the transaction's associated partner.
 	 * @param product     the transaction's processed product.
-	 * @param quantity    the quantity of product processed.
+	 * @param amount      the amount of product processed.
 	 * @param paymentDate the transaction's payment date.
 	 */
-	protected Transaction(Partner partner, Product product, int quantity, int paymentDate) {
-		_id = _numberTransactions++;
+	protected Transaction(int key, Partner partner, Product product, int amount, Date paymentDate) {
+		_key = key;
 		_partner = partner;
 		_product = product;
-		_quantity = quantity;
+		_amount = amount;
 		_paymentDate = paymentDate;
 	}
 
 	/**
-	 * @return the transaction's id.
+	 * @return the transaction's key.
 	 */
-	public int getId() {
-		return _id;
-	}
-
-	/**
-	 * @return the transaction's product quantity.
-	 */
-	public int getProductQuantity() {
-		return _quantity;
+	public int getKey() {
+		return _key;
 	}
 
 	/**
@@ -77,31 +69,68 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 	}
 
 	/**
+	 * @return the transaction's product amount.
+	 */
+	public int getProductAmount() {
+		return _amount;
+	}
+
+	/**
 	 * @return the transaction's payment date.
 	 */
-	public int getPaymentDate() {
+	public Date getPaymentDate() {
 		return _paymentDate;
 	}
 
 	/**
-	 * Set the transaction's payment date.
-	 *
-	 * @param date the payment date.
+	 * Set the transaction's payment date to the current date.
 	 */
-	// TODO
-	public void setPaymentDate(int date) {
-		_paymentDate = date;
+	protected void setPaymentDate() {
+		_paymentDate = Date.now();
 	}
 
+	/**
+	 * Determines if a transaction has been paid.
+	 */
+	public final boolean isPaid() {
+		return _paymentDate != null;
+	}
+
+	/**
+	 * Pays the transaction.
+	 */
+	public abstract void pay();
+
+	/**
+	 * Updates the transaction price, accouting for discounts.
+	 */
+	public abstract void updatePrice();
+
+	/**
+	 * Returns the transaction's price.
+	 */
+	public abstract double getPrice();
+
+	/**
+	 * Determines if two transactions are equal.
+	 * Two transactions are the same if they hold the same id.
+	 *
+	 * @param other transaction to compare to.
+	 */
 	@Override
 	public boolean equals(Object other) {
 		return other instanceof Transaction &&
-			_id == ((Transaction) other).getId();
+			_key == ((Transaction) other).getKey();
 	}
 
+	/**
+	 * Compares transactions by id.
+	 *
+	 * @param other transaction to compare to.
+	 */
 	@Override
 	public int compareTo(Transaction other) {
-		return _id - other.getId();
+		return _key - other.getKey();
 	}
 
 }

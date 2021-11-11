@@ -14,15 +14,15 @@ class DoShowBatchesByPartner extends Command<WarehouseManager> {
 
 	DoShowBatchesByPartner(WarehouseManager receiver) {
 		super(Label.SHOW_BATCHES_SUPPLIED_BY_PARTNER, receiver);
-		addStringField("id", Message.requestPartnerKey());
+		addStringField("partnerKey", Message.requestPartnerKey());
 	}
 
 	@Override
 	public final void execute() throws CommandException {
 		try {
-			_display.popup(_receiver.getBatchesByPartner(stringField("id")));
+			_display.popup(_receiver.getBatchesByPartner(stringField("partnerKey")));
 		} catch (UnknownPartnerException e) {
-			throw new UnknownPartnerKeyException(stringField("id"));
+			throw new UnknownPartnerKeyException(e.getKey());
 		}
 	}
 

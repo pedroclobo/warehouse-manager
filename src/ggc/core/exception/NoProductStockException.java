@@ -12,8 +12,11 @@ public class NoProductStockException extends Exception {
 	 * @param requested Requested amount.
 	 * @param available Available amount.
 	 */
-	public NoProductStockException(String id, int requested, int available) {
-		super(Message.unavailable(id, requested, available));
+	public NoProductStockException(String key, int requested, int available) {
+		super(Message.unavailable(key, requested, available));
+		_key = key;
+		_requested = requested;
+		_available = available;
 	}
 
 	public String getKey() {

@@ -4,10 +4,18 @@ package ggc.core.exception;
 interface Message {
 
 	/**
+	 * @param date bad date.
+	 * @return string with problem description.
+	 */
+	public static String invalidDateIncrement(int date) {
+		return "Data inválida: " + date;
+	}
+
+	/**
 	 * @param key
 	 * @return string with problem description.
 	 */
-	static String unknownPartnerKey(String key) {
+	static String unknownPartner(String key) {
 		return "O parceiro '" + key + "' não existe.";
 	}
 
@@ -15,7 +23,7 @@ interface Message {
 	 * @param key partner key
 	 * @return string reporting a duplicate partner
 	 */
-	static String duplicatePartnerKey(String key) {
+	static String duplicatePartner(String key) {
 		return "O parceiro '" + key + "' já existe.";
 	}
 
@@ -23,7 +31,7 @@ interface Message {
 	 * @param key
 	 * @return string with problem description.
 	 */
-	static String unknownProductKey(String key) {
+	static String unknownProduct(String key) {
 		return "O produto '" + key + "' não existe.";
 	}
 
@@ -41,7 +49,7 @@ interface Message {
 	 * @param key
 	 * @return string with problem description.
 	 */
-	static String unknownTransactionKey(int key) {
+	static String unknownTransaction(int key) {
 		return "A transacção '" + key + "' não existe.";
 	}
 
@@ -49,32 +57,8 @@ interface Message {
 	 * @param key
 	 * @return string with problem description.
 	 */
-	public static String duplicateTransactionKey(int key) {
+	public static String duplicateTransaction(int key) {
 		return "A transacção '" + key + "' já existe.";
-	}
-
-	/**
-	 * @param type Type of service.
-	 * @return string with problem description.
-	 */
-	static String unknownServiceType(String type) {
-		return "Tipo de serviço desconhecido: '" + type + "'.";
-	}
-
-	/**
-	 * @param level service level.
-	 * @return string with problem description.
-	 */
-	static String unknownServiceLevel(String level) {
-		return "Nível de serviço desconhecido: '" + level + "'.";
-	}
-
-	/**
-	 * @param date Bad date..
-	 * @return string with problem description.
-	 */
-	public static String invalidDate(int date) {
-		return "Data inválida: " + date;
 	}
 
 }

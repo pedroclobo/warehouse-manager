@@ -1,5 +1,6 @@
 package ggc.core.transactions;
 
+import ggc.core.Date;
 import ggc.core.products.Product;
 import ggc.core.partners.Partner;
 
@@ -16,36 +17,59 @@ public class Acquisition extends Transaction {
 	/**
 	 * Constructor.
 	 *
+	 * @param key         the transaction's key.
 	 * @param partner     the transaction's associated partner.
 	 * @param product     the transaction's processed product.
 	 * @param quantity    the quantity of product processed.
 	 * @param paymentDate the transaction's payment date.
-	 * @param price       the price paid.
+	 * @param price       the transaction's price.
 	 */
-	public Acquisition(Partner partner, Product product, int quantity, int paymentDate, double price) {
-		super(partner, product, quantity, paymentDate);
+	public Acquisition(int key, Partner partner, Product product, int quantity, Date paymentDate, double price) {
+		super(key, partner, product, quantity, paymentDate);
 		_price = price;
+		product.add(quantity, partner, price / quantity);
+		pay();
 	}
 
 	/**
-	 * @return the acquisition's paid price.
+	 * Returns the transaction's price.
+	 *
+	 * @param date the current date.
 	 */
+	@Override
 	public double getPrice() {
 		return _price;
 	}
+
+	/**
+	 * Pays the acquisition.
+	 */
+	@Override
+	public void pay() {
+		getPartner().payTransaction(this);
+	}
+
+	/**
+	 * Updates the transaction price, accouting for discounts.
+	 *
+	 * @param date the current date.
+	 */
+	@Override
+	public void updatePrice() {}
 
 	/**
 	 * String representation of acquisition.
 	 *
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return "COMPRA|" +
-			getId() + "|" +
-			getPartner().getId() + "|" +
-			getProduct().getId() + "|" +
-			getProductQuantity() + "|" +
-			(int) getPrice() + "|" +
+			getKey() + "|" +
+			getPartner().getKey() + "|" +
+			getProduct().getKey() + "|" +
+			getProductAmount() + "|" +
+			(int) _price + "|" +
 			getPaymentDate();
 	}
 

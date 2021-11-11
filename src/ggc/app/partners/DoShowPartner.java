@@ -13,15 +13,15 @@ class DoShowPartner extends Command<WarehouseManager> {
 
 	DoShowPartner(WarehouseManager receiver) {
 		super(Label.SHOW_PARTNER, receiver);
-		addStringField("id", Message.requestPartnerKey());
+		addStringField("partnerKey", Message.requestPartnerKey());
 	}
 
 	@Override
 	public void execute() throws CommandException {
 		try {
-			_display.popup(_receiver.getPartner(stringField("id")));
+			_display.popup(_receiver.getPartner(stringField("partnerKey")));
 		} catch (UnknownPartnerException e) {
-			throw new UnknownPartnerKeyException(stringField("id"));
+			throw new UnknownPartnerKeyException(e.getKey());
 		}
 	}
 

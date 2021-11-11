@@ -1,5 +1,6 @@
 package ggc.core.transactions;
 
+import ggc.core.Date;
 import ggc.core.products.Product;
 import ggc.core.partners.Partner;
 
@@ -11,17 +12,14 @@ public abstract class Sale extends Transaction {
 	/**
 	 * Constructor.
 	 *
+	 * @param key         the transaction's key.
 	 * @param partner     the transaction's associated partner.
 	 * @param product     the transaction's processed product.
 	 * @param quantity    the quantity of product processed.
 	 * @param paymentDate the transaction's payment date.
 	 */
-	protected Sale(Partner partner, Product product, int quantity, int paymentDate) {
-		super(partner, product, quantity, paymentDate);
-	}
-
-	public final boolean isPaid() {
-		return getPaymentDate() != -1;
+	protected Sale(int key, Partner partner, Product product, int quantity, Date paymentDate) {
+		super(key, partner, product, quantity, paymentDate);
 	}
 
 }

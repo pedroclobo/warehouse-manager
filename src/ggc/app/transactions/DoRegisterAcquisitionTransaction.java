@@ -8,6 +8,7 @@ import pt.tecnico.uilib.forms.Form;
 import ggc.core.WarehouseManager;
 import ggc.app.exception.UnknownPartnerKeyException;
 import ggc.core.exception.UnknownPartnerException;
+import ggc.app.exception.UnknownProductKeyException;
 import ggc.core.exception.UnknownProductException;
 
 /**
@@ -26,15 +27,15 @@ public class DoRegisterAcquisitionTransaction extends Command<WarehouseManager> 
 	@Override
 	public final void execute() throws CommandException {
 		try {
-			_receiver.registerAcquisition(
-					_receiver.getPartner(stringField("partnerId")),
-					_receiver.getProduct(stringField("productId")),
+			_receiver.registerAcquisitionTransaction(
+					stringField("partnerId"),
+					stringField("productId"),
 					integerField("quantity"),
 					realField("price"));
 
-		} catch (UnknownPartnerException e1) {
-			throw new UnknownPartnerKeyException(stringField("partnerId"));
-		} catch (UnknownProductException e2) {
+		} catch (UnknownPartnerException e) {
+			throw new UnknownPartnerKeyException(e.getKey());
+		} catch (UnknownProductException e) {
 			boolean isAggregateProduct = Form.confirm(Message.requestAddRecipe());
 
 			try {
@@ -42,9 +43,9 @@ public class DoRegisterAcquisitionTransaction extends Command<WarehouseManager> 
 				// Create new simple product and register acquisition
 				if (!isAggregateProduct) {
 					_receiver.registerSimpleProduct(stringField("productId"));
-					_receiver.registerAcquisition(
-							_receiver.getPartner(stringField("partnerId")),
-							_receiver.getProduct(stringField("productId")),
+					_receiver.registerAcquisitionTransaction(
+							stringField("partnerId"),
+							stringField("productId"),
 							integerField("quantity"),
 							realField("price"));
 
@@ -69,10 +70,10 @@ public class DoRegisterAcquisitionTransaction extends Command<WarehouseManager> 
 
 				}
 
-			} catch (UnknownPartnerException e3) {
-				throw new UnknownPartnerKeyException(stringField("partnerId"));
-			} catch (UnknownProductException e4) {
-				return;
+			} catch (UnknownPartnerException innerE) {
+				throw new UnknownPartnerKeyException(innerE.getKey());
+			} catch (UnknownProductException innerE) {
+				throw new UnknownProductKeyException(innerE.getKey());
 			}
 		}
 	}
