@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 import ggc.core.Notification;
 import ggc.core.Notifiable;
+import ggc.core.NotificationDeliveryMethod;
+import ggc.core.DefaultNotificationDeliveryMethod;
 import ggc.core.products.Batch;
 import ggc.core.transactions.Transaction;
 import ggc.core.transactions.Acquisition;
@@ -57,6 +59,9 @@ public class Partner implements Comparable<Partner>, Notifiable, Serializable {
 	/** Collection of all partner's notifications. */
 	private List<Notification> _notifications;
 
+	/** Partner's preferred notification delivery method. */
+	private NotificationDeliveryMethod _deliveryMethod;
+
 	/**
 	 * Constructor.
 	 *
@@ -75,6 +80,7 @@ public class Partner implements Comparable<Partner>, Notifiable, Serializable {
 		_breakdownSales = new TreeSet<>();
 		_batches = new TreeSet<>();
 		_notifications = new ArrayList<>();
+		_deliveryMethod = new DefaultNotificationDeliveryMethod();
 	}
 
 	/**
@@ -251,6 +257,7 @@ public class Partner implements Comparable<Partner>, Notifiable, Serializable {
 	@Override
 	public void updateNotifications(Notification notification) {
 		_notifications.add(notification);
+		_deliveryMethod.deliverNotification(notification);
 	}
 
 	public Collection<Notification> getNotifications() {
