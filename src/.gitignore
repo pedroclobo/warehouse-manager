@@ -1,6 +1,7 @@
-app01.dat
-app02.dat
-app03.dat
+*.dat
+*.class
+*.diff
+*.outhyp
 correia.jar
 esgotado.ggc
 proj.jar
