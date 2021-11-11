@@ -11,19 +11,12 @@ public class Notification implements Serializable {
 	private String _type;
 	private Product _product;
 
-	public Notification(String type) {
+	public Notification(String type, Product product) {
 		_type = type;
-	}
-
-	public String getType() {
-		return _type;
-	}
-
-	public Product getProduct() {
-		return _product;
+		_product = product;
 	}
 
 	public String toString() {
-		return _type + "|" + _product.getKey() + "|" + _product.getLowestPrice();
+		return _type + "|" + _product.getKey() + "|" + Math.round(_product.getLowestPrice());
 	}
 }

@@ -5,8 +5,12 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Collection;
 import java.util.Set;
+import java.util.List;
 import java.util.TreeSet;
+import java.util.ArrayList;
 
+import ggc.core.Notification;
+import ggc.core.Notifiable;
 import ggc.core.products.Batch;
 import ggc.core.transactions.Transaction;
 import ggc.core.transactions.Acquisition;
@@ -18,7 +22,7 @@ import ggc.core.transactions.BreakdownSale;
  * Partners buy and sell products to and from the Warehouse.
  * Each partner is identified by a unique string.
  */
-public class Partner implements Comparable<Partner>, Serializable {
+public class Partner implements Comparable<Partner>, Notifiable, Serializable {
 
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202109192006L;
@@ -50,6 +54,9 @@ public class Partner implements Comparable<Partner>, Serializable {
 	/** Collection of all partner's supplied batches. */
 	private Set<Batch> _batches;
 
+	/** Collection of all partner's notifications. */
+	private List<Notification> _notifications;
+
 	/**
 	 * Constructor.
 	 *
@@ -67,6 +74,7 @@ public class Partner implements Comparable<Partner>, Serializable {
 		_creditSales = new TreeSet<>();
 		_breakdownSales = new TreeSet<>();
 		_batches = new TreeSet<>();
+		_notifications = new ArrayList<>();
 	}
 
 	/**
@@ -91,26 +99,29 @@ public class Partner implements Comparable<Partner>, Serializable {
 	}
 
 	/**
-	 * @return a collection of all the partner's supplied batches.
+	 * @return a collection of all partner's supplied batches.
 	 */
 	public Collection<Batch> getBatches() {
 		return Collections.unmodifiableSet(_batches);
 	}
 
 	/**
-	 * @return a collection of all the partner's acquisition transactions.
+	 * @return a collection of all partner's acquisition transactions.
 	 */
 	public Collection<Acquisition> getAcquisitionTransactions() {
 		return Collections.unmodifiableSet(_acquisitions);
 	}
 
 	/**
-	 * @return a collection of all the partner's sale transactions.
+	 * @return a collection of all partner's sale transactions.
 	 */
 	public Collection<Sale> getSaleTransactions() {
 		return Collections.unmodifiableSet(_sales);
 	}
 
+	/**
+	 * @return a collection of all partner's paid sale transactions.
+	 */
 	public Collection<Sale> getPaidTransactions() {
 		Set<Sale> paidSales = new TreeSet<>();
 
@@ -122,15 +133,26 @@ public class Partner implements Comparable<Partner>, Serializable {
 	}
 
 	public void addTransaction(Transaction transaction) {
-		if (transaction instanceof Acquisition) {
-			_acquisitions.add((Acquisition) transaction);
-		} else if (transaction instanceof CreditSale) {
-			_creditSales.add((CreditSale) transaction);
-			_sales.add((CreditSale) transaction);
-		} else if (transaction instanceof BreakdownSale) {
-			_breakdownSales.add((BreakdownSale) transaction);
-			_sales.add((BreakdownSale) transaction);
-		}
+		if (transaction instanceof Acquisition)
+			addTransaction((Acquisition) transaction);
+		else if (transaction instanceof CreditSale)
+			addTransaction((CreditSale) transaction);
+		else if (transaction instanceof BreakdownSale)
+			addTransaction((BreakdownSale) transaction);
+	}
+
+	public void addTransaction(Acquisition transaction) {
+		_acquisitions.add(transaction);
+	}
+
+	public void addTransaction(CreditSale transaction) {
+		_creditSales.add(transaction);
+		_sales.add(transaction);
+	}
+
+	public void addTransaction(BreakdownSale transaction) {
+		_breakdownSales.add(transaction);
+		_sales.add(transaction);
 	}
 
 	/**
@@ -226,6 +248,18 @@ public class Partner implements Comparable<Partner>, Serializable {
 		_status.payTransaction(transaction);
 	}
 
+	@Override
+	public void updateNotifications(Notification notification) {
+		_notifications.add(notification);
+	}
+
+	public Collection<Notification> getNotifications() {
+		Collection<Notification> copy = new ArrayList<>(_notifications);
+		_notifications.clear();
+
+		return copy;
+	}
+
 	/**
 	 * Compares partners by id.
 	 */
@@ -234,11 +268,6 @@ public class Partner implements Comparable<Partner>, Serializable {
 		return _key.compareTo(other.getKey());
 	}
 
-	/**
-	 * Two partners are equal if they have the same id.
-	 *
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object other) {
 		return (other instanceof Partner) &&

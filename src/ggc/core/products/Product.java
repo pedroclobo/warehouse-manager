@@ -4,8 +4,13 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.List;
+import java.util.HashSet;
 import java.util.TreeSet;
+import java.util.ArrayList;
 
+import ggc.core.Notification;
+import ggc.core.Notifiable;
 import ggc.core.partners.Partner;
 import ggc.core.exception.NoProductStockException;
 
@@ -26,8 +31,13 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	/** Highest Price. */
 	private double _maxPrice;
 
+	private boolean _new;
+
 	/** Collection of batches that hold the product. */
 	private TreeSet<Batch> _batches;
+
+	/** Collection of all entities interested in being notified. */
+	private HashSet<Notifiable> _notifiables;
 
 	/**
 	 * @param key the product identifier.
@@ -35,7 +45,9 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	public Product(String key) {
 		_key = key;
 		_maxPrice = 0;
+		_new = true;
 		_batches = new TreeSet<>(Batch.getComparatorByPrice());
+		_notifiables = new HashSet<>();
 	}
 
 	/**
@@ -52,11 +64,15 @@ public abstract class Product implements Comparable<Product>, Serializable {
 		return _maxPrice;
 	}
 
+	public boolean isNew() {
+		return _new;
+	}
+
 	/**
 	 * @return the lowest price available for the product.
 	 */
 	public double getLowestPrice() {
-		return _batches.first().getPrice();
+		return (_batches.size() > 0) ? _batches.first().getPrice() : 0;
 	}
 
 	/**
@@ -81,20 +97,20 @@ public abstract class Product implements Comparable<Product>, Serializable {
 		return stock;
 	}
 
-	public abstract void checkAggregation(int amount) throws NoProductStockException;
-
-	public abstract boolean canBeDisaggregated();
-
 	public abstract Iterator<Product> getProductIterator();
 
 	public abstract Iterator<Integer> getQuantityIterator();
 
 	public abstract int getNTimeFactor();
 
+	public abstract void checkAggregation(int amount) throws NoProductStockException;
+
 	/**
 	 * Aggregates the product.
 	 */
 	public abstract void aggregate();
+
+	public abstract boolean canBeDisaggregated();
 
 	/**
 	 * Disaggregates the product.
@@ -134,6 +150,7 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	 * @param batch the batch to remove.
 	 */
 	public void removeBatch(Batch batch) {
+		batch.getPartner().removeBatch(batch);
 		_batches.remove(batch);
 	}
 
@@ -145,6 +162,8 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	 * @param double  the price per unit of the product.
 	 */
 	public void add(int units, Partner partner, double price) {
+
+		_new = false;
 
 		// Update maximum price if higher
 		if (price > _maxPrice)
@@ -186,11 +205,22 @@ public abstract class Product implements Comparable<Product>, Serializable {
 		return total;
 	}
 
-  	/** @see java.lang.Object#equals(java.lang.Object) */
-	@Override
-	public boolean equals(Object other) {
-		return other instanceof Product &&
-			   _key.equalsIgnoreCase(((Product) other).getKey());
+	public boolean isRegisteredNotifiable(Notifiable notifiable) {
+		return _notifiables.contains(notifiable);
+	}
+
+	public void addNotifiable(Notifiable notifiable) {
+		_notifiables.add(notifiable);
+	}
+
+	public void removeNotifiable(Notifiable notifiable) {
+		_notifiables.remove(notifiable);
+	}
+
+	public void sendNotification(Notification notification) {
+		for (Notifiable notifiable: _notifiables) {
+			notifiable.updateNotifications(notification);
+		}
 	}
 
 	/**
@@ -204,7 +234,7 @@ public abstract class Product implements Comparable<Product>, Serializable {
   	/** @see java.lang.Object#toString() */
 	@Override
 	public String toString() {
-		return "" + _key + "|" + (int) _maxPrice + "|" + getStock();
+		return "" + _key + "|" + Math.round(_maxPrice) + "|" + getStock();
 	}
 
 }

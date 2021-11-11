@@ -21,7 +21,7 @@ public class DoRegisterAcquisitionTransaction extends Command<WarehouseManager> 
 		addStringField("partnerId", Message.requestPartnerKey());
 		addStringField("productId", Message.requestProductKey());
 		addRealField("price", Message.requestPrice());
-		addIntegerField("quantity", Message.requestAmount());
+		addIntegerField("amount", Message.requestAmount());
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class DoRegisterAcquisitionTransaction extends Command<WarehouseManager> 
 			_receiver.registerAcquisitionTransaction(
 					stringField("partnerId"),
 					stringField("productId"),
-					integerField("quantity"),
+					integerField("amount"),
 					realField("price"));
 
 		} catch (UnknownPartnerException e) {
@@ -46,7 +46,7 @@ public class DoRegisterAcquisitionTransaction extends Command<WarehouseManager> 
 					_receiver.registerAcquisitionTransaction(
 							stringField("partnerId"),
 							stringField("productId"),
-							integerField("quantity"),
+							integerField("amount"),
 							realField("price"));
 
 				// Create new aggregate product and register acquisition
@@ -70,10 +70,10 @@ public class DoRegisterAcquisitionTransaction extends Command<WarehouseManager> 
 
 				}
 
-			} catch (UnknownPartnerException innerE) {
-				throw new UnknownPartnerKeyException(innerE.getKey());
-			} catch (UnknownProductException innerE) {
-				throw new UnknownProductKeyException(innerE.getKey());
+			} catch (UnknownPartnerException e1) {
+				throw new UnknownPartnerKeyException(e1.getKey());
+			} catch (UnknownProductException e1) {
+				throw new UnknownProductKeyException(e1.getKey());
 			}
 		}
 	}

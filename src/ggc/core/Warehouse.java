@@ -90,7 +90,6 @@ public class Warehouse implements Serializable {
 	public void forwardDate(int increment) throws InvalidDateIncrementException {
 		_date.forwardDate(increment);
 
-		// TODO
 		updateCreditSalePrices();
 		updateAccountingBalance();
 	}
@@ -149,6 +148,10 @@ public class Warehouse implements Serializable {
 	 * @param product the product to add.
 	 */
 	public void addProduct(Product product) {
+		for (Partner partner: _partners.values()) {
+			product.addNotifiable(partner);
+		}
+
 		_products.put(product.getKey(), product);
 	}
 
@@ -168,6 +171,7 @@ public class Warehouse implements Serializable {
 	 * @param key the product key.
 	 */
 	public void registerSimpleProduct(String key) {
+		Product product = new SimpleProduct(key);
 		addProduct(new SimpleProduct(key));
 	}
 
@@ -180,7 +184,8 @@ public class Warehouse implements Serializable {
 	 * @param quantities  a list of the quantities of the products that compose the aggregate product.
 	 */
 	public void registerAggregateProduct(String key, double aggravation, List<Product> products, List<Integer> quantities) {
-		addProduct(new AggregateProduct(key, aggravation, products, quantities));
+		Product product = new AggregateProduct(key, aggravation, products, quantities);
+		addProduct(product);
 	}
 
 	/**
@@ -275,6 +280,10 @@ public class Warehouse implements Serializable {
 	 * @param partner the partner to add.
 	 */
 	public void addPartner(Partner partner) {
+		for (Product product: _products.values()) {
+			product.addNotifiable(partner);
+		}
+
 		_partners.put(partner.getKey(), partner);
 	}
 
@@ -300,7 +309,8 @@ public class Warehouse implements Serializable {
 		if (isRegisteredPartner(key))
 			throw new DuplicatePartnerException(key);
 
-		addPartner(new Partner(key, name, address));
+		Partner partner = new Partner(key, name, address);
+		addPartner(partner);
 	}
 
 	/**
@@ -313,6 +323,21 @@ public class Warehouse implements Serializable {
 			throw new UnknownPartnerException(key);
 
 		return _partners.get(key);
+	}
+
+	public Collection<Notification> getPartnerNotifications(String key) throws UnknownPartnerException {
+		return getPartner(key).getNotifications();
+	}
+
+	public void toggleNotifications(String partnerKey, String productKey) throws UnknownPartnerException, UnknownProductException {
+		Product product = getProduct(productKey);
+		Partner partner = getPartner(partnerKey);
+
+		if (product.isRegisteredNotifiable(partner)) {
+			getProduct(productKey).removeNotifiable(partner);
+		} else {
+			getProduct(productKey).addNotifiable(partner);
+		}
 	}
 
 	/**
@@ -381,6 +406,13 @@ public class Warehouse implements Serializable {
 		// Check if partner and product are registered.
 		Partner partner = getPartner(partnerKey);
 		Product product = getProduct(productKey);
+
+		// Notify interested entities.
+		if (!product.isNew() && !product.hasStock()) {
+			product.sendNotification(new Notification("NEW", product));
+		} else if (product.getLowestPrice() > price) {
+			product.sendNotification(new Notification("BARGAIN", product));
+		}
 
 		// Add transaction to warehouse collection.
 		Acquisition transaction = new Acquisition(_nextTransactionId++, partner, product, amount, Date.now(), price * amount);
@@ -523,6 +555,11 @@ public class Warehouse implements Serializable {
 			throw e;
 		} catch (BadEntryException e) {
 			throw e;
+		}
+
+		// Clear all partner notifications.
+		for (Partner partner: _partners.values()) {
+			partner.getNotifications();
 		}
 	}
 

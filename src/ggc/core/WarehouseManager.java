@@ -160,6 +160,10 @@ public class WarehouseManager {
 		return _warehouse.getPartner(id);
 	}
 
+	public Collection<Notification> getPartnerNotifications(String key) throws UnknownPartnerException {
+		return _warehouse.getPartnerNotifications(key);
+	}
+
 	/**
 	 * @return a collection with all partners
 	 */
@@ -259,6 +263,9 @@ public class WarehouseManager {
 		return _warehouse.getPartnerPaidTransactions(key);
 	}
 
+	public void toggleNotifications(String partnerKey, String productKey) throws UnknownPartnerException, UnknownProductException {
+		_warehouse.toggleNotifications(partnerKey, productKey);
+	}
 	/**
 	 * Saves the current state of the warehouse to the associated filename.
 	 *
