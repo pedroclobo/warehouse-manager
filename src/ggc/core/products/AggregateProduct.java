@@ -49,7 +49,7 @@ public class AggregateProduct extends Product {
 	 * Aggregates the product.
 	 */
 	@Override
-	public void aggregate(int amount) {
+	public void aggregate() {
 		Iterator<Product> prodIter = getProductIterator();
 		Iterator<Integer> quantIter = getQuantityIterator();
 
@@ -57,7 +57,7 @@ public class AggregateProduct extends Product {
 			Product component = prodIter.next();
 			int componentAmount = quantIter.next();
 
-			component.aggregate(amount);
+			component.aggregate();
 		}
 	}
 
@@ -111,7 +111,7 @@ public class AggregateProduct extends Product {
 			int componentAmount = quantIter.next();
 
 			try {
-				component.checkAggregation(componentAmount);
+				component.checkAggregation((amount - getStock()) * componentAmount);
 			} catch (NoProductStockException e) {
 				throw e;
 			}

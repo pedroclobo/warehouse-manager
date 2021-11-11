@@ -408,17 +408,21 @@ public class Warehouse implements Serializable {
 		Partner partner = getPartner(partnerKey);
 		Product product = getProduct(productKey);
 
+		// Check if aggregation is possible.
+		try {
+			product.checkAggregation(amount);
+			for (int i = 0; i < amount; i++) {
+				product.aggregate();
+			}
+		} catch (NoProductStockException e) {
+			throw e;
+		}
+
 		// Check for product stock.
 		if (product.getStock() < amount) {
 			throw new NoProductStockException(product.getKey(), amount, product.getStock());
 		}
 
-		// Check if aggregation is possible.
-		try {
-			product.checkAggregation(amount);
-		} catch (NoProductStockException e) {
-			throw e;
-		}
 
 		addTransaction(new CreditSale(_nextTransactionId++, partner, product, amount, new Date(paymentDeadline)));
 	}

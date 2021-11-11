@@ -94,7 +94,7 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	/**
 	 * Aggregates the product.
 	 */
-	public abstract void aggregate(int amount);
+	public abstract void aggregate();
 
 	/**
 	 * Disaggregates the product.

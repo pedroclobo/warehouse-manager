@@ -38,7 +38,7 @@ public class SimpleProduct extends Product {
 	 * Aggregates the product.
 	 */
 	@Override
-	public void aggregate(int amount) {}
+	public void aggregate() {}
 
 	/**
 	 * Disaggregates the product.
