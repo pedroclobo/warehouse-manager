@@ -1,4 +1,4 @@
-package ggc.core.products;
+package ggc.core;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -9,9 +9,6 @@ import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.ArrayList;
 
-import ggc.core.Notification;
-import ggc.core.Notifiable;
-import ggc.core.partners.Partner;
 import ggc.core.exception.NoProductStockException;
 
 /**

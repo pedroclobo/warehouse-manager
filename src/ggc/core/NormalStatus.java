@@ -1,9 +1,9 @@
-package ggc.core.partners;
+package ggc.core;
 
-import ggc.core.products.SimpleProduct;
-import ggc.core.transactions.Sale;
-import ggc.core.transactions.CreditSale;
-import ggc.core.transactions.BreakdownSale;
+
+
+
+
 
 class NormalStatus extends Status {
 

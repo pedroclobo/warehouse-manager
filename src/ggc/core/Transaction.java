@@ -1,10 +1,6 @@
-package ggc.core.transactions;
+package ggc.core;
 
 import java.io.Serializable;
-
-import ggc.core.Date;
-import ggc.core.products.Product;
-import ggc.core.partners.Partner;
 
 /**
  * Represents a transaction between the Warehouse and its partners.

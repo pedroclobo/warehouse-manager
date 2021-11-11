@@ -7,9 +7,6 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.Reader;
 
-import ggc.core.products.Product;
-import ggc.core.partners.Partner;
-
 import ggc.core.exception.BadEntryException;
 import ggc.core.exception.UnknownPartnerException;
 import ggc.core.exception.DuplicatePartnerException;

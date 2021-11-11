@@ -1,8 +1,4 @@
-package ggc.core.transactions;
-
-import ggc.core.Date;
-import ggc.core.products.Product;
-import ggc.core.partners.Partner;
+package ggc.core;
 
 /**
  * Represents a sale with a monetary value associated.

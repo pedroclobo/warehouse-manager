@@ -1,13 +1,9 @@
-package ggc.core.transactions;
+package ggc.core;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
-import ggc.core.Date;
-import ggc.core.products.Product;
-import ggc.core.products.AggregateProduct;
-import ggc.core.partners.Partner;
 import ggc.core.exception.NoProductStockException;
 
 /**

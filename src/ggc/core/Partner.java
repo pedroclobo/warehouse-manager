@@ -1,4 +1,4 @@
-package ggc.core.partners;
+package ggc.core;
 
 import java.io.Serializable;
 
@@ -8,17 +8,6 @@ import java.util.Set;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.ArrayList;
-
-import ggc.core.Notification;
-import ggc.core.Notifiable;
-import ggc.core.NotificationDeliveryMethod;
-import ggc.core.DefaultNotificationDeliveryMethod;
-import ggc.core.products.Batch;
-import ggc.core.transactions.Transaction;
-import ggc.core.transactions.Acquisition;
-import ggc.core.transactions.Sale;
-import ggc.core.transactions.CreditSale;
-import ggc.core.transactions.BreakdownSale;
 
 /**
  * Partners buy and sell products to and from the Warehouse.

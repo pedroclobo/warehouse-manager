@@ -1,8 +1,4 @@
-package ggc.core.transactions;
-
-import ggc.core.Date;
-import ggc.core.products.Product;
-import ggc.core.partners.Partner;
+package ggc.core;
 
 /**
  * This class represents a acquisition transaction.

@@ -1,11 +1,10 @@
-package ggc.core.products;
+package ggc.core;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
-import ggc.core.partners.Partner;
 import ggc.core.exception.NoProductStockException;
 
 /**

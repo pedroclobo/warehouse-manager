@@ -1,7 +1,6 @@
 package ggc.core;
 
 import java.io.Serializable;
-import ggc.core.products.Product;
 
 public class Notification implements Serializable {
 

@@ -1,13 +1,13 @@
-package ggc.core.partners;
+package ggc.core;
 
 import java.io.Serializable;
 
-import ggc.core.Date;
-import ggc.core.products.SimpleProduct;
-import ggc.core.transactions.Acquisition;
-import ggc.core.transactions.Sale;
-import ggc.core.transactions.CreditSale;
-import ggc.core.transactions.BreakdownSale;
+
+
+
+
+
+
 
 /** Levels of status classification. */
 enum Classification {
