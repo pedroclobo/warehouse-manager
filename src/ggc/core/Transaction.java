@@ -35,7 +35,7 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 	 * @param amount      the amount of product processed.
 	 * @param paymentDate the transaction's payment date.
 	 */
-	protected Transaction(int key, Partner partner, Product product, int amount, Date paymentDate) {
+	Transaction(int key, Partner partner, Product product, int amount, Date paymentDate) {
 		_key = key;
 		_partner = partner;
 		_product = product;
@@ -46,66 +46,66 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 	/**
 	 * @return the transaction's key.
 	 */
-	public int getKey() {
+	final int getKey() {
 		return _key;
 	}
 
 	/**
 	 * @return the transaction's associated partner.
 	 */
-	public Partner getPartner() {
+	final Partner getPartner() {
 		return _partner;
 	}
 
 	/**
 	 * @return the transaction's processed product.
 	 */
-	public Product getProduct() {
+	final Product getProduct() {
 		return _product;
 	}
 
 	/**
 	 * @return the transaction's product amount.
 	 */
-	public int getProductAmount() {
+	final int getProductAmount() {
 		return _amount;
 	}
 
 	/**
 	 * @return the transaction's payment date.
 	 */
-	public Date getPaymentDate() {
+	final Date getPaymentDate() {
 		return _paymentDate;
 	}
 
 	/**
 	 * Set the transaction's payment date to the current date.
 	 */
-	protected void setPaymentDate() {
+	final void setPaymentDate() {
 		_paymentDate = Date.now();
 	}
 
 	/**
 	 * Determines if a transaction has been paid.
 	 */
-	public final boolean isPaid() {
+	final boolean isPaid() {
 		return _paymentDate != null;
 	}
 
 	/**
 	 * Pays the transaction.
 	 */
-	public abstract void pay();
+	abstract void pay();
 
 	/**
 	 * Updates the transaction price, accouting for discounts.
 	 */
-	public abstract void updatePrice();
+	abstract void updatePrice();
 
 	/**
 	 * Returns the transaction's price.
 	 */
-	public abstract double getPrice();
+	abstract double getPrice();
 
 	/**
 	 * Determines if two transactions are equal.

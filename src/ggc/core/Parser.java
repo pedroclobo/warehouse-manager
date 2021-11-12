@@ -12,14 +12,33 @@ import ggc.core.exception.UnknownPartnerException;
 import ggc.core.exception.DuplicatePartnerException;
 import ggc.core.exception.UnknownProductException;
 
+/**
+ * This public class is responsible from parsing an import file.
+ */
 public class Parser {
 
+	/** The warehouse. */
 	private Warehouse _store;
 
+	/**
+	 * Create a new parser.
+	 *
+	 * @param w the warehouse.
+	 */
 	public Parser(Warehouse w) {
 		_store = w;
 	}
 
+	/**
+	 * Parses a file.
+	 *
+	 * @param filename the filename.
+	 * @throws IOException
+	 * @throws BadEntryException
+	 * @throws UnknownPartnerException
+	 * @throws DuplicatePartnerException
+	 * @throws UnknownProductException
+	 */
 	void parseFile(String filename) throws IOException, BadEntryException, UnknownPartnerException, DuplicatePartnerException, UnknownProductException {
 		try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
 			String line;
@@ -29,6 +48,15 @@ public class Parser {
 		}
 	}
 
+	/**
+	 * Parses a line.
+	 *
+	 * @throws IOException
+	 * @throws BadEntryException
+	 * @throws UnknownPartnerException
+	 * @throws DuplicatePartnerException
+	 * @throws UnknownProductException
+	 */
 	private void parseLine(String line) throws BadEntryException, UnknownPartnerException, DuplicatePartnerException, UnknownProductException {
 		String[] components = line.split("\\|");
 
@@ -50,6 +78,12 @@ public class Parser {
 		}
 	}
 
+	/**
+	 * Parses a partner.
+	 *
+	 * @throws BadEntryException
+	 * @throws DuplicatePartnerException
+	 */
 	private void parsePartner(String[] components, String line) throws BadEntryException, DuplicatePartnerException {
 		if (components.length != 4)
 			throw new BadEntryException("Invalid partner with wrong number of fields (4): " + line);
@@ -61,6 +95,13 @@ public class Parser {
 		_store.registerPartner(id, name, address);
 	}
 
+	/**
+	 * Parses a simple product.
+	 *
+	 * @throws BadEntryException
+	 * @throws UnknownPartnerException
+	 * @throws UnknownProductException
+	 */
 	private void parseSimpleProduct(String[] components, String line) throws BadEntryException, UnknownPartnerException, UnknownProductException {
 		if (components.length != 5)
 			throw new BadEntryException("Invalid number of fields (4) in simple batch description: " + line);
@@ -80,6 +121,13 @@ public class Parser {
 	}
 
 
+	/**
+	 * Parses a aggregate product.
+	 *
+	 * @throws BadEntryException
+	 * @throws UnknownPartnerException
+	 * @throws UnknownProductException
+	 */
 	private void parseAggregateProduct(String[] components, String line) throws BadEntryException, UnknownPartnerException, UnknownProductException {
 		if (components.length != 7)
 			throw new BadEntryException("Invalid number of fields (7) in aggregate batch description: " + line);
@@ -107,4 +155,5 @@ public class Parser {
 		int stock = Integer.parseInt(components[4]);
 		product.add(stock, partner, price);
 	}
+
 }

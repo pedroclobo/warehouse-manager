@@ -1,8 +1,8 @@
 package ggc.core;
 
 /**
- * Represents a sale with a monetary value associated.
- * This class extends Sale by adding a price to it.
+ * This public class represents a credit sale transaction.
+ * In a credit sale transaction, a partner acquires some product from the warehouse.
  */
 public class CreditSale extends Sale {
 
@@ -16,7 +16,7 @@ public class CreditSale extends Sale {
 	private Date _paymentDeadline;
 
 	/**
-	 * Constructor.
+	 * Creates a new credit sale.
 	 *
 	 * @param key             the credit sale's key.
 	 * @param partner         the credit sale's associated partner.
@@ -24,7 +24,7 @@ public class CreditSale extends Sale {
 	 * @param quantity        the quantity of product processed.
 	 * @param paymentDeadline the credit sale's payment date.
 	 */
-	public CreditSale(int key, Partner partner, Product product, int amount, Date paymentDeadline) {
+	CreditSale(int key, Partner partner, Product product, int amount, Date paymentDeadline) {
 		super(key, partner, product, amount, null);
 
 		// Remove products and calculate remove price.
@@ -39,7 +39,7 @@ public class CreditSale extends Sale {
 	/**
 	 * @return the credit sale's base price.
 	 */
-	public double getBasePrice() {
+	double getBasePrice() {
 		return _basePrice;
 	}
 
@@ -47,7 +47,7 @@ public class CreditSale extends Sale {
 	 * @return the credit sale's price.
 	 */
 	@Override
-	public double getPrice() {
+	double getPrice() {
 		updatePrice();
 		return _effectivePrice;
 	}
@@ -55,7 +55,7 @@ public class CreditSale extends Sale {
 	/**
 	 * @return the payment deadline.
 	 */
-	public Date getPaymentDeadline() {
+	Date getPaymentDeadline() {
 		return _paymentDeadline;
 	}
 
@@ -63,7 +63,7 @@ public class CreditSale extends Sale {
 	 * Pays the transaction.
 	 */
 	@Override
-	public void pay() {
+	void pay() {
 		_effectivePrice = getPrice();
 		getPartner().payTransaction(this);
 		setPaymentDate();
@@ -89,8 +89,8 @@ public class CreditSale extends Sale {
 			getPartner().getKey() + "|" +
 			getProduct().getKey() + "|" +
 			getProductAmount() + "|" +
-			(int) _basePrice + "|" +
-			(int) _effectivePrice + "|" +
+			Math.round(_basePrice) + "|" +
+			Math.round(getPrice()) + "|" +
 			_paymentDeadline;
 
 		if (isPaid())

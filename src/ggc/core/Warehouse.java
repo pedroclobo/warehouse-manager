@@ -54,7 +54,7 @@ public class Warehouse implements Serializable {
 	/**
 	 * Create a new warehouse.
 	 */
-	public Warehouse() {
+	Warehouse() {
 		_date = new Date();
 		_accountingBalance = 0;
 		_availableBalance = 0;
@@ -67,7 +67,7 @@ public class Warehouse implements Serializable {
 	/**
 	 * @return the current date value.
 	 */
-	public int getDate() {
+	int getDate() {
 		return _date.getDays();
 	}
 
@@ -77,7 +77,7 @@ public class Warehouse implements Serializable {
 	 * @param increment amount to forward time by.
 	 * @throws InvalidDateIncrementException if the amount is not positive.
 	 */
-	public void forwardDate(int increment) throws InvalidDateIncrementException {
+	void forwardDate(int increment) throws InvalidDateIncrementException {
 		_date.forwardDate(increment);
 
 		updateCreditSalePrices();
@@ -87,14 +87,14 @@ public class Warehouse implements Serializable {
 	/**
 	 * @return the current warehouse's available balance.
 	 */
-	public double getAvailableBalance() {
+	double getAvailableBalance() {
 		return _availableBalance;
 	}
 
 	/**
 	 * @return the current warehouse's accounting balance.
 	 */
-	public double getAccountingBalance() {
+	double getAccountingBalance() {
 		return _accountingBalance;
 	}
 
@@ -103,9 +103,9 @@ public class Warehouse implements Serializable {
 	 *
 	 * @param value the value to decrease by.
 	 */
-	public void decreaseBalance(double value) {
+	void decreaseBalance(double value) {
 		_availableBalance -= value;
-		_accountingBalance -= value;
+		updateAccountingBalance();
 	}
 
 	/**
@@ -113,15 +113,15 @@ public class Warehouse implements Serializable {
 	 *
 	 * @param value the value to increase by.
 	 */
-	public void increaseBalance(double value) {
+	void increaseBalance(double value) {
 		_availableBalance += value;
-		_accountingBalance += value;
+		updateAccountingBalance();
 	}
 
 	/**
 	 * Update the accounting balance.
 	 */
-	public void updateAccountingBalance() {
+	void updateAccountingBalance() {
 		double notPaidValue = 0;
 
 		for (Transaction transaction: getTransactions()) {
@@ -134,10 +134,11 @@ public class Warehouse implements Serializable {
 
 	/**
 	 * Adds a product to the warehouse's collection.
+	 * Also registers all partners as interested in being notified.
 	 *
 	 * @param product the product to add.
 	 */
-	public void addProduct(Product product) {
+	void addProduct(Product product) {
 		for (Partner partner: _partners.values()) {
 			product.addNotifiable(partner);
 		}
@@ -151,7 +152,7 @@ public class Warehouse implements Serializable {
 	 * @param key the product key.
 	 * @return true if the product with the given key is registered.
 	 */
-	public boolean isRegisteredProduct(String key) {
+	boolean isRegisteredProduct(String key) {
 		return _products.containsKey(key);
 	}
 
@@ -160,8 +161,7 @@ public class Warehouse implements Serializable {
 	 *
 	 * @param key the product key.
 	 */
-	public void registerSimpleProduct(String key) {
-		Product product = new SimpleProduct(key);
+	void registerSimpleProduct(String key) {
 		addProduct(new SimpleProduct(key));
 	}
 
@@ -171,38 +171,20 @@ public class Warehouse implements Serializable {
 	 * @param key         the product key.
 	 * @param aggravation the product aggravation factor.
 	 * @param products    a list of products that compose the aggregate product.
-	 * @param quantities  a list of the quantities of the products that compose the aggregate product.
+	 * @param amounts     a list of the amounts of the products that compose the aggregate product.
 	 */
-	public void registerAggregateProduct(String key, double aggravation, List<Product> products, List<Integer> quantities) {
-		Product product = new AggregateProduct(key, aggravation, products, quantities);
-		addProduct(product);
+	void registerAggregateProduct(String key, double aggravation, List<Product> products, List<Integer> amounts) {
+		addProduct(new AggregateProduct(key, aggravation, products, amounts));
 	}
 
 	/**
-	 * Registers a new aggregate product.
+	 * Returns the product with the given key.
 	 *
-	 * @param key         the product key.
-	 * @param aggravation the product aggravation factor.
-	 * @param products    a list of products ids that compose the aggregate product.
-	 * @param quantities  a list of the quantities of the products that compose the aggregate product.
-	 *
-	 * @throws UnknownProductException if one of the products that compose the aggregate product isn't registered.
-	 */
-	public void registerAggregateProduct(String key, double aggravation, Collection<String> productIds, List<Integer> quantities)throws UnknownProductException {
-
-		List<Product> products = new ArrayList<>();
-		for (String productId: productIds)
-			products.add(getProduct(productId));
-
-		registerAggregateProduct(key, aggravation, products, quantities);
-	}
-
-	/**
 	 * @param key the product key.
 	 * @return the product with the given key.
 	 * @throws UnknownProductException if there's no registered product with the given key.
 	 */
-	public Product getProduct(String key) throws UnknownProductException {
+	Product getProduct(String key) throws UnknownProductException {
 		if (!_products.containsKey(key))
 			throw new UnknownProductException(key);
 
@@ -212,14 +194,14 @@ public class Warehouse implements Serializable {
 	/**
 	 * @return a collection with registered all products.
 	 */
-	public Collection<Product> getProducts() {
-		return new ArrayList<Product>(_products.values());
+	Collection<Product> getProducts() {
+		return new ArrayList<>(_products.values());
 	}
 
 	/**
 	 * @return a collection with all batches.
 	 */
-	public Collection<Batch> getBatches() {
+	Collection<Batch> getBatches() {
 		Set<Batch> batches = new TreeSet<>();
 
 		for (Product p: getProducts())
@@ -229,36 +211,14 @@ public class Warehouse implements Serializable {
 	}
 
 	/**
-	 * Returns a collection of all batches holding the specified product.
-	 *
-	 * @param key the product key.
-	 * @return a collection with all batches that hold the specified product.
-	 * @throws UnknownProductException if there's no registered product with the given identifier.
-	 */
-	public Collection<Batch> getBatchesByProduct(String key) throws UnknownProductException {
-		return getProduct(key).getBatches();
-	}
-
-	/**
-	 * Returns a collection of all batches supplied by the specified partner.
-	 *
-	 * @param key the product key.
-	 * @return a collection with all batches supplied by the specified partner.
-	 * @throws UnknownPartnerException if there's no registered partner with the given identifier.
-	 */
-	public Collection<Batch> getBatchesByPartner(String key) throws UnknownPartnerException {
-		return getPartner(key).getBatches();
-	}
-
-	/**
 	 * Returns a collection of all batches under the specified price.
 	 *
 	 * @param price the price to compare to.
 	 */
-	public Collection<Batch> getBatchesUnderGivenPrice(double price) {
+	Collection<Batch> getBatchesUnderGivenPrice(double price) {
 		Set<Batch> batches = new TreeSet<>();
 
-		for (Product product: getProducts())
+		for (Product product: _products.values())
 			batches.addAll(product.getBatchesUnderGivenPrice(price));
 
 		return batches;
@@ -269,7 +229,7 @@ public class Warehouse implements Serializable {
 	 *
 	 * @param partner the partner to add.
 	 */
-	public void addPartner(Partner partner) {
+	void addPartner(Partner partner) {
 		for (Product product: _products.values()) {
 			product.addNotifiable(partner);
 		}
@@ -283,7 +243,7 @@ public class Warehouse implements Serializable {
 	 * @param key the partner key.
 	 * @return true if the partner with the given key is registered.
 	 */
-	public boolean isRegisteredPartner(String key) {
+	boolean isRegisteredPartner(String key) {
 		return _partners.containsKey(key);
 	}
 
@@ -295,7 +255,7 @@ public class Warehouse implements Serializable {
 	 * @param address the partner address.
 	 * @throws DuplicatePartnerException if there's already a registered partner with the given key.
 	 */
-	public void registerPartner(String key, String name, String address) throws DuplicatePartnerException {
+	void registerPartner(String key, String name, String address) throws DuplicatePartnerException {
 		if (isRegisteredPartner(key))
 			throw new DuplicatePartnerException(key);
 
@@ -304,68 +264,55 @@ public class Warehouse implements Serializable {
 	}
 
 	/**
+	 * Returns the product with the given key.
+	 *
 	 * @param key the partner key.
 	 * @return the partner with the given key.
 	 * @throws UnknownPartnerException if there's no partner with the given key.
 	 */
-	public Partner getPartner(String key) throws UnknownPartnerException {
+	Partner getPartner(String key) throws UnknownPartnerException {
 		if (!isRegisteredPartner(key))
 			throw new UnknownPartnerException(key);
 
 		return _partners.get(key);
 	}
 
-	public Collection<Notification> getPartnerNotifications(String key) throws UnknownPartnerException {
-		return getPartner(key).getNotifications();
-	}
-
-	public void toggleNotifications(String partnerKey, String productKey) throws UnknownPartnerException, UnknownProductException {
-		Product product = getProduct(productKey);
-		Partner partner = getPartner(partnerKey);
-
-		if (product.isRegisteredNotifiable(partner)) {
-			getProduct(productKey).removeNotifiable(partner);
-		} else {
-			getProduct(productKey).addNotifiable(partner);
-		}
-	}
-
 	/**
 	 * @return a collection with all partners.
 	 */
-	public Collection<Partner> getPartners() {
+	Collection<Partner> getPartners() {
 		return new ArrayList<Partner>(_partners.values());
 	}
 
 	/**
-	 * Returns a collection of all partner's acquisitions.
-	 *
-	 * @param key the partner key.
-	 * @return a collection of acquisitions.
-	 * @throws UnknownPartnerException if there's no partner with the given key.
-	 */
-	public Collection<Acquisition> getAcquisitionsByPartner(String key) throws UnknownPartnerException {
-		return getPartner(key).getAcquisitionTransactions();
-	}
-
-	/**
-	 * Returns a collection of all partner's sales.
-	 *
-	 * @param key the partner key.
-	 * @return a collection of sales.
-	 * @throws UnknownPartnerException if there's no partner with the given key.
-	 */
-	public Collection<Sale> getSalesByPartner(String key) throws UnknownPartnerException {
-		return getPartner(key).getSaleTransactions();
-	}
-
-	/**
-	 * Adds a transaction to the warehouse's collection.
+	 * Adds a acquisition transaction to the warehouse's collection.
 	 * This method also adds the transaction to the partner's collection of transactions.
 	 *
-	 * @param transaction the transaction to add.
+	 * @param transaction the acquisition transaction to add.
 	 */
-	public void addTransaction(Transaction transaction) {
+	void addTransaction(Acquisition transaction) {
+		_transactions.put(transaction.getKey(), transaction);
+		transaction.getPartner().addTransaction(transaction);
+	}
+
+	/**
+	 * Adds a credit sale transaction to the warehouse's collection.
+	 * This method also adds the transaction to the partner's collection of transactions.
+	 *
+	 * @param transaction the credit sale transaction to add.
+	 */
+	void addTransaction(CreditSale transaction) {
+		_transactions.put(transaction.getKey(), transaction);
+		transaction.getPartner().addTransaction(transaction);
+	}
+
+	/**
+	 * Adds a breakdown sale transaction to the warehouse's collection.
+	 * This method also adds the transaction to the partner's collection of transactions.
+	 *
+	 * @param transaction the breakdown sale transaction to add.
+	 */
+	void addTransaction(BreakdownSale transaction) {
 		_transactions.put(transaction.getKey(), transaction);
 		transaction.getPartner().addTransaction(transaction);
 	}
@@ -376,26 +323,19 @@ public class Warehouse implements Serializable {
 	 * @param key the transaction key.
 	 * @return true if the transaction with the given key is registered.
 	 */
-	public boolean isRegisteredTransaction(int key) {
+	boolean isRegisteredTransaction(int key) {
 		return _transactions.containsKey(key);
 	}
 
 	/**
 	 * Registers a new acquisition transaction.
 	 *
-	 * @param partnerKey the partner key.
-	 * @param productKey the product key.
-	 * @param amount     the transaction's product amount.
-	 * @param price      the transaction's product unit price.
-	 *
-	 * @throws UnknownPartnerException if there's no registered partner with the given key.
-	 * @throws UnknownProductException if there's no registered product with the given key.
+	 * @param partner the transaction's partner.
+	 * @param product the transaction's product.
+	 * @param amount  the transaction's product amount.
+	 * @param price   the transaction's product unit price.
 	 */
-	public void registerAcquisition(String partnerKey, String productKey, int amount, double price) throws UnknownPartnerException, UnknownProductException {
-
-		// Check if partner and product are registered.
-		Partner partner = getPartner(partnerKey);
-		Product product = getProduct(productKey);
+	void registerAcquisition(Partner partner, Product product, int amount, double price) {
 
 		// Notify interested entities.
 		if (!product.isNew() && !product.hasStock()) {
@@ -415,20 +355,13 @@ public class Warehouse implements Serializable {
 	/**
 	 * Registers a new credit sale transaction.
 	 *
-	 * @param partnerKey      the partner key.
+	 * @param partner         the transaction's partner.
 	 * @param paymentDeadline the transaction's payment deadline.
-	 * @param productKey      the product key.
+	 * @param product         the transaction's product.
 	 * @param amount          the transaction's product amount.
-	 *
-	 * @throws UnknownPartnerException if there's no registered partner with the given key.
-	 * @throws UnknownProductException if there's no registered product with the given key.
 	 * @throws NoProductStockException if there's not enough product stock.
 	 */
-	public void registerCreditSale(String partnerKey, int paymentDeadline, String productKey, int amount) throws UnknownPartnerException, UnknownProductException, NoProductStockException {
-
-		// Check if partner and product are registered.
-		Partner partner = getPartner(partnerKey);
-		Product product = getProduct(productKey);
+	void registerCreditSale(Partner partner, int paymentDeadline, Product product, int amount) throws NoProductStockException {
 
 		// Check if aggregation is possible.
 		try {
@@ -445,26 +378,21 @@ public class Warehouse implements Serializable {
 			throw new NoProductStockException(product.getKey(), amount, product.getStock());
 		}
 
-
 		addTransaction(new CreditSale(_nextTransactionId++, partner, product, amount, new Date(paymentDeadline)));
+
+		updateAccountingBalance();
 	}
 
 	/**
 	 * Registers a new breakdown sale transaction.
 	 *
-	 * @param partnerKey the partner key.
-	 * @param productKey the product key.
-	 * @param amount     the transaction's product amount.
+	 * @param partner the transaction's partner.
+	 * @param product the transaction's product.
+	 * @param amount  the transaction's product amount.
 	 *
-	 * @throws UnknownPartnerException if there's no registered partner with the given key.
-	 * @throws UnknownProductException if there's no registered product with the given key.
 	 * @throws NoProductStockException if there's not enough product stock.
 	 */
-	public void registerBreakdownSale(String partnerKey, String productKey, int amount) throws UnknownPartnerException, UnknownProductException, NoProductStockException {
-
-		// Check if partner and product are registered.
-		Partner partner = getPartner(partnerKey);
-		Product product = getProduct(productKey);
+	public void registerBreakdownSale(Partner partner, Product product, int amount) throws NoProductStockException {
 
 		// Check if the product can be disaggregated.
 		if (!product.canBeDisaggregated()) {
@@ -499,33 +427,12 @@ public class Warehouse implements Serializable {
 	}
 
 	/**
-	 * Processes the credit sale payment.
-	 *
-	 * @param key the transaction key.
-	 * @throws UnknownTransactionException if there's no transaction with the given key.
-	 */
-	public void receiveCreditSalePayment(int key) throws UnknownTransactionException {
-		getTransaction(key).pay();
-	}
-
-	/**
 	 * Update unpaid credit sale prices.
 	 */
 	public void updateCreditSalePrices() {
 		for (Transaction transaction: getTransactions()) {
 			transaction.updatePrice();
 		}
-	}
-
-	/**
-	 * Returns a collection of all partner's paid transactions.
-	 *
-	 * @param key the partner key.
-	 * @return a collection of sales.
-	 * @throws UnknownPartnerException if there's no partner with the given key.
-	 */
-	public Collection<Sale> getPartnerPaidTransactions(String key) throws UnknownPartnerException {
-		return getPartner(key).getPaidTransactions();
 	}
 
 	/**

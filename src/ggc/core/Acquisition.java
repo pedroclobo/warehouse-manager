@@ -1,8 +1,8 @@
 package ggc.core;
 
 /**
- * This class represents a acquisition transaction.
- * In an acquisitions transaction, the warehouse acquires a product
+ * This public class represents an acquisition transaction.
+ * In an acquisition transaction, the warehouse acquires a product
  * from a partner.
  */
 public class Acquisition extends Transaction {
@@ -11,7 +11,7 @@ public class Acquisition extends Transaction {
 	private double _price;
 
 	/**
-	 * Constructor.
+	 * Create a new acquisition.
 	 *
 	 * @param key         the transaction's key.
 	 * @param partner     the transaction's associated partner.
@@ -20,20 +20,22 @@ public class Acquisition extends Transaction {
 	 * @param paymentDate the transaction's payment date.
 	 * @param price       the transaction's price.
 	 */
-	public Acquisition(int key, Partner partner, Product product, int quantity, Date paymentDate, double price) {
+	Acquisition(int key, Partner partner, Product product, int quantity, Date paymentDate, double price) {
 		super(key, partner, product, quantity, paymentDate);
 		_price = price;
+
+		// Add new stock of product.
 		product.add(quantity, partner, price / quantity);
+
+		// Pay the transaction.
 		pay();
 	}
 
 	/**
-	 * Returns the transaction's price.
-	 *
-	 * @param date the current date.
+	 * @return the transaction's price.
 	 */
 	@Override
-	public double getPrice() {
+	double getPrice() {
 		return _price;
 	}
 
@@ -41,17 +43,13 @@ public class Acquisition extends Transaction {
 	 * Pays the acquisition.
 	 */
 	@Override
-	public void pay() {
-		getPartner().payTransaction(this);
-	}
+	void pay() {}
 
 	/**
-	 * Updates the transaction price, accouting for discounts.
-	 *
-	 * @param date the current date.
+	 * Updates the transaction's price.
 	 */
 	@Override
-	public void updatePrice() {}
+	void updatePrice() {}
 
 	/**
 	 * String representation of acquisition.
@@ -65,7 +63,7 @@ public class Acquisition extends Transaction {
 			getPartner().getKey() + "|" +
 			getProduct().getKey() + "|" +
 			getProductAmount() + "|" +
-			(int) _price + "|" +
+			Math.round(_price) + "|" +
 			getPaymentDate();
 	}
 

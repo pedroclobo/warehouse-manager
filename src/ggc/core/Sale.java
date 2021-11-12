@@ -1,7 +1,8 @@
 package ggc.core;
 
 /**
- * This class represents a sale transaction.
+ * This public class represents a sale transaction.
+ * Each subclass especifies a concrete implementation.
  */
 public abstract class Sale extends Transaction {
 
@@ -11,11 +12,11 @@ public abstract class Sale extends Transaction {
 	 * @param key         the transaction's key.
 	 * @param partner     the transaction's associated partner.
 	 * @param product     the transaction's processed product.
-	 * @param quantity    the quantity of product processed.
+	 * @param amount      the amount of product processed.
 	 * @param paymentDate the transaction's payment date.
 	 */
-	protected Sale(int key, Partner partner, Product product, int quantity, Date paymentDate) {
-		super(key, partner, product, quantity, paymentDate);
+	Sale(int key, Partner partner, Product product, int amount, Date paymentDate) {
+		super(key, partner, product, amount, paymentDate);
 	}
 
 }

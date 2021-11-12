@@ -3,6 +3,7 @@ package ggc.core;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import java.io.Serializable;
 import java.io.FileInputStream;
@@ -40,6 +41,8 @@ public class WarehouseManager {
 	}
 
 	/**
+	 * Sets the file name.
+	 *
 	 * @param filename name of file to store current warehouse in.
 	 */
 	public void setFilename(String filename) {
@@ -77,10 +80,6 @@ public class WarehouseManager {
 		return _warehouse.getAccountingBalance();
 	}
 
-	public Product getProduct(String id) throws UnknownProductException {
-		return _warehouse.getProduct(id);
-	}
-
 	/**
 	 * Registers a new simple product.
 	 *
@@ -99,8 +98,27 @@ public class WarehouseManager {
 	 * @param quantities a list of the quantities of the products that compose the aggregate product.
 	 */
 	public void registerAggregateProduct(String id, double aggravation, Collection<String> productIds, List<Integer> quantities)throws UnknownProductException {
-		_warehouse.registerAggregateProduct(id, aggravation, productIds, quantities);
+
+		List<Product> products = new ArrayList<>();
+
+		for (String productId: productIds) {
+			products.add(getProduct(productId));
+		}
+
+		_warehouse.registerAggregateProduct(id, aggravation, products, quantities);
 	}
+
+	/**
+	 * Returns the product with the given key.
+	 *
+	 * @param key the product key.
+	 * @return the product with the given key.
+	 * @throws UnknownProductException if there's no registered product with the given key.
+	 */
+	public Product getProduct(String id) throws UnknownProductException {
+		return _warehouse.getProduct(id);
+	}
+
 
 	/**
 	 * @return a collection with all registered products.
@@ -117,6 +135,28 @@ public class WarehouseManager {
 	}
 
 	/**
+	 * Returns a collection of all batches holding the specified product.
+	 *
+	 * @param key the product key.
+	 * @return a collection with all batches that hold the specified product.
+	 * @throws UnknownProductException if there's no registered product with the given identifier.
+	 */
+	public Collection<Batch> getBatchesByProduct(String key) throws UnknownProductException {
+		return getProduct(key).getBatches();
+	}
+
+	/**
+	 * Returns a collection of all batches supplied by the specified partner.
+	 *
+	 * @param key the product key.
+	 * @return a collection with all batches supplied by the specified partner.
+	 * @throws UnknownPartnerException if there's no registered partner with the given identifier.
+	 */
+	public Collection<Batch> getBatchesByPartner(String key) throws UnknownPartnerException {
+		return getPartner(key).getBatches();
+	}
+
+	/**
 	 * Returns a collection of all batches under the specified price.
 	 *
 	 * @param price the price to compare to.
@@ -126,34 +166,26 @@ public class WarehouseManager {
 	}
 
 	/**
+	 * Registers a partner.
+	 *
+	 * @param key     the partner key.
+	 * @param name    the partner name.
+	 * @param address the partner address.
+	 * @throws DuplicatePartnerException if there's already a registered partner with the given key.
+	 */
+	public void registerPartner(String key, String name, String address) throws DuplicatePartnerException {
+		_warehouse.registerPartner(key, name, address);
+	}
+
+	/**
+	 * Returns the product with the given key.
+	 *
 	 * @param key the partner key.
-	 * @return a collection with all batches supplied by the given partner.
-	 * @throws UnknownPartnerException if there's no product with the given id.
+	 * @return the partner with the given key.
+	 * @throws UnknownPartnerException if there's no partner with the given key.
 	 */
-	public Collection<Batch> getBatchesByPartner(String key) throws UnknownPartnerException {
-		return _warehouse.getBatchesByPartner(key);
-	}
-
-	/**
-	 * @param id the product id.
-	 * @return a collection with all batches that hold a product.
-	 * @throws UnknownProductException if there's no product with the given id.
-	 */
-	public Collection<Batch> getBatchesByProduct(String id) throws UnknownProductException {
-		return _warehouse.getBatchesByProduct(id);
-	}
-
-	/**
-	 * @param id the partner id.
-	 * @return the partner with the given id.
-	 * @throws UnknownPartnerException if there's no partner with the given id.
-	 */
-	public Partner getPartner(String id) throws UnknownPartnerException {
-		return _warehouse.getPartner(id);
-	}
-
-	public Collection<Notification> getPartnerNotifications(String key) throws UnknownPartnerException {
-		return _warehouse.getPartnerNotifications(key);
+	public Partner getPartner(String key) throws UnknownPartnerException {
+		return _warehouse.getPartner(key);
 	}
 
 	/**
@@ -164,41 +196,65 @@ public class WarehouseManager {
 	}
 
 	/**
-	 * Registers a partner.
+	 * Return a collection with all partner's notifications.
 	 *
-	 * @param id      the partner id.
-	 * @param name    the partner name.
-	 * @param address the partner address.
-	 * @throws DuplicatePartnerException if there's already a partner with the given id.
+	 * @param key the partner's key.
+	 * @return a collection of the partner's notifications.
 	 */
-	public void registerPartner(String id, String name, String address) throws DuplicatePartnerException {
-		_warehouse.registerPartner(id, name, address);
+	public Collection<Notification> getPartnerNotifications(String key) throws UnknownPartnerException {
+		return getPartner(key).getNotifications();
 	}
 
 	/**
-	 * Gets a collection of all partner's acquisitions.
+	 * Toggles partner notifications for a certain product.
 	 *
-	 * @param id the partner id.
+	 * @param partnerKey the partner key.
+	 * @param productKey the product key to toggle notifications on or off.
+	 * @throws UnknownPartnerException if there's no partner with the given key.
+	 * @throws UnknownProductException if there's no product with the given key.
+	 */
+	public void toggleNotifications(String partnerKey, String productKey) throws UnknownPartnerException, UnknownProductException {
+		Product product = getProduct(productKey);
+		Partner partner = getPartner(partnerKey);
+
+		if (product.isRegisteredNotifiable(partner)) {
+			getProduct(productKey).removeNotifiable(partner);
+		} else {
+			getProduct(productKey).addNotifiable(partner);
+		}
+	}
+
+	/**
+	 * Returns a collection of all partner's acquisitions.
+	 *
+	 * @param key the partner key.
 	 * @return a collection of acquisitions.
-	 * @throws UnknownPartnerException if there's no partner with the given id.
+	 * @throws UnknownPartnerException if there's no partner with the given key.
 	 */
-	public Collection<Acquisition> getAcquisitionsByPartner(String id) throws UnknownPartnerException {
-		return _warehouse.getAcquisitionsByPartner(id);
+	public Collection<Acquisition> getAcquisitionsByPartner(String key) throws UnknownPartnerException {
+		return getPartner(key).getAcquisitionTransactions();
 	}
 
 	/**
-	 * Gets a collection of all partner's sales.
+	 * Returns a collection of all partner's sales.
 	 *
-	 * @param id the partner id.
+	 * @param key the partner key.
 	 * @return a collection of sales.
-	 * @throws UnknownPartnerException if there's no partner with the given id.
+	 * @throws UnknownPartnerException if there's no partner with the given key.
 	 */
-	public Collection<Sale> getSalesByPartner(String id) throws UnknownPartnerException {
-		return _warehouse.getSalesByPartner(id);
+	public Collection<Sale> getSalesByPartner(String key) throws UnknownPartnerException {
+		return getPartner(key).getSaleTransactions();
 	}
 
-	public Transaction getTransaction(int id) throws UnknownTransactionException {
-		return _warehouse.getTransaction(id);
+	/**
+	 * Returns a collection of all partner's paid transactions.
+	 *
+	 * @param key the partner key.
+	 * @return a collection of sales.
+	 * @throws UnknownPartnerException if there's no partner with the given key.
+	 */
+	public Collection<Sale> getPartnerPaidTransactions(String key) throws UnknownPartnerException {
+		return getPartner(key).getPaidTransactions();
 	}
 
 	/**
@@ -213,7 +269,12 @@ public class WarehouseManager {
 	 * @throws UnknownProductException if there's no registered product with the given key.
 	 */
 	public void registerAcquisitionTransaction(String partnerKey, String productKey, int amount, double price) throws UnknownPartnerException, UnknownProductException {
-		_warehouse.registerAcquisition(partnerKey, productKey, amount, price);
+
+		// Check if partner and product are registered.
+		Partner partner = getPartner(partnerKey);
+		Product product = getProduct(productKey);
+
+		_warehouse.registerAcquisition(partner, product, amount, price);
 	}
 
 	/**
@@ -229,7 +290,22 @@ public class WarehouseManager {
 	 * @throws NoProductStockException if there's not enough product stock.
 	 */
 	public void registerSaleTransaction(String partnerKey, int paymentDeadline, String productKey, int amount) throws UnknownPartnerException, UnknownProductException, NoProductStockException {
-		_warehouse.registerCreditSale(partnerKey, paymentDeadline, productKey, amount);
+
+		// Check if partner and product are registered.
+		Partner partner = getPartner(partnerKey);
+		Product product = getProduct(productKey);
+
+		_warehouse.registerCreditSale(partner, paymentDeadline, product, amount);
+	}
+
+	/**
+	 * Processes the credit sale payment.
+	 *
+	 * @param key the transaction key.
+	 * @throws UnknownTransactionException if there's no transaction with the given key.
+	 */
+	public void receivePayment(int key) throws UnknownTransactionException {
+		getTransaction(key).pay();
 	}
 
 	/**
@@ -244,20 +320,23 @@ public class WarehouseManager {
 	 * @throws NoProductStockException if there's not enough product stock.
 	 */
 	public void registerBreakdownTransaction(String partnerKey, String productKey, int amount) throws UnknownPartnerException, UnknownProductException, NoProductStockException {
-		_warehouse.registerBreakdownSale(partnerKey, productKey, amount);
+
+		// Check if partner and product are registered.
+		Partner partner = getPartner(partnerKey);
+		Product product = getProduct(productKey);
+
+		_warehouse.registerBreakdownSale(partner, product, amount);
 	}
 
-	public void receivePayment(int transactionKey) throws UnknownTransactionException {
-		_warehouse.receiveCreditSalePayment(transactionKey);
+	/**
+	 * @param key the transaction key.
+	 * @return the transaction with the given key.
+	 * @throws UnknownTransactionException if there's no transaction with the given key.
+	 */
+	public Transaction getTransaction(int id) throws UnknownTransactionException {
+		return _warehouse.getTransaction(id);
 	}
 
-	public Collection<Sale> getPartnerPaidTransactions(String key) throws UnknownPartnerException {
-		return _warehouse.getPartnerPaidTransactions(key);
-	}
-
-	public void toggleNotifications(String partnerKey, String productKey) throws UnknownPartnerException, UnknownProductException {
-		_warehouse.toggleNotifications(partnerKey, productKey);
-	}
 	/**
 	 * Saves the current state of the warehouse to the associated filename.
 	 *

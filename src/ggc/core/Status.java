@@ -2,29 +2,19 @@ package ggc.core;
 
 import java.io.Serializable;
 
-
-
-
-
-
-
-
-/** Levels of status classification. */
+/** Levels of status public classification. */
 enum Classification {
 	NORMAL, SELECTION, ELITE;
 }
 
 /**
- * This class is responsible for the partner's point accounting.
+ * This public class is responsible for the partner's point accounting.
  * The partner's status depends on its delay paying its sales.
  */
-abstract class Status implements Serializable {
+public abstract class Status implements Serializable {
 
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202109192006L;
-
-	/** Each status has a corresponding partner. */
-	private Partner _partner;
 
 	/** Number of points accumulated. */
 	private int _points;
@@ -34,21 +24,16 @@ abstract class Status implements Serializable {
 
 	/**
 	 * Registers new status.
-	 *
-	 * @param partner the partner that holds the status.
-	 * @param points the status's number of points.
-	 * @param classification the status's classification.
 	 */
-	protected Status(Partner partner, int points, Classification classification) {
-		_partner = partner;
-		_points = points;
-		_classification = classification;
+	Status() {
+		_points = 0;
+		_classification = Classification.NORMAL;
 	}
 
 	/**
 	 * @return the number of points.
 	 */
-	protected int getPoints() {
+	int getPoints() {
 		return _points;
 	}
 
@@ -57,14 +42,14 @@ abstract class Status implements Serializable {
 	 *
 	 * @param points the number of points to set number of points to.
 	 */
-	protected void setPoints(int points) {
+	void setPoints(int points) {
 		_points = points;
 	}
 
 	/**
-	 * Updates the status classification, based on the number of points.
+	 * Updates the status public classification, based on the number of points.
 	 */
-	protected void updateStatus() {
+	void updateStatus() {
 		if (_points < 2000)
 			_classification = Classification.NORMAL;
 
@@ -76,23 +61,16 @@ abstract class Status implements Serializable {
 	}
 
 	/**
-	 * Processes the payment of a acquisition transaction.
+	 * Calculates the credit sale price, according to the public classification and
+	 * payment delay.
 	 *
-	 * @param transaction the acquisition transaction to pay.
+	 * @param transaction the credit sale.
 	 */
-	public void payTransaction(Acquisition transaction) {
-		return;
-	}
+	double getTransactionPrice(CreditSale transaction) {
 
-	/**
-	 * TODO
-	 *
-	 * @param sale the credit sale.
-	 */
-	protected double getTransactionPrice(CreditSale sale) {
-		int nFactor = sale.getProduct().getNTimeFactor();
-		int timeDelay = Date.now().difference(sale.getPaymentDeadline());
-		double price = sale.getBasePrice();
+		int nFactor = transaction.getProduct().getNTimeFactor();
+		int timeDelay = Date.now().difference(transaction.getPaymentDeadline());
+		double price = transaction.getBasePrice();
 
 		// P1
 		if (timeDelay <= -nFactor)
@@ -118,12 +96,10 @@ abstract class Status implements Serializable {
 	 *
 	 * @param transaction the credit sale to pay.
 	 */
-	protected void payTransaction(CreditSale sale) {
-		int nFactor = sale.getProduct().getNTimeFactor();
-		int timeDelay = Date.now().difference(sale.getPaymentDeadline());
-		double price = sale.getBasePrice();
-
-		int points = getPoints();
+	void payTransaction(CreditSale transaction) {
+		int nFactor = transaction.getProduct().getNTimeFactor();
+		int timeDelay = Date.now().difference(transaction.getPaymentDeadline());
+		double price = transaction.getBasePrice();
 
 		// P1
 		if (timeDelay <= -nFactor)
@@ -141,12 +117,12 @@ abstract class Status implements Serializable {
 		else
 			price = getCreditSaleP4Price(price, timeDelay);
 
-		// TODO
+		// If there's no delay.
 		if (timeDelay <= 0) {
-			points += 10 * price;
-			setPoints(points);
+			_points += 10 * price;
 		}
 
+		// Apply pontuation penalties.
 		applyPontuationPenalties(timeDelay);
 	}
 
@@ -155,16 +131,49 @@ abstract class Status implements Serializable {
 	 *
 	 * @param transaction the breakdown sale to pay.
 	 */
-	protected void payTransaction(BreakdownSale transaction) {
+	void payTransaction(BreakdownSale transaction) {
 		_points += 10 * transaction.getPrice();
 		updateStatus();
 	}
 
-	protected abstract double getCreditSaleP1Price(double basePrice, int timeDelay);
-	protected abstract double getCreditSaleP2Price(double basePrice, int timeDelay);
-	protected abstract double getCreditSaleP3Price(double basePrice, int timeDelay);
-	protected abstract double getCreditSaleP4Price(double basePrice, int timeDelay);
-	protected abstract void applyPontuationPenalties(int timeDelay);
+	/**
+	 * Calculate the credit sale price in the 1st period.
+	 *
+	 * @param basePrice the credit sale base price.
+	 * @param timeDelay the payment delay.
+	 */
+	abstract double getCreditSaleP1Price(double basePrice, int timeDelay);
+
+	/**
+	 * Calculate the credit sale price in the 2nd period.
+	 *
+	 * @param basePrice the credit sale base price.
+	 * @param timeDelay the payment delay.
+	 */
+	abstract double getCreditSaleP2Price(double basePrice, int timeDelay);
+
+	/**
+	 * Calculate the credit sale price in the 3rd period.
+	 *
+	 * @param basePrice the credit sale base price.
+	 * @param timeDelay the payment delay.
+	 */
+	abstract double getCreditSaleP3Price(double basePrice, int timeDelay);
+
+	/**
+	 * Calculate the credit sale price in the 4th period.
+	 *
+	 * @param basePrice the credit sale base price.
+	 * @param timeDelay the payment delay.
+	 */
+	abstract double getCreditSaleP4Price(double basePrice, int timeDelay);
+
+	/**
+	 * Applies the pontuation penalties, according to public classification and payment time delay.
+	 *
+	 * @param timeDelay the payment time delay.
+	 */
+	abstract void applyPontuationPenalties(int timeDelay);
 
 	/**
 	 * String representation of status.

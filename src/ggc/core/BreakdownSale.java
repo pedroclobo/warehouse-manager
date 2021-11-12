@@ -7,11 +7,15 @@ import java.util.ArrayList;
 import ggc.core.exception.NoProductStockException;
 
 /**
- * TODO
+ * This public class represents a breakdown sale transaction.
+ * In an breakdown sale transaction, a partner requisites a product disaggregation.
  */
 public class BreakdownSale extends Sale {
 
+	/** The transaction's base price. */
 	private double _basePrice;
+
+	/** The transaction's real, paid price. */
 	private double _effectivePrice;
 
 	/** Holds the transaction's main product component prices. */
@@ -25,8 +29,10 @@ public class BreakdownSale extends Sale {
 	 * @param product     the breakdown sale's processed product.
 	 * @param amount      the amount of product processed.
 	 * @param paymentDate the breakdown sale's payment date.
+	 *
+	 * @throws NoProductStockException if there's not enough product stock.
 	 */
-	public BreakdownSale(int id, Partner partner, Product product, int amount, Date paymentDate) throws NoProductStockException {
+	BreakdownSale(int id, Partner partner, Product product, int amount, Date paymentDate) throws NoProductStockException {
 		super(id, partner, product, amount, paymentDate);
 		_basePrice = getProduct().getLowestPrice() * getProductAmount();
 		_effectivePrice = 0;
@@ -61,23 +67,24 @@ public class BreakdownSale extends Sale {
 		this.pay();
 	}
 
+	/**
+	 * @return the transaction's paid price.
+	 */
 	@Override
-	public double getPrice() {
+	double getPrice() {
 		return _effectivePrice;
 	}
 
 	/**
-	 * Updates the transaction price, accouting for discounts.
-	 *
-	 * @param date the current date.
+	 * Updates the transaction price.
 	 */
-	public void updatePrice() {}
+	void updatePrice() {}
 
 	/**
-	 * TODO
+	 * Pays the transaction.
 	 */
 	@Override
-	public void pay() {
+	void pay() {
 		getPartner().payTransaction(this);
 	}
 
@@ -93,6 +100,7 @@ public class BreakdownSale extends Sale {
 		Iterator<Integer> quantIter = getProduct().getQuantityIterator();
 		Iterator<Double> priceIter = _productPrices.iterator();
 
+		// Build products string representation.
 		while (prodIter.hasNext() && quantIter.hasNext() && priceIter.hasNext()) {
 			Product component = prodIter.next();
 			int componentAmount = quantIter.next();
@@ -100,7 +108,7 @@ public class BreakdownSale extends Sale {
 
 			products.append(component.getKey() + ":" +
 					getProductAmount() * componentAmount + ":" +
-					(int) (getProductAmount() * price * componentAmount) + "#");
+					Math.round(getProductAmount() * price * componentAmount) + "#");
 		}
 
 		// Remove final "#".
@@ -112,8 +120,8 @@ public class BreakdownSale extends Sale {
 			getPartner().getKey() + "|" +
 			getProduct().getKey() + "|" +
 			getProductAmount() + "|" +
-			(int) _basePrice + "|" +
-			(int) _effectivePrice + "|" +
+			Math.round(_basePrice) + "|" +
+			Math.round(_effectivePrice) + "|" +
 			getPaymentDate() + "|" +
 			products;
 	}
