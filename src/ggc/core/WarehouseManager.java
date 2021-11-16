@@ -305,7 +305,11 @@ public class WarehouseManager {
 	 * @throws UnknownTransactionException if there's no transaction with the given key.
 	 */
 	public void receivePayment(int key) throws UnknownTransactionException {
-		getTransaction(key).pay();
+		Transaction transaction = getTransaction(key);
+
+		if (transaction instanceof CreditSale) {
+			_warehouse.payCreditSale((CreditSale) getTransaction(key));
+		}
 	}
 
 	/**
@@ -378,6 +382,7 @@ public class WarehouseManager {
 		try (ObjectInputStream objIn = new ObjectInputStream(new FileInputStream(filename))) {
 			_filename = (String) objIn.readObject();
 			_warehouse = (Warehouse) objIn.readObject();
+			_warehouse.updateDate();
 
 		} catch (IOException e) {
 			throw new UnavailableFileException(filename);

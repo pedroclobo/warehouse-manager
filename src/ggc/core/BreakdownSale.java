@@ -34,7 +34,8 @@ public class BreakdownSale extends Sale {
 	 */
 	BreakdownSale(int id, Partner partner, Product product, int amount, Date paymentDate) throws NoProductStockException {
 		super(id, partner, product, amount, paymentDate);
-		_basePrice = getProduct().getLowestPrice() * getProductAmount();
+		_basePrice = 0;
+		//_basePrice = getProduct().getLowestPrice() * getProductAmount();
 		_effectivePrice = 0;
 		_productPrices = new ArrayList<>();
 
@@ -57,11 +58,11 @@ public class BreakdownSale extends Sale {
 			_basePrice -= productPrice * componentAmount * getProductAmount();
 		}
 
+		// Disaggregate product.
+		_basePrice += product.disaggregate(amount, partner);
+
 		// Calculate effective price.
 		_effectivePrice = (_basePrice < 0) ? 0 : _basePrice;
-
-		// Disaggregate product.
-		product.disaggregate(amount, partner);
 
 		// Pay the transaction.
 		this.pay();

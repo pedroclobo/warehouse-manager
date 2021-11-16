@@ -16,15 +16,20 @@ public class Notification implements Serializable {
 	/** The product associated with the notification. */
 	private Product _product;
 
+	/** The product's price. */
+	private double _price;
+
 	/**
 	 * Creates a new notification.
 	 *
 	 * @param type    the notification's type.
 	 * @param product the product associated with the notification.
+	 * @param product the product's price.
 	 */
-	public Notification(String type, Product product) {
+	public Notification(String type, Product product, double price) {
 		_type = type;
 		_product = product;
+		_price = price;
 	}
 
 	/**
@@ -33,7 +38,7 @@ public class Notification implements Serializable {
   	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return _type + "|" + _product.getKey() + "|" + Math.round(_product.getLowestPrice());
+		return _type + "|" + _product.getKey() + "|" + Math.round(_price);
 	}
 
 }

@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.Collection;
-import java.util.Set;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 /**
  * Partners buy and sell products to and from the Warehouse.
@@ -43,7 +43,7 @@ public class Partner implements Comparable<Partner>, Notifiable, Serializable {
 	private Set<BreakdownSale> _breakdownSales;
 
 	/** Collection of all partner's supplied batches. */
-	private Set<Batch> _batches;
+	private List<Batch> _batches;
 
 	/** Collection of all partner's notifications. */
 	private List<Notification> _notifications;
@@ -62,12 +62,12 @@ public class Partner implements Comparable<Partner>, Notifiable, Serializable {
 		_key = key;
 		_name = name;
 		_address = address;
-		_status = new NormalStatus();
+		_status = new NormalStatus(this, 0);
 		_acquisitions = new TreeSet<>();
 		_sales = new TreeSet<>();
 		_creditSales = new TreeSet<>();
 		_breakdownSales = new TreeSet<>();
-		_batches = new TreeSet<>();
+		_batches = new ArrayList<>();
 		_notifications = new ArrayList<>();
 		_deliveryMethod = new DefaultNotificationDeliveryMethod();
 	}
@@ -94,10 +94,19 @@ public class Partner implements Comparable<Partner>, Notifiable, Serializable {
 	}
 
 	/**
+	 * Change partner's status.
+	 */
+	void changeStatus(Status status) {
+		_status = status;
+	}
+
+	/**
 	 * @return a collection of all partner's supplied batches.
 	 */
 	Collection<Batch> getBatches() {
-		return Collections.unmodifiableSet(_batches);
+		List<Batch> copy = new ArrayList<>(_batches);
+		Collections.sort(copy);
+		return copy;
 	}
 
 	/**
@@ -183,7 +192,7 @@ public class Partner implements Comparable<Partner>, Notifiable, Serializable {
 
 		for (CreditSale s: _creditSales) {
 			if (s.isPaid()) {
-				value += s.getBasePrice();
+				value += s.getPrice();
 			}
 		}
 
@@ -212,6 +221,7 @@ public class Partner implements Comparable<Partner>, Notifiable, Serializable {
 	 */
 	void addBatch(Batch b) {
 		_batches.add(b);
+		Collections.sort(_batches);
 	}
 
 	/**
@@ -221,6 +231,7 @@ public class Partner implements Comparable<Partner>, Notifiable, Serializable {
 	 */
 	void removeBatch(Batch b) {
 		_batches.remove(b);
+		Collections.sort(_batches);
 	}
 
 	/**

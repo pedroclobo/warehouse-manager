@@ -16,6 +16,9 @@ public abstract class Status implements Serializable {
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202109192006L;
 
+	/** The status's partner. */
+	private Partner _partner;
+
 	/** Number of points accumulated. */
 	private int _points;
 
@@ -23,11 +26,19 @@ public abstract class Status implements Serializable {
 	private Classification _classification;
 
 	/**
-	 * Registers new status.
+	 * Creates a new status.
 	 */
-	Status() {
-		_points = 0;
-		_classification = Classification.NORMAL;
+	Status(Partner partner, int points, Classification classification) {
+		_partner = partner;
+		_points = points;
+		_classification = classification;
+	}
+
+	/**
+	 * @return the partner.
+	 */
+	Partner getPartner() {
+		return _partner;
 	}
 
 	/**
@@ -51,13 +62,13 @@ public abstract class Status implements Serializable {
 	 */
 	void updateStatus() {
 		if (_points < 2000)
-			_classification = Classification.NORMAL;
+			_partner.changeStatus(new NormalStatus(_partner, _points));
 
 		else if (2000 <= _points && _points < 25000)
-			_classification = Classification.SELECTION;
+			_partner.changeStatus(new SelectionStatus(_partner, _points));
 
 		else
-			_classification = Classification.ELITE;
+			_partner.changeStatus(new EliteStatus(_partner, _points));
 	}
 
 	/**
@@ -67,7 +78,6 @@ public abstract class Status implements Serializable {
 	 * @param transaction the credit sale.
 	 */
 	double getTransactionPrice(CreditSale transaction) {
-
 		int nFactor = transaction.getProduct().getNTimeFactor();
 		int timeDelay = Date.now().difference(transaction.getPaymentDeadline());
 		double price = transaction.getBasePrice();
@@ -77,8 +87,9 @@ public abstract class Status implements Serializable {
 			price = getCreditSaleP1Price(price, timeDelay);
 
 		// P2
-		else if (timeDelay <= 0 && timeDelay > -nFactor)
+		else if (timeDelay <= 0 && timeDelay > -nFactor) {
 			price = getCreditSaleP2Price(price, timeDelay);
+		}
 
 		// P3
 		else if (0 < timeDelay && timeDelay <= nFactor)

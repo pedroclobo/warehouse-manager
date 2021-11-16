@@ -55,9 +55,11 @@ public class AggregateProduct extends Product {
 	 *
 	 * @param amount  the amount of product to disaggregate.
 	 * @param partner the partner who requested to disaggregation.
+	 *
+	 * @return the removal price.
 	 */
 	@Override
-	void disaggregate(int amount, Partner partner) {
+	double disaggregate(int amount, Partner partner) {
 		double componentPrice;
 
 		Iterator<Product> prodIter = getProductIterator();
@@ -74,7 +76,7 @@ public class AggregateProduct extends Product {
 		}
 
 		// Remove aggregate product.
-		remove(amount);
+		return remove(amount);
 	}
 
 	/**

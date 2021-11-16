@@ -6,6 +6,13 @@ package ggc.core;
 public class SelectionStatus extends Status {
 
 	/**
+	 * Creates a new selection status.
+	 */
+	SelectionStatus(Partner partner, int points) {
+		super(partner, points, Classification.SELECTION);
+	}
+
+	/**
 	 * Calculate the credit sale price in the 1st period.
 	 *
 	 * @param basePrice the credit sale base price.
@@ -39,7 +46,8 @@ public class SelectionStatus extends Status {
 	 */
 	double getCreditSaleP3Price(double price, int timeDelay) {
 		if (timeDelay > 1) {
-			price *= 1 + (timeDelay - 1) * 0.02;
+			//price *= 1 + (timeDelay - 1) * 0.02;
+			price *= 1 + timeDelay * 0.02;
 		}
 
 		return price;
@@ -65,8 +73,10 @@ public class SelectionStatus extends Status {
 	void applyPontuationPenalties(int timeDelay) {
 		if (timeDelay > 2) {
 			setPoints((int) (getPoints() * 0.1));
+			getPartner().changeStatus(new NormalStatus(getPartner(), getPoints()));
+		} else {
+			updateStatus();
 		}
-		updateStatus();
 	}
 
 }

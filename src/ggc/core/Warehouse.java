@@ -85,6 +85,13 @@ public class Warehouse implements Serializable {
 	}
 
 	/**
+	 * Updates the date.
+	 */
+	void updateDate() {
+		Date.update(_date);
+	}
+
+	/**
 	 * @return the current warehouse's available balance.
 	 */
 	double getAvailableBalance() {
@@ -202,10 +209,13 @@ public class Warehouse implements Serializable {
 	 * @return a collection with all batches.
 	 */
 	Collection<Batch> getBatches() {
-		Set<Batch> batches = new TreeSet<>();
+		List<Batch> batches = new ArrayList<>();
 
-		for (Product p: getProducts())
-			batches.addAll(p.getBatches());
+		for (Product product: _products.values()) {
+			batches.addAll(product.getBatches());
+		}
+
+		Collections.sort(batches);
 
 		return batches;
 	}
@@ -339,9 +349,9 @@ public class Warehouse implements Serializable {
 
 		// Notify interested entities.
 		if (!product.isNew() && !product.hasStock()) {
-			product.sendNotification(new Notification("NEW", product));
-		} else if (product.getLowestPrice() > price) {
-			product.sendNotification(new Notification("BARGAIN", product));
+			product.sendNotification(new Notification("NEW", product, price));
+		} else if (product.getLowestPrice() >= price) {
+			product.sendNotification(new Notification("BARGAIN", product, price));
 		}
 
 		// Add transaction to warehouse collection.
@@ -384,6 +394,18 @@ public class Warehouse implements Serializable {
 	}
 
 	/**
+	 * Pays the credit sale.
+	 *
+	 * @param transaction the credit sale to pay.
+	 */
+	void payCreditSale(CreditSale transaction) {
+		if (!transaction.isPaid()) {
+			transaction.pay();
+			increaseBalance(transaction.getPrice());
+		}
+	}
+
+	/**
 	 * Registers a new breakdown sale transaction.
 	 *
 	 * @param partner the transaction's partner.
@@ -400,7 +422,7 @@ public class Warehouse implements Serializable {
 		}
 
 		// Register breakdown sale.
-		BreakdownSale transaction = new BreakdownSale(_nextTransactionId++, partner, product, amount, _date);
+		BreakdownSale transaction = new BreakdownSale(_nextTransactionId++, partner, product, amount, Date.now());
 		addTransaction(transaction);
 
 		// Increase warehouse's balance.

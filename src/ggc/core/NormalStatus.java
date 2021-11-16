@@ -6,6 +6,13 @@ package ggc.core;
 public class NormalStatus extends Status {
 
 	/**
+	 * Creates a new normal status.
+	 */
+	NormalStatus(Partner partner, int points) {
+		super(partner, points, Classification.NORMAL);
+	}
+
+	/**
 	 * Calculate the credit sale price in the 1st period.
 	 *
 	 * @param basePrice the credit sale base price.
@@ -34,7 +41,7 @@ public class NormalStatus extends Status {
 	 * @param timeDelay the payment delay.
 	 */
 	double getCreditSaleP3Price(double price, int timeDelay) {
-		price *= 1 + timeDelay * 0.05;
+		price *= (1 + (timeDelay * 0.05));
 
 		return price;
 	}
@@ -46,7 +53,7 @@ public class NormalStatus extends Status {
 	 * @param timeDelay the payment delay.
 	 */
 	double getCreditSaleP4Price(double price, int timeDelay) {
-		price *= 1 + timeDelay * 0.10;
+		price *= (1 + (timeDelay * 0.10));
 
 		return price;
 	}

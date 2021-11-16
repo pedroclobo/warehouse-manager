@@ -75,8 +75,15 @@ public class SimpleProduct extends Product {
 
 	/**
 	 * Disaggregates the product.
+	 *
+	 * @param amount  the amount of product to disaggregate.
+	 * @param partner the partner who requested to disaggregation.
+	 *
+	 * @return the removal price.
 	 */
 	@Override
-	public void disaggregate(int amount, Partner partner) {}
+	public double disaggregate(int amount, Partner partner) {
+		return 0;
+	}
 
 }

@@ -6,6 +6,13 @@ package ggc.core;
 public class EliteStatus extends Status {
 
 	/**
+	 * Creates a new elite status.
+	 */
+	EliteStatus(Partner partner, int points) {
+		super(partner, points, Classification.ELITE);
+	}
+
+	/**
 	 * Calculate the credit sale price in the 1st period.
 	 *
 	 * @param basePrice the credit sale base price.
@@ -59,8 +66,10 @@ public class EliteStatus extends Status {
 	void applyPontuationPenalties(int timeDelay) {
 		if (timeDelay > 15) {
 			setPoints((int) (getPoints() * 0.25));
+			getPartner().changeStatus(new SelectionStatus(getPartner(), getPoints()));
+		} else {
+			updateStatus();
 		}
-		updateStatus();
 	}
 
 }

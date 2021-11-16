@@ -1,13 +1,13 @@
 package ggc.core;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.List;
-import java.util.HashSet;
-import java.util.TreeSet;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import ggc.core.exception.NoProductStockException;
 
@@ -32,10 +32,10 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	private boolean _new;
 
 	/** Collection of batches that hold the product. */
-	private TreeSet<Batch> _batches;
+	private List<Batch> _batches;
 
 	/** Collection of all entities interested in being notified. */
-	private HashSet<Notifiable> _notifiables;
+	private Set<Notifiable> _notifiables;
 
 	/**
 	 * @param key the product identifier.
@@ -47,7 +47,7 @@ public abstract class Product implements Comparable<Product>, Serializable {
 		// When created a product is new.
 		_new = true;
 
-		_batches = new TreeSet<>(Batch.getComparatorByPrice());
+		_batches = new ArrayList<>();
 		_notifiables = new HashSet<>();
 	}
 
@@ -78,7 +78,7 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	 * @return the lowest price available for the product.
 	 */
 	final double getLowestPrice() {
-		return (_batches.size() > 0) ? _batches.first().getPrice() : 0;
+		return (_batches.size() > 0) ? _batches.get(0).getPrice() : 0;
 	}
 
 	/**
@@ -144,16 +144,17 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	 *
 	 * @param amount  the amount of product to disaggregate.
 	 * @param partner the partner who requested to disaggregation.
+	 *
+	 * @return the removal price.
 	 */
-	abstract void disaggregate(int amount, Partner partner);
+	abstract double disaggregate(int amount, Partner partner);
 
 	/**
 	 * @return a collection of batches sorted by their natural order.
 	 */
 	final Collection<Batch> getBatches() {
-		Set<Batch> batches = new TreeSet<>();
-		batches.addAll(_batches);
-
+		List<Batch> batches = new ArrayList<Batch>(_batches);
+		Collections.sort(batches);
 		return batches;
 	}
 
@@ -163,7 +164,7 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	 * @param price the price to compare to.
 	 */
 	final Collection<Batch> getBatchesUnderGivenPrice(double price) {
-		Collection<Batch> batches = new TreeSet<>();
+		Collection<Batch> batches = new ArrayList<>();
 
 		for (Batch batch: _batches) {
 			if (batch.getPrice() >= price) {
@@ -176,6 +177,17 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	}
 
 	/**
+	 * Adds a batch.
+	 *
+	 * @param batch the batch to add.
+	 */
+	final void addBatch(Batch batch) {
+		batch.getPartner().addBatch(batch);
+		_batches.add(batch);
+		Collections.sort(_batches, Batch.getComparatorByPrice());
+	}
+
+	/**
 	 * Removes a batch.
 	 *
 	 * @param batch the batch to remove.
@@ -183,6 +195,7 @@ public abstract class Product implements Comparable<Product>, Serializable {
 	final void removeBatch(Batch batch) {
 		batch.getPartner().removeBatch(batch);
 		_batches.remove(batch);
+		Collections.sort(_batches, Batch.getComparatorByPrice());
 	}
 
 	/**
@@ -203,9 +216,8 @@ public abstract class Product implements Comparable<Product>, Serializable {
 
 		// Add to new batch.
 		Batch batch = new Batch(this, partner, price);
+		addBatch(batch);
 		batch.add(units);
-		_batches.add(batch);
-		partner.addBatch(batch);
 	}
 
 	/**
@@ -225,7 +237,8 @@ public abstract class Product implements Comparable<Product>, Serializable {
 
 		// Remove unit by unit.
 		while (removed < units) {
-			batch = _batches.first();
+			batch = _batches.get(0);
+
 			while (batch.remove(1)) {
 				removed++;
 				total += batch.getPrice();

@@ -162,7 +162,6 @@ public class Batch implements Comparable<Batch>, Serializable {
 		return i;
 	}
 
-
   	/**
 	 * String representation of batch.
 	 *

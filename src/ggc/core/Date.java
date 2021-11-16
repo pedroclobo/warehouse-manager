@@ -74,6 +74,10 @@ public class Date implements Serializable {
 		_days += days;
 	}
 
+	static void update(Date date) {
+		_now = date;
+	}
+
 	@Override
 	public String toString() {
 		return "" + _days;

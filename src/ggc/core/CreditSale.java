@@ -48,8 +48,12 @@ public class CreditSale extends Sale {
 	 */
 	@Override
 	double getPrice() {
-		updatePrice();
-		return _effectivePrice;
+		if (isPaid()) {
+			return _effectivePrice;
+		} else {
+			updatePrice();
+			return _effectivePrice;
+		}
 	}
 
 	/**
@@ -74,7 +78,9 @@ public class CreditSale extends Sale {
 	 */
 	@Override
 	public void updatePrice() {
-		_effectivePrice = getPartner().getTransactionPrice(this);
+		if (!isPaid()) {
+			_effectivePrice = getPartner().getTransactionPrice(this);
+		}
 	}
 
 	/**
